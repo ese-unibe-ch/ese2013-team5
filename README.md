@@ -10,6 +10,7 @@ Add your username behind the app name of your choice in parenthesis as your vote
 - Mensa@UniBE
 
 
+
 ## Taskpool
 
 Let's have a To-Do list with individual tasks that can be assignes to team members
@@ -26,7 +27,7 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 - A common GitHub commit/merge strategy
 - Requirements
-- Prototype / Wireframe
+- Prototype / Wireframe 
 
 
 ## Workflow
