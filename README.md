@@ -8,7 +8,7 @@ Add your username behind the app name of your choice in parenthesis as your vote
 
 - UniBEMensa
 - Mensa@UniBE
-- try1
+
 
 
 ## Taskpool
