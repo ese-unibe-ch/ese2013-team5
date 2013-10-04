@@ -14,9 +14,9 @@ Add your username behind the app name of your choice in parenthesis as your vote
 ## Taskpool
 
 Let's have a To-Do list with individual tasks that can be assignes to team members
-- Update of SRS to be compatible with the new navigation
+- (nicolas) Update of SRS to be compatible with the new navigation
 - Prototype / Wireframe
-- Navigation Diagram
+- ~~(nicolas) Navigation Diagram~~
 - (all) Discuss requirements
 - ~~(luk) Setup of the project organization~~
 
