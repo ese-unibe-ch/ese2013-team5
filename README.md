@@ -8,12 +8,14 @@ Add your username behind the app name of your choice in parenthesis as your vote
 
 - UniBEMensa
 - Mensa@UniBE
-- Anderer Name
 
 
 ## Taskpool
 
 Let's have a To-Do list with individual tasks that can be assignes to team members
+- Update of SRS to be compatible with the new navigation
+- Prototype / Wireframe
+- Navigation Diagram
 - (all) Discuss requirements
 - ~~(luk) Setup of the project organization~~
 
