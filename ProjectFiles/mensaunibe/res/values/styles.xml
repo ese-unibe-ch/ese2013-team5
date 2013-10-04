@@ -15,6 +15,16 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+         <item name="android:actionBarStyle">@style/ActionBar</item>
+    </style>
+    
+    <style name="ActionBar" parent="android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/unibe_actionbar_bg</item>
+        <item name="android:titleTextStyle">@style/ActionBar.Text</item>
+    </style>
+    
+    <style name="ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/unibe_white</item>
     </style>
 
 </resources>
