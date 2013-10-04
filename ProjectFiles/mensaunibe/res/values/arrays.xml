@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="sidenav_items">
+        <item>Home</item>
+        <item>Mensa List</item>
+        <item>Mensa Map</item>
+        <item>Friends</item>
+        <item>Settings</item>
+    </string-array>
+    
+</resources>
