@@ -9,6 +9,7 @@ Add your username behind the app name of your choice in parenthesis as your vote
 - UniBEMensa
 - Mensa@UniBE (Illuminatic)
 - MensApp (Illuminatic)
+- Mensa UniBE
 
 
 
