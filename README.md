@@ -7,7 +7,8 @@ Project: **Mensa@Unibe**
 Add your username behind the app name of your choice in parenthesis as your vote for the app name, e.g. Name (exside)
 
 - UniBEMensa
-- Mensa@UniBE
+- Mensa@UniBE (Illuminatic)
+- MensApp (Illuminatic)
 
 
 
