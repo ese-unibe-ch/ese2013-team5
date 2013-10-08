@@ -1,4 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:id="@+id/notifications"
+        android:actionLayout="@layout/actionbar_notifications"
+        android:icon="@drawable/unibe_actionbar_notification"
+        android:showAsAction="always" />
 
     <item
         android:id="@+id/action_settings"
