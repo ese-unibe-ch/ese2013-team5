@@ -17,7 +17,9 @@ Add your username behind the app name of your choice in parenthesis as your vote
 
 Let's have a To-Do list with individual tasks that can be assignes to team members
 - (nicolas) Update of SRS to be compatible with the new navigation
-- Prototype / Wireframe
+- ~~(luk,raul) Prototype / Wireframe v1~~
+- ~~(luk) Organize API Key for mensa REST API (mail sent)~~
+- (all) Register at trello.com for SCRUM Tool
 - ~~(nicolas) Navigation Diagram~~
 - (all) Discuss requirements
 - ~~(luk) Setup of the project organization~~
@@ -29,7 +31,7 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 - A common GitHub commit/merge strategy
 - Requirements
-- Prototype / Wireframe 
+- Prototype / Wireframe
 
 
 ## Workflow
@@ -70,3 +72,5 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 - How to use GitHub, an [introduction](http://rogerdudler.github.io/git-guide/index.de.html)
 - [GitHub Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+- [Project Description / API from Wiki](https://github.com/ese-unibe-ch/ese2013-wiki/wiki/Project-Mensa@Unibe)
+- [Mensa Webservice / REST API](https://github.com/lexruee/Mensa-Webservice)

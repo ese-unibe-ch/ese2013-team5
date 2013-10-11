@@ -1,5 +1,7 @@
 package com.ese2013.mensaunibe;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -33,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class Home extends Activity {
@@ -220,7 +223,7 @@ public class Home extends Activity {
      * Fragment that appears in the "content_frame", shows mensalist or favourite mensa menus
      */
     public static class StartFragment extends Fragment {
-        //public static final String ARG_PLANET_NUMBER = "planet_number";
+    	private SimpleAdapter adapter;
 
         public StartFragment() {
             // Empty constructor required for fragment subclasses
@@ -232,6 +235,35 @@ public class Home extends Activity {
             View rootView = inflater.inflate(R.layout.fragment_start, container, false);
             //int i = getArguments().getInt(ARG_PLANET_NUMBER);
             //String mensas = getResources().getStringArray(R.array.mensa_list)[i];
+            
+            // get the list view from the layout into a variable, it's important to fetch it from the rootView
+            final ListView listview = (ListView) rootView.findViewById(R.id.menulist);
+            
+            ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+            final String[][] menus = {
+            	{"Menu natürlich vegi","Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln"},
+            	{"Menu einfach gut","Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing"},
+            	{"Menu voll anders","Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat"}
+            };
+            
+            // Creating an array adapter to store the list of countries
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_menulist_item, menus);
+            HashMap<String,String> item;
+            for(int i=0;i<menus.length;i++){
+              item = new HashMap<String,String>();
+              item.put("line1", menus[i][0]);
+              item.put("line2", menus[i][1]);
+              list.add(item);
+            }
+            
+            adapter = new SimpleAdapter(inflater.getContext(), list,
+              R.layout.list_menulist_item,
+              new String[] { "line1","line2" },
+              new int[] {R.id.line1, R.id.line2});
+            
+            // setting the adapter for the ListView
+            listview.setAdapter(adapter);
 
             Toast toast = Toast.makeText(inflater.getContext(), "Hier werden entweder alle Mensas im Überblick angezeigt oder im Fall einer gewählten Lieblingsmensa deren Menuansicht", Toast.LENGTH_LONG);
             toast.show();
@@ -243,7 +275,7 @@ public class Home extends Activity {
      * Fragment that appears in the "content_frame", shows mensalist
      */
     public static class MensaFragment extends Fragment {
-        //public static final String ARG_PLANET_NUMBER = "planet_number";
+    	private SimpleAdapter adapter;
 
         public MensaFragment() {
             // Empty constructor required for fragment subclasses
@@ -258,12 +290,40 @@ public class Home extends Activity {
             final ListView listview = (ListView) rootView.findViewById(R.id.mensalist);
             
             // Fetch the string array from resouce arrays.xml > mensalist
-            String[] mensas = getResources().getStringArray(R.array.mensalist);
+            //String[] mensas = getResources().getStringArray(R.array.mensalist);
+            
+            
+            ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+            
+
+            final String[][] mensas = {
+            	{"Mensa Bühlplatz","Strassenname 23 | Öffnungszeiten: 08:00 - 19:00"},
+            	{"Mensa Gesellschaftsstrasse","Strassenname 23 | Öffnungszeiten: 09:00 - 12:00"},
+            	{"Mensa und Cafeteria von Roll","Strassenname 23 | Öffnungszeiten: 08:00 - 15:00"},
+            	{"Mensa Unitobler","Strassenname 23 | Öffnungszeiten: 08:00 - 18:00"},
+            	{"UNIESS - Bistro Bar Lounge","Strassenname 23 | Öffnungszeiten: 08:00 - 17:00"}
+            };
             
             // Creating an array adapter to store the list of countries
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.mensalist_item, mensas);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.mensalist_item, mensas);
             
             // setting the adapter for the ListView
+            //listview.setAdapter(adapter);
+            
+            HashMap<String,String> item;
+            for(int i=0;i<mensas.length;i++){
+              item = new HashMap<String,String>();
+              item.put("line1", mensas[i][0]);
+              item.put("line2", mensas[i][1]);
+              list.add(item);
+            }
+            
+            adapter = new SimpleAdapter(inflater.getContext(), list,
+              R.layout.list_mensalist_item,
+              new String[] { "line1","line2" },
+              new int[] {R.id.line1, R.id.line2});
+            
             listview.setAdapter(adapter);
             
             Toast toast = Toast.makeText(inflater.getContext(), "Hier werden alle Mensas im Überblick angezeigt", Toast.LENGTH_LONG);
@@ -281,6 +341,7 @@ public class Home extends Activity {
      */
     public static class MenuFragment extends Fragment {
         //public static final String ARG_PLANET_NUMBER = "planet_number";
+    	private SimpleAdapter adapter;
 
         public MenuFragment() {
             // Empty constructor required for fragment subclasses
@@ -295,10 +356,29 @@ public class Home extends Activity {
             final ListView listview = (ListView) rootView.findViewById(R.id.menulist);
             
             // Fetch the string array from resouce arrays.xml > mensalist
-            String[] menus = getResources().getStringArray(R.array.menulist);
+            //String[] menus = getResources().getStringArray(R.array.menulist);
+            ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+            final String[][] menus = {
+            	{"Menu natürlich vegi","Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln"},
+            	{"Menu einfach gut","Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing"},
+            	{"Menu voll anders","Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat"}
+            };
             
             // Creating an array adapter to store the list of countries
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.menulist_item, menus);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_menulist_item, menus);
+            HashMap<String,String> item;
+            for(int i=0;i<menus.length;i++){
+              item = new HashMap<String,String>();
+              item.put("line1", menus[i][0]);
+              item.put("line2", menus[i][1]);
+              list.add(item);
+            }
+            
+            adapter = new SimpleAdapter(inflater.getContext(), list,
+              R.layout.list_menulist_item,
+              new String[] { "line1","line2" },
+              new int[] {R.id.line1, R.id.line2});
             
             // setting the adapter for the ListView
             listview.setAdapter(adapter);
@@ -398,6 +478,7 @@ public class Home extends Activity {
      * Fragment that appears in the "content_frame", shows mensalist
      */
     public static class NotificationsFragment extends Fragment {
+    	private SimpleAdapter adapter;
 
         public NotificationsFragment() {
             // Empty constructor required for fragment subclasses
@@ -412,10 +493,31 @@ public class Home extends Activity {
             final ListView listview = (ListView) rootView.findViewById(R.id.notifications);
             
             // Fetch the string array from resouce arrays.xml > mensalist
-            String[] notifications = getResources().getStringArray(R.array.notificationlist);
+            //String[] notifications = getResources().getStringArray(R.array.notificationlist);
+            ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+            
+            final String[][] notifications = {
+            	{"Message Subject","Short ellipsis from the content"},
+            	{"Super Message Subject","Short ellipsis from the content"},
+            	{"Nice Message Subject","Short ellipsis from the content"},
+            	{"Shitty Message Subject","Short ellipsis from the content"},
+            	{"Bla Message Subject","Short ellipsis from the content"}
+            };
             
             // Creating an array adapter to store the list of countries
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_item, notifications);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_item_1line, notifications);
+            HashMap<String,String> item;
+            for(int i=0;i<notifications.length;i++){
+              item = new HashMap<String,String>();
+              item.put("line1", notifications[i][0]);
+              item.put("line2", notifications[i][1]);
+              list.add(item);
+            }
+            
+            adapter = new SimpleAdapter(inflater.getContext(), list,
+              R.layout.list_notificationlist_item,
+              new String[] { "line1","line2" },
+              new int[] {R.id.line1, R.id.line2});
             
             // setting the adapter for the ListView
             listview.setAdapter(adapter);
@@ -430,6 +532,7 @@ public class Home extends Activity {
      * Fragment that appears in the "content_frame", shows friends
      */
     public static class FriendsFragment extends Fragment {
+    	private SimpleAdapter adapter;
 
         public FriendsFragment() {
             // Empty constructor required for fragment subclasses
@@ -444,10 +547,31 @@ public class Home extends Activity {
             final ListView listview = (ListView) rootView.findViewById(R.id.friendslist);
             
             // Fetch the string array from resouce arrays.xml > mensalist
-            String[] friendslist = getResources().getStringArray(R.array.friendlist);
+            //String[] friendslist = getResources().getStringArray(R.array.friendlist);
+            ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+            final String[][] friends = {
+            	{"Friend Name","Some information, maybe location?"},
+            	{"Friend Name Blub","Some information, maybe location?"},
+            	{"Friend Name Bli","Some information, maybe location?"},
+            	{"Friend Name Ga","Some information, maybe location?"},
+            	{"Friend Name Da","Some information, maybe location?"}
+            };
             
             // Creating an array adapter to store the list of countries
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_item, friendslist);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(), R.layout.list_item_1line, friendslist);
+            HashMap<String,String> item;
+            for(int i=0;i<friends.length;i++){
+              item = new HashMap<String,String>();
+              item.put("line1", friends[i][0]);
+              item.put("line2", friends[i][1]);
+              list.add(item);
+            }
+            
+            adapter = new SimpleAdapter(inflater.getContext(), list,
+              R.layout.list_friendlist_item,
+              new String[] { "line1","line2" },
+              new int[] {R.id.line1, R.id.line2});
             
             // setting the adapter for the ListView
             listview.setAdapter(adapter);
