@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -342,6 +343,7 @@ public class Home extends Activity {
     public static class MenuFragment extends Fragment {
         //public static final String ARG_PLANET_NUMBER = "planet_number";
     	private SimpleAdapter adapter;
+    	private FragmentTabHost mTabHost;
 
         public MenuFragment() {
             // Empty constructor required for fragment subclasses
@@ -351,6 +353,18 @@ public class Home extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_menulist, container, false);
+            
+//            mTabHost = new FragmentTabHost(inflater.getContext());
+//            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment1);
+//
+//            mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("Simple"),
+//                    FragmentStackSupport.CountingFragment.class, null);
+//            mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("Contacts"),
+//                    LoaderCursorSupport.CursorLoaderListFragment.class, null);
+//            mTabHost.addTab(mTabHost.newTabSpec("custom").setIndicator("Custom"),
+//                    LoaderCustomSupport.AppListFragment.class, null);
+//            mTabHost.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
+//                    LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
            
             // get the list view from the layout into a variable, it's important to fetch it from the rootView
             final ListView listview = (ListView) rootView.findViewById(R.id.menulist);
@@ -471,6 +485,12 @@ public class Home extends Activity {
             Toast toast = Toast.makeText(inflater.getContext(), "Hier werden alle Mensas auf einer Karte angezeigt", Toast.LENGTH_LONG);
             toast.show();
             return rootView;
+        }
+        
+        @Override
+        public void onDestroyView() {
+            super.onDestroyView();
+            map = null; // tried to prevent the app from crashing when map fragment is called twice, didn't work...
         }
     }
     
