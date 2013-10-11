@@ -29,7 +29,7 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 **What do we need?**
 
-- A common GitHub commit/merge strategy
+- A common GitHub commit/merge strategy, PLEASE READ THE INSTRUCTIONS BELOW!!!
 - Requirements
 - Prototype / Wireframe
 
@@ -41,7 +41,7 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 	2. Clone the forked repository to your local machine
 	3. Work on the project, add and commit the changes to your local repository
 	4. Push the changes online to your forked master branch
-	5. Make a pull request against the original ese2013-team5 repositorys master branch
+	5. Make a pull request against the original ese2013-team5 repositorys master branch (in the online interface via the green button)
 	6. Pull request should be merged only, if all team members have commented with +1 to give their vote, if this is the case the responsible for the pull request can merge the change into the projects master branch
 	7. Do the merging of pull request in the original repository via the web frontend, so nobody would have to fork the "real/original" repository and thus maybe make unintentional changes
 	8. For faster testing, it would be very handy if everybody could compile an actual .apk package that can be tested on a real device!
@@ -65,8 +65,8 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 		9. you are taken to the original repository, if the change doesn't need approval of all team members you can merge your pull request on the presented page
 
 - Eclipse
+	- Do not use your workspace project folder as the git repository! It will be a mess...if you have made and tested your changes to the code, copy the project files into your github repositories folder -> ProjectFiles
 	- We want a multilanguage app, all strings should always be translated to german and english in their respecitve folders (res/values for english, res/values-de for german)
-	- To work with fragments seems a bit more complicated (initially) but is for sure a more mvc and best practice way [Tutorial](http://www.cs.dartmouth.edu/~campbell/cs65/lecture08/lecture08.html)
 
 ## Knowledge / Links
 
@@ -74,3 +74,4 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 - [GitHub Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 - [Project Description / API from Wiki](https://github.com/ese-unibe-ch/ese2013-wiki/wiki/Project-Mensa@Unibe)
 - [Mensa Webservice / REST API](https://github.com/lexruee/Mensa-Webservice)
+- [Trello SCRUM Plattform](https://trello.com/b/pS8FuRWx/team-5-mensa-unibe)
