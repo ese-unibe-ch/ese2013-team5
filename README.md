@@ -47,11 +47,11 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 	8. For faster testing, it would be very handy if everybody could compile an actual .apk package that can be tested on a real device!
 
 	#### Synchronizing the original repository with your fork
-		1. Terminal > cd to local project directory on your computer, check with "git status"
-		2. Make an alias of the original project "git remote add original https://github.com/ese-unibe-ch/ese2013-team5.git"
-		3. Get the files from the original repository to your local repository with "git fetch original"
-		4. Merge the original with the local repository "git merge original/master" (it will open vim, just hit ESC, then type :w, then :q, the standard message is fine)
-		5. Push the changes to your own online repository/fork "git push origin master"
+	1. Terminal > cd to local project directory on your computer, check with "git status"
+	2. Make an alias of the original project "git remote add original https://github.com/ese-unibe-ch/ese2013-team5.git"
+	3. Get the files from the original repository to your local repository with "git fetch original"
+	4. Merge the original with the local repository "git merge original/master" (it will open vim, just hit ESC, then type :w, then :q, the standard message is fine)
+	5. Push the changes to your own online repository/fork "git push origin master"
 
 	#### Normal GitHub commiting workflow
 		1. make the changes in the code
