@@ -30,6 +30,7 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 **What do we need?**
 
 - A common GitHub commit/merge strategy, PLEASE READ THE INSTRUCTIONS BELOW!!!
+- Common coding standards, suggested is [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) (which is primarily for PHP, but is easily adoptable for Java)
 - Requirements
 - Prototype / Wireframe
 
