@@ -1,7 +1,6 @@
 # built application files
 *.apk
 *.ap_
-#*.jar
  
 # lint folder
 lint
@@ -15,20 +14,12 @@ lint
 # generated files
 bin/
 gen/
-classes/
-gen-external-apklibs/
  
 # maven output folder
 target
  
 # Local configuration file (sdk path, etc)
 local.properties
- 
-# Eclipse project files
-.classpath
-.project
-.metadata
-.settings
  
 # IntelliJ files
 .idea
