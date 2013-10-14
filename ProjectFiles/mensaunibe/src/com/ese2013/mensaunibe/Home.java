@@ -1,8 +1,11 @@
 package com.ese2013.mensaunibe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+
+import org.apache.http.client.ClientProtocolException;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.GoogleMap;
