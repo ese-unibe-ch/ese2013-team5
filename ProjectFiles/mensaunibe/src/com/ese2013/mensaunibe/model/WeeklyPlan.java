@@ -13,6 +13,7 @@ public class WeeklyPlan {
 	private DailyPlan[] dailyPlans = new DailyPlan[5];
 
 	public WeeklyPlan(JSONObject json) {
+		makeDailyPlans();
 		getMenusFromJSON(json);
 	}
 
@@ -28,7 +29,7 @@ public class WeeklyPlan {
 		return dailyPlans[2];
 	}
 
-	public DailyPlan getThursdayy() {
+	public DailyPlan getThursday() {
 		return dailyPlans[3];
 	}
 
@@ -37,7 +38,16 @@ public class WeeklyPlan {
 	}
 
 	private void getMenusFromJSON(JSONObject json) {
-		// TODO Parse JSON for the JSONObject for one menu here
+		// TODO Parse JSON for the JSONObject for one menu here then add it to
+		// the corresponding plan
+	}
+
+	private void makeDailyPlans() {
+		this.dailyPlans[0] = new DailyPlan("Monday");
+		this.dailyPlans[1] = new DailyPlan("Tuesday");
+		this.dailyPlans[2] = new DailyPlan("Wednesday");
+		this.dailyPlans[3] = new DailyPlan("Thursday");
+		this.dailyPlans[4] = new DailyPlan("Friday");
 	}
 
 }
