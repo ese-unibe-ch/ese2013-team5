@@ -39,11 +39,12 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 ## Coding Standards
 
-Write down all explicitly needed standarts here:
+Write down all explicitly needed standards here:
 
 - The formatting should be the eclipse standard (press ctrl+shift+f for auto formatting)
 - Comment all Classes with javadoc (at least all the classes of the model)
 - Comment all non trivial public methods with javadoc (at least in the model)
+- Use //TODO to comment work in progress things. That way they will all be listed in the eclipse "Tasks" view.
 
 
 ## Workflow
