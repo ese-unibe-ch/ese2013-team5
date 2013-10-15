@@ -9,17 +9,18 @@ Add your username behind the app name of your choice in parenthesis as your vote
 - UniBEMensa
 - Mensa@UniBE (Illuminatic)
 - MensApp (Illuminatic)
-- Mensa UniBE
+- Mensa UniBE (nicolas)
 
 
 
 ## Taskpool
 
 Let's have a To-Do list with individual tasks that can be assignes to team members
-- (nicolas) Update of SRS to be compatible with the new navigation
+- (all) Work on trello-tasks
+- ~~(nicolas) Update of SRS to be compatible with the new navigation~~
 - ~~(luk,raul) Prototype / Wireframe v1~~
 - ~~(luk) Organize API Key for mensa REST API (mail sent)~~
-- (all) Register at trello.com for SCRUM Tool
+- ~~(all) Register at trello.com for SCRUM Tool~~
 - ~~(nicolas) Navigation Diagram~~
 - (all) Discuss requirements
 - ~~(luk) Setup of the project organization~~
@@ -31,8 +32,18 @@ Let's have a To-Do list with individual tasks that can be assignes to team membe
 
 - A common GitHub commit/merge strategy, PLEASE READ THE INSTRUCTIONS BELOW!!!
 - Common coding standards, suggested is [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) (which is primarily for PHP, but is easily adoptable for Java)
+(nicolas) I agree with having coding standarts however I dont think the formatting in the suggestion is useful (e.g.spaces insted of tabs) I would prefer if we list all explicitly needed standarts here somewhere (see bellow)
 - Requirements
 - Prototype / Wireframe
+
+
+## Coding Standards
+
+Write down all explicitly needed standarts here:
+
+- The formatting should be the eclipse standard (press ctrl+shift+f for auto formatting)
+- Comment all Classes with javadoc (at least all the classes of the model)
+- Comment all non trivial public methods with javadoc (at least in the model)
 
 
 ## Workflow
