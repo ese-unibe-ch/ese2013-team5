@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.ese2013.mensaunibe.model.Model;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -51,6 +52,8 @@ public class Home extends Activity {
     private CharSequence mTitle;
     private String[] mNavItems;
     
+    private Model model;
+    
     static Button notifCount;
     static int mNotifCount = 2;
 
@@ -59,6 +62,8 @@ public class Home extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        
+        this.model = new Model();
 
         mTitle = mDrawerTitle = getTitle();
         mNavItems = getResources().getStringArray(R.array.sidenav_items);
