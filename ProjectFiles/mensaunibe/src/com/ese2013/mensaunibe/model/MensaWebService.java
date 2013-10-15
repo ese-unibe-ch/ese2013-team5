@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe;
+package com.ese2013.mensaunibe.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
