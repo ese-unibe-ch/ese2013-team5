@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +53,7 @@ public class Home extends Activity {
 	private String[] mNavItems;
 
 	// The model provides and manages the mensas objects for the app
-	public Model model;
+	private Model model;
 	
 
 	static Button notifCount;
@@ -318,11 +317,6 @@ public class Home extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_mensalist,
 					container, false);
-			Activity home = this.getActivity();
-			Model model = ((Home) home).model;
-		
-			ArrayList <Mensa> mensalist = model.getMensas();
-			
 
 			// get the list view from the layout into a variable, it's important
 			// to fetch it from the rootView
@@ -336,17 +330,17 @@ public class Home extends Activity {
 			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
 		
-//			final String[][] mensas = {
-//					{ "Mensa BŸhlplatz",
-//							"Strassenname 23 | …ffnungszeiten: 08:00 - 19:00" },
-//					{ "Mensa Gesellschaftsstrasse",
-//							"Strassenname 23 | …ffnungszeiten: 09:00 - 12:00" },
-//					{ "Mensa und Cafeteria von Roll",
-//							"Strassenname 23 | …ffnungszeiten: 08:00 - 15:00" },
-//					{ "Mensa Unitobler",
-//							"Strassenname 23 | …ffnungszeiten: 08:00 - 18:00" },
-//					{ "UNIESS - Bistro Bar Lounge",
-//							"Strassenname 23 | …ffnungszeiten: 08:00 - 17:00" } };
+			final String[][] mensas = {
+					{ "Mensa BŸhlplatz",
+							"Strassenname 23 | …ffnungszeiten: 08:00 - 19:00" },
+					{ "Mensa Gesellschaftsstrasse",
+							"Strassenname 23 | …ffnungszeiten: 09:00 - 12:00" },
+					{ "Mensa und Cafeteria von Roll",
+							"Strassenname 23 | …ffnungszeiten: 08:00 - 15:00" },
+					{ "Mensa Unitobler",
+							"Strassenname 23 | …ffnungszeiten: 08:00 - 18:00" },
+					{ "UNIESS - Bistro Bar Lounge",
+							"Strassenname 23 | …ffnungszeiten: 08:00 - 17:00" } };
 
 			// Creating an array adapter to store the list of countries
 			// ArrayAdapter<String> adapter = new
@@ -356,19 +350,11 @@ public class Home extends Activity {
 			// setting the adapter for the ListView
 			// listview.setAdapter(adapter);
 
-//			HashMap<String, String> item;
-//			for (int i = 0; i < mensas.length; i++) {
-//				item = new HashMap<String, String>();
-//				item.put("line1", mensas[i][0]);
-//				item.put("line2", mensas[i][1]);
-//				list.add(item);
-//			}
-			
 			HashMap<String, String> item;
-			for (Mensa mensa : mensalist) {
+			for (int i = 0; i < mensas.length; i++) {
 				item = new HashMap<String, String>();
-				item.put("line1", mensa.getName());
-				item.put("line2", mensa.getStreet() + " | " + mensa.getPlz());
+				item.put("line1", mensas[i][0]);
+				item.put("line2", mensas[i][1]);
 				list.add(item);
 			}
 
