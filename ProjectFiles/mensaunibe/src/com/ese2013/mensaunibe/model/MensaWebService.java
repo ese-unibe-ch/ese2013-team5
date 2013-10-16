@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 import android.net.Uri;
 import android.net.Uri.Builder;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 
 /**
@@ -35,16 +37,9 @@ public class MensaWebService {
 	private final String WEEKLYPLAN = "/weeklyplan";
 	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
 
-	public MensaWebService() {
-		HttpParams myParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(myParams, 10000);
-		HttpConnectionParams.setSoTimeout(myParams, 10000);
+	private WebRequest request;
 
-		// TODO this is absolutely horrible -> server requests must be in a
-		// seperate thread
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-				.permitAll().build();
-		StrictMode.setThreadPolicy(policy);
+	public MensaWebService() {
 	}
 
 	/**
@@ -56,12 +51,13 @@ public class MensaWebService {
 		InputStream in;
 		JSONObject json = null;
 		try {
-			in = getHttpStream(BASE_URL + MENSAS + TOKEN);
-			json = convertStreamToJSON(in);
-		} catch (IOException e) {
+			request = new WebRequest(BASE_URL + MENSAS + TOKEN);
+			request.execute();
+			json = request.get();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -79,45 +75,73 @@ public class MensaWebService {
 		InputStream in;
 		JSONObject json = null;
 		try {
-			in = getHttpStream(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN
+			request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN
 					+ TOKEN);
-			json = convertStreamToJSON(in);
-		} catch (IOException e) {
+			request.execute();
+			json = request.get();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return json;
 	}
 
-	private InputStream getHttpStream(String urlString) throws IOException {
-		HttpClient client = new DefaultHttpClient();
-		Uri uri = Uri.parse(urlString);
-		Builder uriBuilder = uri.buildUpon();
-		HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
-		HttpResponse response = client.execute(httpGet);
-		StatusLine statusLine = response.getStatusLine();
-		int statusCode = statusLine.getStatusCode();
-		if (statusCode == 200) {
-			HttpEntity entity = response.getEntity();
-			InputStream content = entity.getContent();
-			return content;
-		} else {
-			throw new IOException("Invalid answer from server");
-		}
-	}
+	private class WebRequest extends AsyncTask<String, Void, JSONObject> {
 
-	private JSONObject convertStreamToJSON(InputStream in) throws IOException,
-			JSONException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(in));
-		String line;
-		StringBuilder sb = new StringBuilder();
-		while ((line = bf.readLine()) != null) {
-			sb.append(line);
+		private String uri;
+
+		public WebRequest(String uri) {
+			this.uri = uri;
+			HttpParams myParams = new BasicHttpParams();
+			HttpConnectionParams.setConnectionTimeout(myParams, 10000);
+			HttpConnectionParams.setSoTimeout(myParams, 10000);
 		}
-		bf.close();
-		return new JSONObject(sb.toString());
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+			try {
+				return convertStreamToJSON(getHttpStream(uri));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		private InputStream getHttpStream(String urlString) throws IOException {
+			HttpClient client = new DefaultHttpClient();
+			Uri uri = Uri.parse(urlString);
+			Builder uriBuilder = uri.buildUpon();
+			HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
+			HttpResponse response = client.execute(httpGet);
+			StatusLine statusLine = response.getStatusLine();
+			int statusCode = statusLine.getStatusCode();
+			if (statusCode == 200) {
+				HttpEntity entity = response.getEntity();
+				InputStream content = entity.getContent();
+				return content;
+			} else {
+				throw new IOException("Invalid answer from server");
+			}
+		}
+
+		private JSONObject convertStreamToJSON(InputStream in)
+				throws IOException, JSONException {
+			BufferedReader bf = new BufferedReader(new InputStreamReader(in));
+			String line;
+			StringBuilder sb = new StringBuilder();
+			while ((line = bf.readLine()) != null) {
+				sb.append(line);
+			}
+			bf.close();
+			return new JSONObject(sb.toString());
+		}
+
 	}
 }
