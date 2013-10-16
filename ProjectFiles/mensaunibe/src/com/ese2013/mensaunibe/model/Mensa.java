@@ -1,6 +1,9 @@
 package com.ese2013.mensaunibe.model;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.ese2013.mensaunibe.model.Mensa.MensaBuilder;
 
 /**
  * Class representing a mensa and responsible for its menus. Needs to be
@@ -69,11 +72,20 @@ public class Mensa {
 		private float lon;
 
 		public MensaBuilder(JSONObject json) {
-			parseJSONtoMensa(json);
+			try {
+				parseJSONtoMensa(json);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 
-		private void parseJSONtoMensa(JSONObject json) {
-			// TODO Parse JSON for the mensa here
+		private void parseJSONtoMensa(JSONObject json) throws JSONException {
+			this.id = json.getInt("id");
+			this.name = json.getString("mensa");
+			this.street = json.getString("street");
+			this.plz = json.getString("plz");
+			this.lat = (Float) json.get("lat");
+			this.lon = (Float) json.get("lon");
 		}
 
 		public MensaBuilder setId(int id) {
@@ -109,6 +121,7 @@ public class Mensa {
 		public Mensa build() {
 			return new Mensa(this);
 		}
+
 	}
 
 }
