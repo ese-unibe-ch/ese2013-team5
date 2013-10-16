@@ -51,8 +51,9 @@ public class Model {
 				String[] menuDetails = (String[]) array.getJSONObject(j).get(
 						"menu");
 				String price = menuDetails[menuDetails.length - 1];
-				Menu menu = new Menu(title, date, price, menuDetails, Mensas
-						.get(i).getId());
+//				Menu menu = new Menu(title, date, price, menuDetails, Mensas
+//						.get(i).getId());
+				Menu menu = new Menu.MenuBuilder(menus).build();
 				Mensas.get(i).getDailyPlan(day).add(menu);
 			}
 		}
