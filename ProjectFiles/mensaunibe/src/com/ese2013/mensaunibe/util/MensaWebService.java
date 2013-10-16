@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.model;
+package com.ese2013.mensaunibe.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.AsyncTask;
-import android.os.StrictMode;
 
 /**
  * This class is responsible for connecting to the mensa web service and
@@ -48,17 +47,14 @@ public class MensaWebService {
 	 * @return The answer from the service JSONObject
 	 */
 	public JSONObject requestAllMensas() {
-		InputStream in;
 		JSONObject json = null;
 		try {
 			request = new WebRequest(BASE_URL + MENSAS + TOKEN);
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return json;
@@ -72,7 +68,6 @@ public class MensaWebService {
 	 * @return The answer from the service as a JSONObject
 	 */
 	public JSONObject requestMenusForMensa(int id) {
-		InputStream in;
 		JSONObject json = null;
 		try {
 			request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN
@@ -80,10 +75,8 @@ public class MensaWebService {
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return json;
@@ -105,10 +98,8 @@ public class MensaWebService {
 			try {
 				return convertStreamToJSON(getHttpStream(uri));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
