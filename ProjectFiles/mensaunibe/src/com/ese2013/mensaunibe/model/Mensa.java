@@ -3,8 +3,6 @@ package com.ese2013.mensaunibe.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ese2013.mensaunibe.model.Mensa.MensaBuilder;
-
 /**
  * Class representing a mensa and responsible for its menus. Needs to be
  * instantiated via the provided builder.
@@ -84,8 +82,8 @@ public class Mensa {
 			this.name = json.getString("mensa");
 			this.street = json.getString("street");
 			this.plz = json.getString("plz");
-			this.lat = (Float) json.get("lat");
-			this.lon = (Float) json.get("lon");
+			this.lat = Float.parseFloat(json.getString("lat"));
+			this.lon = Float.parseFloat(json.getString("lon"));
 		}
 
 		public MensaBuilder setId(int id) {

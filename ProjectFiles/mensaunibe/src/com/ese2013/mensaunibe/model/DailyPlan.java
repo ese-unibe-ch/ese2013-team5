@@ -14,6 +14,7 @@ public class DailyPlan {
 	ArrayList<Menu> menus;
 
 	DailyPlan(String tDay) {
+		menus = new ArrayList<Menu>();
 		setDay(tDay);
 	}
 
