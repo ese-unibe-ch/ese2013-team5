@@ -41,11 +41,9 @@ public class Model {
 		for (int i = 0; i < Mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(Mensas.get(i)
 					.getId());
-
 			JSONArray array = menus.getJSONObject("result")
 					.getJSONObject("content").getJSONArray("menus");
 			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
-
 		}
 	}
 
