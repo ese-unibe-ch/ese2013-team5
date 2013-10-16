@@ -160,6 +160,9 @@ public class Home extends Activity {
 		 */
 		return super.onOptionsItemSelected(item);
 	}
+		public Model getModel(){
+			return model;
+		}
 
 	/* The click listner for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements
@@ -326,6 +329,7 @@ public class Home extends Activity {
 
 			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
+		
 			final String[][] mensas = {
 					{ "Mensa BŸhlplatz",
 							"Strassenname 23 | …ffnungszeiten: 08:00 - 19:00" },
