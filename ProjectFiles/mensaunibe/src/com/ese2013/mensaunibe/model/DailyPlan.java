@@ -26,8 +26,6 @@ public class DailyPlan {
 		return menus.get(i);
 	}
 
-	// TODO Do we need this?
-	// maybe e.g. for getting only the vegetarian menu..?
 	public Menu get(String title) {
 		for (Menu menu : menus) {
 			if (menu.getTitle().equals(title)) {
