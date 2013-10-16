@@ -3,6 +3,8 @@ package com.ese2013.mensaunibe.model;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.ese2013.mensaunibe.util.MenuBuilder;
+
 /**
  * Class modeling the menu plan of one week
  * 
@@ -43,10 +45,8 @@ public class WeeklyPlan {
 	}
 
 	private void getMenusFromJSON(JSONArray array) throws JSONException {
-		// TODO Parse JSON for the JSONObject for one menu here then add it to
-		// the corresponding plan
 		for (int i = 0; i < array.length(); i++) {
-			Menu menu = new Menu.MenuBuilder(array.getJSONObject(i)).build();
+			Menu menu = new MenuBuilder(array.getJSONObject(i)).build();
 			for (int j = 0; j < dailyPlans.length; j++) {
 				if (menu.getDay().equals(dailyPlans[j].getDay())) {
 					dailyPlans[j].add(menu);

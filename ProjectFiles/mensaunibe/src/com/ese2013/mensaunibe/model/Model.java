@@ -6,6 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ese2013.mensaunibe.util.MensaBuilder;
+import com.ese2013.mensaunibe.util.MensaWebService;
+
 /**
  * Provides the model for the mensa unibe app.
  * 
@@ -34,9 +37,10 @@ public class Model {
 		}
 	}
 
-	// TODO Adapt to work with the new WeeklyPlan, DailyPlan and menu builder:
-	// for each mensa id request the menu plan pass it to the WeeklyPlan
-	// constructor, then assign the new plan to the mensa
+	public ArrayList<Mensa> getMensas() {
+		return Mensas;
+	}
+
 	private void initializeMenuplans() throws JSONException {
 		for (int i = 0; i < Mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(Mensas.get(i)
@@ -47,23 +51,14 @@ public class Model {
 		}
 	}
 
-	// TODO Adapt to work with the new mensa builder: createMensalist() should
-	// get the JSONObject returned from the request, then go through each
-	// JSONObject in the JSONArray and pass it to the builder
-	// (Mensa.MensaBuilder(jsonForMensa).build(); ) and then add the returned
-	// mensas to the list
 	private void createMensalist() throws JSONException {
 		JSONArray array = allMensas.getJSONObject("result").getJSONArray(
 				"content");
 		for (int i = 0; i < array.length(); i++) {
-			Mensa.MensaBuilder mensaBuilder = new Mensa.MensaBuilder(
+			MensaBuilder mensaBuilder = new MensaBuilder(
 					array.getJSONObject(i));
 			Mensas.add(mensaBuilder.build());
 		}
-	}
-
-	public ArrayList<Mensa> getMensas() {
-		return Mensas;
 	}
 
 }
