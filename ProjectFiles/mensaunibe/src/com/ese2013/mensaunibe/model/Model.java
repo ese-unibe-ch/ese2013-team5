@@ -43,17 +43,10 @@ public class Model {
 		for (int i = 0; i < Mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(Mensas.get(i)
 					.getId());
-			JSONArray array = menus.getJSONArray("menus");
+			JSONArray array = menus.getJSONObject("result").getJSONObject("content")
+					.getJSONArray("menus");
 			for (int j = 0; j < array.length(); j++) {
-				String title = array.getJSONObject(j).getString("title");
-				String date = array.getJSONObject(j).getString("date");
-				String day = array.getJSONObject(j).getString("day");
-				String[] menuDetails = (String[]) array.getJSONObject(j).get(
-						"menu");
-				String price = menuDetails[menuDetails.length - 1];
-				Menu menu = new Menu(title, date, price, menuDetails, Mensas
-						.get(i).getId());
-				Mensas.get(i).getDailyPlan(day).add(menu);
+				Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
 			}
 		}
 	}
@@ -65,16 +58,15 @@ public class Model {
 	// mensas to the list
 	private void createMensalist() throws JSONException {
 		// This line caused an Exception for me (nicolas)
-		JSONArray array = allMensas.getJSONArray("content");
+		JSONArray array = allMensas.getJSONObject("result").getJSONArray("content");
 		for (int i = 0; i < array.length(); i++) {
-			int id = array.getJSONObject(i).getInt("id");
-			String name = array.getJSONObject(i).getString("mensa");
-			String street = array.getJSONObject(i).getString("street");
-			String plz = array.getJSONObject(i).getString("plz");
-			float lat = (Float) array.getJSONObject(i).get("lat");
-			float lon = (Float) array.getJSONObject(i).get("lon");
-			Mensas.add(new Mensa(id, name, street, plz, lat, lon));
+			Mensa.MensaBuilder mensaBuilder = new Mensa.MensaBuilder(array.getJSONObject(i));
+			Mensas.add(mensaBuilder.build());
 		}
+	}
+	
+	public ArrayList<Mensa> getMensas(){
+		return Mensas;
 	}
 
 }

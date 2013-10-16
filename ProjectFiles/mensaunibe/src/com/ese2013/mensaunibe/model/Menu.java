@@ -1,5 +1,6 @@
 package com.ese2013.mensaunibe.model;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -47,16 +48,28 @@ public class Menu {
 	public static class MenuBuilder {
 		private String title;
 		private String date;
-		private String price;
+		private String day;
 		private String[] menuDetails;
+		private String price;
 		private int mensaId;
 
 		public MenuBuilder(JSONObject json) {
-			parseJSONtoMenu(json);
+			try {
+				parseJSONtoMenu(json);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-		private void parseJSONtoMenu(JSONObject json) {
+		private void parseJSONtoMenu(JSONObject json) throws JSONException {
 			// TODO Parse JSON here to get a single menu
+			this.title = json.getString("title");
+			this.date = json.getString("date");
+			this.setDay(json.getString("day"));
+			this.menuDetails = (String[]) json.get("menu");
+			this.price = this.menuDetails[this.menuDetails.length-1];
+			this.mensaId = json.getInt("id");
 		}
 
 		public MenuBuilder setTitle(String title) {
@@ -86,6 +99,14 @@ public class Menu {
 
 		public Menu build() {
 			return new Menu(this);
+		}
+
+		public String getDay() {
+			return day;
+		}
+
+		public void setDay(String day) {
+			this.day = day;
 		}
 	}
 
