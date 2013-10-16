@@ -1,8 +1,6 @@
 package com.ese2013.mensaunibe.model;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,11 +41,9 @@ public class Model {
 		for (int i = 0; i < Mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(Mensas.get(i)
 					.getId());
-			JSONArray array = menus.getJSONObject("result").getJSONObject("content")
-					.getJSONArray("menus");
-			for (int j = 0; j < array.length(); j++) {
-				Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
-			}
+			JSONArray array = menus.getJSONObject("result")
+					.getJSONObject("content").getJSONArray("menus");
+			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
 		}
 	}
 
@@ -57,15 +53,16 @@ public class Model {
 	// (Mensa.MensaBuilder(jsonForMensa).build(); ) and then add the returned
 	// mensas to the list
 	private void createMensalist() throws JSONException {
-		// This line caused an Exception for me (nicolas)
-		JSONArray array = allMensas.getJSONObject("result").getJSONArray("content");
+		JSONArray array = allMensas.getJSONObject("result").getJSONArray(
+				"content");
 		for (int i = 0; i < array.length(); i++) {
-			Mensa.MensaBuilder mensaBuilder = new Mensa.MensaBuilder(array.getJSONObject(i));
+			Mensa.MensaBuilder mensaBuilder = new Mensa.MensaBuilder(
+					array.getJSONObject(i));
 			Mensas.add(mensaBuilder.build());
 		}
 	}
-	
-	public ArrayList<Mensa> getMensas(){
+
+	public ArrayList<Mensa> getMensas() {
 		return Mensas;
 	}
 
