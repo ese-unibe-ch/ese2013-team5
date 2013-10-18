@@ -15,10 +15,10 @@ public class WeeklyPlan {
 
 	private DailyPlan[] dailyPlans = new DailyPlan[5];
 
-	public WeeklyPlan(JSONArray array) {
+	public WeeklyPlan(JSONArray array, Mensa mensa) {
 		makeDailyPlans();
 		try {
-			getMenusFromJSON(array);
+			getMenusFromJSON(array, mensa);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -44,9 +44,9 @@ public class WeeklyPlan {
 		return dailyPlans[4];
 	}
 
-	private void getMenusFromJSON(JSONArray array) throws JSONException {
+	private void getMenusFromJSON(JSONArray array, Mensa mensa) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
-			Menu menu = new MenuBuilder(array.getJSONObject(i)).build();
+			Menu menu = new MenuBuilder(array.getJSONObject(i), mensa).build();
 			for (int j = 0; j < dailyPlans.length; j++) {
 				if (menu.getDay().equals(dailyPlans[j].getDay())) {
 					dailyPlans[j].add(menu);
@@ -61,6 +61,15 @@ public class WeeklyPlan {
 		this.dailyPlans[2] = new DailyPlan("Wednesday");
 		this.dailyPlans[3] = new DailyPlan("Thursday");
 		this.dailyPlans[4] = new DailyPlan("Friday");
+	}
+
+	public DailyPlan get(String day) {
+		if(day.equals("Monday")) {return getMonday();}
+		if(day.equals("Tuesday")) {return getTuesday();}
+		if(day.equals("Wednesday")) {return getWednesday();}
+		if(day.equals("Thursday")) {return getThursday();}
+		if(day.equals("Friday")) {return getFriday();}
+		return null;
 	}
 
 }

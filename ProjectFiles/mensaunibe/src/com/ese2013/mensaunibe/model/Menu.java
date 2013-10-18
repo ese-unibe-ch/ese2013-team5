@@ -14,14 +14,14 @@ public class Menu {
 	private String day;
 	private String date;
 	private String menuDetails;
-	private int mensaId;
+	private Mensa mensa;
 
 	public Menu(MenuBuilder builder) {
 		this.title = builder.getTitle();
 		this.day = builder.getDay();
 		this.date = builder.getDate();
 		this.menuDetails = builder.getMenuDetails();
-		this.mensaId = builder.getMensaId();
+		this.mensa = builder.getMensa();
 	}
 
 	public String getTitle() {
@@ -36,8 +36,8 @@ public class Menu {
 		return date;
 	}
 
-	public int getMensaId() {
-		return mensaId;
+	public Mensa getMensa() {
+		return mensa;
 	}
 
 	public String getMenuDetails() {

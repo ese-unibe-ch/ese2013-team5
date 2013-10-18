@@ -1,5 +1,7 @@
 package com.ese2013.mensaunibe.model;
 
+import java.util.ArrayList;
+
 import com.ese2013.mensaunibe.util.MensaBuilder;
 
 /**
@@ -30,6 +32,10 @@ public class Mensa {
 
 	public WeeklyPlan getWeeklyPlan() {
 		return weeklyPlan;
+	}
+	
+	public ArrayList<Menu> getMenus(String day){
+		return weeklyPlan.get(day).getMenus();
 	}
 
 	public void setWeeklyPlan(WeeklyPlan weeklyPlan) {

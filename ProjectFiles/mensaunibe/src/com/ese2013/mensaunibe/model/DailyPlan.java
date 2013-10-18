@@ -46,5 +46,14 @@ public class DailyPlan {
 	public String getDateAsString() {
 		return menus.get(0).getDate();
 	}
+	
+	public int size(){
+		return menus.size();
+	}
+
+	public ArrayList<Menu> getMenus() {
+		return menus;
+	}
+	
 
 }
