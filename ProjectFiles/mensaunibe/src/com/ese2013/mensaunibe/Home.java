@@ -1,35 +1,17 @@
 package com.ese2013.mensaunibe;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
-
-import org.apache.http.client.ClientProtocolException;
-
-import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -125,6 +106,7 @@ public class Home extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	@SuppressWarnings("unused")
 	private void setNotifCount(int count) {
 		int mNotifCount = count;
 		invalidateOptionsMenu();
@@ -135,6 +117,7 @@ public class Home extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the nav drawer is open, hide action items related to the content
 		// view
+		@SuppressWarnings("unused")
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 		// menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
@@ -161,16 +144,12 @@ public class Home extends Activity {
 		 */
 		return super.onOptionsItemSelected(item);
 	}
-		public Model getModel(){
-			return model;
-		}
 
 	/* The click listner for ListView in the navigation drawer */
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+		
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			selectItem(position);
 		}
 	}
@@ -198,11 +177,7 @@ public class Home extends Activity {
 			fragment = new FriendsFragment();
 			break;
 		}
-		// Fragment fragment = new MensaFragment();
-		// Bundle args = new Bundle();
-		// args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-		// fragment.setArguments(args);
-
+	
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
 				.replace(R.id.content_frame, fragment).commit();
@@ -223,7 +198,6 @@ public class Home extends Activity {
 	 * When using the ActionBarDrawerToggle, you must call it during
 	 * onPostCreate() and onConfigurationChanged()...
 	 */
-
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
@@ -238,363 +212,13 @@ public class Home extends Activity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
+	
 	/**
-	 * Fragment that appears in the "content_frame", shows mensalist or
-	 * favourite mensa menus
+	 * Fragment that appears in the "content_frame", shows menulist
 	 */
-	public static class StartFragment extends Fragment {
-		private SimpleAdapter adapter;
+	
 
-		public StartFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_start,
-					container, false);
-			// int i = getArguments().getInt(ARG_PLANET_NUMBER);
-			// String mensas =
-			// getResources().getStringArray(R.array.mensa_list)[i];
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.menulist);
-
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-			final String[][] menus = {
-					{ "Menu natürlich vegi",
-							"Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln" },
-					{ "Menu einfach gut",
-							"Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing" },
-					{
-							"Menu voll anders",
-							"Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.list_menulist_item, menus);
-			HashMap<String, String> item;
-			for (int i = 0; i < menus.length; i++) {
-				item = new HashMap<String, String>();
-				item.put("line1", menus[i][0]);
-				item.put("line2", menus[i][1]);
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_menulist_item, new String[] { "line1",
-							"line2" }, new int[] { R.id.line1, R.id.line2 });
-
-			// setting the adapter for the ListView
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast
-					.makeText(
-							inflater.getContext(),
-							"Hier werden entweder alle Mensas im Überblick angezeigt oder im Fall einer gewählten Lieblingsmensa deren Menuansicht",
-							Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
-	}
-
-	/**
-	 * Fragment that appears in the "content_frame", shows mensalist
-	 */
-	public static class MensaFragment extends Fragment {
-		private SimpleAdapter adapter;
-
-		public MensaFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_mensalist,
-					container, false);
-			Activity home = this.getActivity();
-			Model model = ((Home) home).model;
-		
-			ArrayList <Mensa> mensalist = model.getMensas();
-			
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.mensalist);
-
-			// Fetch the string array from resouce arrays.xml > mensalist
-			// String[] mensas =
-			// getResources().getStringArray(R.array.mensalist);
-
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-		
-//			final String[][] mensas = {
-//					{ "Mensa Bühlplatz",
-//							"Strassenname 23 | Öffnungszeiten: 08:00 - 19:00" },
-//					{ "Mensa Gesellschaftsstrasse",
-//							"Strassenname 23 | Öffnungszeiten: 09:00 - 12:00" },
-//					{ "Mensa und Cafeteria von Roll",
-//							"Strassenname 23 | Öffnungszeiten: 08:00 - 15:00" },
-//					{ "Mensa Unitobler",
-//							"Strassenname 23 | Öffnungszeiten: 08:00 - 18:00" },
-//					{ "UNIESS - Bistro Bar Lounge",
-//							"Strassenname 23 | Öffnungszeiten: 08:00 - 17:00" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.mensalist_item, mensas);
-
-			// setting the adapter for the ListView
-			// listview.setAdapter(adapter);
-
-//			HashMap<String, String> item;
-//			for (int i = 0; i < mensas.length; i++) {
-//				item = new HashMap<String, String>();
-//				item.put("line1", mensas[i][0]);
-//				item.put("line2", mensas[i][1]);
-//				list.add(item);
-//			}
-			
-			HashMap<String, String> item;
-			for (Mensa mensa : mensalist) {
-				item = new HashMap<String, String>();
-				item.put("line1", mensa.getName());
-				item.put("line2", mensa.getStreet() + " | " + mensa.getPlz());
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_mensalist_item, new String[] { "line1",
-							"line2" }, new int[] { R.id.line1, R.id.line2 });
-
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Mensas im Überblick angezeigt",
-					Toast.LENGTH_LONG);
-			toast.show();
-
-			// int imageId =
-			// getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-			// "drawable", getActivity().getPackageName());
-			// ((ImageView)
-			// rootView.findViewById(R.id.image)).setImageResource(imageId);
-			// getActivity().setTitle(planet);
-			return rootView;
-		}
-	}
-
-	/**
-	 * Fragment that appears in the "content_frame", shows mensalist
-	 */
-	public static class MenuFragment extends Fragment {
-		// public static final String ARG_PLANET_NUMBER = "planet_number";
-		private SimpleAdapter adapter;
-		private FragmentTabHost mTabHost;
-
-		public MenuFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_menulist,
-					container, false);
-
-			// mTabHost = new FragmentTabHost(inflater.getContext());
-			// mTabHost.setup(getActivity(), getChildFragmentManager(),
-			// R.id.fragment1);
-			//
-			// mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("Simple"),
-			// FragmentStackSupport.CountingFragment.class, null);
-			// mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("Contacts"),
-			// LoaderCursorSupport.CursorLoaderListFragment.class, null);
-			// mTabHost.addTab(mTabHost.newTabSpec("custom").setIndicator("Custom"),
-			// LoaderCustomSupport.AppListFragment.class, null);
-			// mTabHost.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
-			// LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.menulist);
-
-			// Fetch the string array from resouce arrays.xml > mensalist
-			// String[] menus = getResources().getStringArray(R.array.menulist);
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-			final String[][] menus = {
-					{ "Menu natürlich vegi",
-							"Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln" },
-					{ "Menu einfach gut",
-							"Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing" },
-					{
-							"Menu voll anders",
-							"Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.list_menulist_item, menus);
-			HashMap<String, String> item;
-			for (int i = 0; i < menus.length; i++) {
-				item = new HashMap<String, String>();
-				item.put("line1", menus[i][0]);
-				item.put("line2", menus[i][1]);
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_menulist_item, new String[] { "line1",
-							"line2" }, new int[] { R.id.line1, R.id.line2 });
-
-			// setting the adapter for the ListView
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Menus im Überblick angezeigt",
-					Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
-	}
-
-	/**
-	 * Fragment that appears in the "content_frame", shows mensamap
-	 */
-	public static class MensamapFragment extends Fragment {
-
-		private GoogleMap map;
-
-		public MensamapFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_mensamap,
-					container, false);
-
-			// Gets the MapView from the XML layout and creates it
-			// MapFragment map = rootView.findViewById(R.id.mensamap);
-			// FragmentManager fragmentManager = getFragmentManager();
-			// MapFragment mapFragment =
-			// (MapFragment)fragmentManager.findFragmentById(R.id.mensamap);
-			// MapFragment mapFragment = (MapFragment)
-			// getFragmentManager().findFragmentById(R.id.mensamap);
-			// map = mapFragment.getMap();
-			// mapView.onCreate(savedInstanceState);
-
-			// Do a null check to confirm that we haven't already instantiated
-			// the map.
-			if (map == null) {
-				// Try to obtain the map from the MapFragment.
-				map = ((MapFragment) getFragmentManager().findFragmentById(
-						R.id.mensamap)).getMap();
-				// Check if we were successful in obtaining the map.
-				if (map != null) {
-					map.setMapType(GoogleMap.MAP_TYPE_NORMAL); // added line
-					map.setMyLocationEnabled(true);
-					map.getUiSettings().setMyLocationButtonEnabled(true); // my
-																			// code
-																			// did
-																			// not
-																			// have
-																			// these
-																			// and
-																			// still
-																			// be
-																			// able
-																			// to
-																			// display
-																			// the
-																			// zoom
-																			// in,
-																			// zoom
-																			// out,
-																			// and
-																			// my
-																			// location
-																			// button
-					map.addMarker(new MarkerOptions()
-							.position(new LatLng(0, 0)).title("Marker"));
-					Toast toast = Toast.makeText(inflater.getContext(),
-							"Map NOT null", Toast.LENGTH_LONG);
-					toast.show();
-				} else {
-					Toast toast = Toast.makeText(inflater.getContext(),
-							"Map null", Toast.LENGTH_LONG);
-					toast.show();
-				}
-			}
-
-			// if (map !=null){
-			// Toast toast = Toast.makeText(inflater.getContext(),
-			// "Map not null", Toast.LENGTH_LONG);
-			// toast.show();
-			//
-			// } else {
-			// Toast toast = Toast.makeText(inflater.getContext(), "Map null",
-			// Toast.LENGTH_LONG);
-			// toast.show();
-			// }
-			// Gets to GoogleMap from the MapView and does initialization stuff
-			// GoogleMap map = mapView.getMap();
-			// map.getUiSettings().setMyLocationButtonEnabled(false);
-			// map.setMyLocationEnabled(true);
-			// map.addMarker(new MarkerOptions().position(new
-			// LatLng(50.167003,19.383262)));
-
-			// myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-			// myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-			// myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-			// myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-
-			// myMap.setOnMapClickListener(this);
-
-			// Needs to call MapsInitializer before doing any
-			// CameraUpdateFactory calls
-			// try {
-			// MapsInitializer.initialize(inflater.getContext());
-			// } catch (GooglePlayServicesNotAvailableException e) {
-			// e.printStackTrace();
-			// }
-
-			// Updates the location and zoom of the MapView
-			// CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new
-			// LatLng(43.1, -87.9), 10);
-			// map.animateCamera(cameraUpdate);
-			// GoogleMap map = ((MapFragment)
-			// getFragmentManager().findFragmentById(R.id.mensamap)).getMap();
-			// int i = getArguments().getInt(ARG_PLANET_NUMBER);
-			// String mensas =
-			// getResources().getStringArray(R.array.mensa_list)[i];
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Mensas auf einer Karte angezeigt",
-					Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
-
-		@Override
-		public void onDestroyView() {
-			super.onDestroyView();
-			map = null; // tried to prevent the app from crashing when map
-						// fragment is called twice, didn't work...
-		}
-	}
+	
 
 	/**
 	 * Fragment that appears in the "content_frame", shows mensalist
@@ -659,62 +283,5 @@ public class Home extends Activity {
 		}
 	}
 
-	/**
-	 * Fragment that appears in the "content_frame", shows friends
-	 */
-	public static class FriendsFragment extends Fragment {
-		private SimpleAdapter adapter;
-
-		public FriendsFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_friends,
-					container, false);
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.friendslist);
-
-			// Fetch the string array from resouce arrays.xml > mensalist
-			// String[] friendslist =
-			// getResources().getStringArray(R.array.friendlist);
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-			final String[][] friends = {
-					{ "Friend Name", "Some information, maybe location?" },
-					{ "Friend Name Blub", "Some information, maybe location?" },
-					{ "Friend Name Bli", "Some information, maybe location?" },
-					{ "Friend Name Ga", "Some information, maybe location?" },
-					{ "Friend Name Da", "Some information, maybe location?" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.list_item_1line, friendslist);
-			HashMap<String, String> item;
-			for (int i = 0; i < friends.length; i++) {
-				item = new HashMap<String, String>();
-				item.put("line1", friends[i][0]);
-				item.put("line2", friends[i][1]);
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_friendlist_item, new String[] { "line1",
-							"line2" }, new int[] { R.id.line1, R.id.line2 });
-
-			// setting the adapter for the ListView
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Freunde angezeigt", Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
-	}
+	
 }

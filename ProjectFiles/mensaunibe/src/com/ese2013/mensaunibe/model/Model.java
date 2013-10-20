@@ -47,7 +47,7 @@ public class Model {
 					.getId());
 			JSONArray array = menus.getJSONObject("result")
 					.getJSONObject("content").getJSONArray("menus");
-			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
+			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, Mensas.get(i)));
 		}
 	}
 
