@@ -3,6 +3,7 @@ package com.ese2013.mensaunibe.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
 
 /**
@@ -17,15 +18,17 @@ public class MenuBuilder {
 	private String date = DEFAULT;
 	private String day = DEFAULT;
 	private String menuDetails = DEFAULT;
-	private int mensaId = -1;
+	private Mensa mensa = null;
 
 	/**
 	 * Constructor to create a builder directly from a JSONObject
 	 * 
 	 * @param json
 	 *            JSONObject representing the menu that should be built
+	 * @param tMensa 
 	 */
-	public MenuBuilder(JSONObject json) {
+	public MenuBuilder(JSONObject json, Mensa tMensa) {
+		this.mensa = tMensa;
 		try {
 			parseJSONtoMenu(json);
 		} catch (JSONException e) {
@@ -47,7 +50,8 @@ public class MenuBuilder {
 		this.title = json.getString("title");
 		this.date = json.getString("date");
 		this.setDay(json.getString("day"));
-		this.menuDetails = json.getJSONArray("menu").join(" ");
+		this.menuDetails = json.getJSONArray("menu").join(" ")
+				.replace('"', ' ').replace('\\', ' ');
 		System.out.println(menuDetails);
 		// TODO mensa id is NOT in the menu JSON -> must b retrieved
 		// elsewhere, if this is even needed
@@ -81,13 +85,13 @@ public class MenuBuilder {
 		return menuDetails;
 	}
 
-	public MenuBuilder setMensaId(int mensaId) {
-		this.mensaId = mensaId;
+	public MenuBuilder setMensa(Mensa mensa) {
+		this.mensa = mensa;
 		return this;
 	}
 
-	public int getMensaId() {
-		return mensaId;
+	public Mensa getMensa() {
+		return mensa;
 	}
 
 	public void setDay(String day) {

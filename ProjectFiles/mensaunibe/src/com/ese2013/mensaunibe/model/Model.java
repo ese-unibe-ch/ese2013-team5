@@ -48,8 +48,12 @@ public class Model {
 
 			JSONArray array = menus.getJSONObject("result")
 					.getJSONObject("content").getJSONArray("menus");
+<<<<<<< HEAD
 			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
 
+=======
+			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, Mensas.get(i)));
+>>>>>>> original/master
 		}
 	}
 
