@@ -11,7 +11,7 @@
     	android:padding="20dp">
     	
 	    <TextView
-	        android:id="@+id/name"
+	        android:id="@+id/mdname"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:ellipsize="marquee"
@@ -20,7 +20,7 @@
 	        android:textSize="24dp"
 	    />
 	    <TextView
-	        android:id="@+id/address"
+	        android:id="@+id/mdaddress"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
@@ -28,7 +28,7 @@
 	        android:textSize="14dp"
 	    />
 	    <TextView
-	        android:id="@+id/city"
+	        android:id="@+id/mdcity"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
@@ -36,7 +36,7 @@
 	        android:textSize="14dp"
 	    />
 	    <ImageView
-	        android:id="@+id/navbutton"
+	        android:id="@+id/mdnavbutton"
 	        android:layout_width="wrap_content"
 	        android:layout_height="match_parent"
 	        android:layout_gravity="fill_vertical|right|center_vertical"
