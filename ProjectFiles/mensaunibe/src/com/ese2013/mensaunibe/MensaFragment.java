@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
@@ -22,6 +24,7 @@ import com.ese2013.mensaunibe.model.Model;
  */
 public class MensaFragment extends Fragment {
 	private SimpleAdapter adapter;
+	private Activity home;
 
 	public MensaFragment() {
 		// Empty constructor required for fragment subclasses
@@ -32,7 +35,7 @@ public class MensaFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_mensalist,
 				container, false);
-		Activity home = this.getActivity();
+		home = this.getActivity();
 		Model model = ((Home) home).model;
 	
 		ArrayList <Mensa> mensalist = model.getMensas();
@@ -44,14 +47,13 @@ public class MensaFragment extends Fragment {
 				.findViewById(R.id.mensalist);
 
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		
+		//ArrayList<Integer> mensaIds = new ArrayList<Integer>();
 		HashMap<String, String> item;
-		int i = 0;
 		for (Mensa mensa : mensalist) {
 			item = new HashMap<String, String>();
 			item.put("line1", mensa.getName());
 			item.put("line2", mensa.getStreet() + " | " + mensa.getPlz());
-			//item.put("id", Integer.toString(mensa.getId()));
+			//mensaIds.add(mensa.getId());
 			list.add(item);
 		}
 
@@ -60,12 +62,36 @@ public class MensaFragment extends Fragment {
 						"line2"}, new int[] { R.id.line1, R.id.line2});
 
 		listview.setAdapter(adapter);
+		listview.setOnItemClickListener(new MensalistItemClickListener());
+		((Home) home).listView = listview;
+		//for(int i = 0; i < listview.getCount(); i++){
+			//Object view = listview.getItemAtPosition(i);
+			//((Home) home).mensalistItemIds.add(view.getId());
+		//}
 		Toast toast = Toast.makeText(inflater.getContext(),
 				"Hier werden alle Mensas im Überblick angezeigt",
 				Toast.LENGTH_LONG);
 		toast.show();
 		return rootView;
 	}
+	
+	private class MensalistItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+			selectItem(position);
+		}
+
+	}
+
+	public void selectItem(int position) {
+		((Home) home).currentMensa = ((Home) home).model.getMensas().get(position);
+		Fragment fragment = new MensaDetailsFragment();
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
+	}
+
 
 }
 

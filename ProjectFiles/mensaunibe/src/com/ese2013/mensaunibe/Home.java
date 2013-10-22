@@ -2,6 +2,8 @@ package com.ese2013.mensaunibe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,6 +39,9 @@ public class Home extends Activity {
 	// The model provides and manages the mensas objects for the app
 	public Model model;
 	
+	public ListView listView;
+	public Mensa currentMensa;
+	
 
 	static Button notifCount;
 	static int mNotifCount = 2;
@@ -49,7 +54,7 @@ public class Home extends Activity {
 
 		// Model that is providing all the logic for the app is instantiated
 		this.model = new Model();
-
+		
 		mTitle = mDrawerTitle = getTitle();
 		mNavItems = getResources().getStringArray(R.array.sidenav_items);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -213,12 +218,12 @@ public class Home extends Activity {
 	}
 
 	
-	public void goToMensa(View view){
+	/*public void goToMensa(View view){
 		Fragment fragment = new MensaDetailsFragment();
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
 				.replace(R.id.content_frame, fragment).commit();
-	}	
+	}*/	
 
 	public static class NotificationsFragment extends Fragment {
 		private SimpleAdapter adapter;

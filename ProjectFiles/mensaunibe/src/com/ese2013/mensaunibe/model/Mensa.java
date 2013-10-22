@@ -37,6 +37,16 @@ public class Mensa {
 	public ArrayList<Menu> getMenus(String day){
 		return weeklyPlan.get(day).getMenus();
 	}
+	
+	public ArrayList<Menu> getAllMenus(){
+		ArrayList<Menu> allMenus = new ArrayList<Menu>();
+		allMenus.addAll(getMenus("Monday"));
+		allMenus.addAll(getMenus("Tuesday"));
+		allMenus.addAll(getMenus("Wednesday"));
+		allMenus.addAll(getMenus("Thursday"));
+		allMenus.addAll(getMenus("Friday"));
+		return allMenus;
+	}
 
 	public void setWeeklyPlan(WeeklyPlan weeklyPlan) {
 		this.weeklyPlan = weeklyPlan;

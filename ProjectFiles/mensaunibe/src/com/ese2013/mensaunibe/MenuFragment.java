@@ -44,10 +44,10 @@ public class MenuFragment extends Fragment {
 
 		// Fetch the string array from resouce arrays.xml > mensalist
 		// String[] menus = getResources().getStringArray(R.array.menulist);
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		Activity home = this.getActivity();
 		Model model = ((Home) home).model;
 		
+		//initializing arraylists of menus for each day of the week
 		ArrayList<Mensa> mensas = model.getMensas();
 		ArrayList<Menu> mondayMenus = new ArrayList<Menu>();
 		ArrayList<Menu> tuesdayMenus = new ArrayList<Menu>();
@@ -55,6 +55,7 @@ public class MenuFragment extends Fragment {
 		ArrayList<Menu> thursdayMenus = new ArrayList<Menu>();
 		ArrayList<Menu> fridayMenus = new ArrayList<Menu>();
 		
+		//fill the arraylists of menus for each day of the week
 		for(Mensa mensa : mensas){
 			mondayMenus.addAll(mensa.getMenus("Monday"));
 			tuesdayMenus.addAll(mensa.getMenus("Tuesday"));
@@ -63,20 +64,7 @@ public class MenuFragment extends Fragment {
 			fridayMenus.addAll(mensa.getMenus("Friday"));
 		}
 		
-		/*final String[][] menus = {
-				{ "Menu natürlich vegi",
-						"Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln" },
-				{ "Menu einfach gut",
-						"Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing" },
-				{
-						"Menu voll anders",
-						"Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat" } };
-
-		// Creating an array adapter to store the list of countries
-		// ArrayAdapter<String> adapter = new
-		// ArrayAdapter<String>(inflater.getContext(),
-		// R.layout.list_menulist_item, menus);
-		*/
+		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> item;
 		for (int i = 0; i < mondayMenus.size(); i++) {
 			item = new HashMap<String, String>();
