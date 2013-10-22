@@ -213,16 +213,13 @@ public class Home extends Activity {
 	}
 
 	
-	/**
-	 * Fragment that appears in the "content_frame", shows menulist
-	 */
-	
+	public void goToMensa(View view){
+		Fragment fragment = new MensaDetailsFragment();
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
+	}	
 
-	
-
-	/**
-	 * Fragment that appears in the "content_frame", shows mensalist
-	 */
 	public static class NotificationsFragment extends Fragment {
 		private SimpleAdapter adapter;
 
