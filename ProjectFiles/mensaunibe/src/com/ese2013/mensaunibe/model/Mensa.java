@@ -20,6 +20,7 @@ public class Mensa {
 	private float lat;
 	private float lon;
 	private WeeklyPlan weeklyPlan;
+	private boolean isFavorite = false;
 
 	public Mensa(MensaBuilder builder) {
 		this.id = builder.getId();
@@ -33,8 +34,8 @@ public class Mensa {
 	public WeeklyPlan getWeeklyPlan() {
 		return weeklyPlan;
 	}
-	
-	public ArrayList<Menu> getMenus(String day){
+
+	public ArrayList<Menu> getMenus(String day) {
 		return weeklyPlan.get(day).getMenus();
 	}
 
@@ -64,6 +65,21 @@ public class Mensa {
 
 	public String getPlz() {
 		return plz;
+	}
+
+	public boolean isFavorite() {
+		return isFavorite;
+	}
+
+	/**
+	 * Sets whether this mensa is a favorite or not
+	 * 
+	 * @param isFavorite
+	 *            true if favorite else false
+	 */
+	public void setIsFavorite(boolean isFavorite) {
+		this.isFavorite = isFavorite;
+		Model.getInstance().updateLocalData();
 	}
 
 }
