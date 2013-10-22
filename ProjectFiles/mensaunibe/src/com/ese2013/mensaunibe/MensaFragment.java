@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,38 +43,29 @@ public class MensaFragment extends Fragment {
 		final ListView listview = (ListView) rootView
 				.findViewById(R.id.mensalist);
 
-		// Fetch the string array from resouce arrays.xml > mensalist
-		// String[] mensas =
-		// getResources().getStringArray(R.array.mensalist);
-
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		
 		HashMap<String, String> item;
+		int i = 0;
 		for (Mensa mensa : mensalist) {
 			item = new HashMap<String, String>();
 			item.put("line1", mensa.getName());
 			item.put("line2", mensa.getStreet() + " | " + mensa.getPlz());
+			//item.put("id", Integer.toString(mensa.getId()));
 			list.add(item);
 		}
 
 		adapter = new SimpleAdapter(inflater.getContext(), list,
 				R.layout.list_mensalist_item, new String[] { "line1",
-						"line2" }, new int[] { R.id.line1, R.id.line2 });
+						"line2"}, new int[] { R.id.line1, R.id.line2});
 
 		listview.setAdapter(adapter);
-
 		Toast toast = Toast.makeText(inflater.getContext(),
-				"Hier werden alle Mensas im †berblick angezeigt",
+				"Hier werden alle Mensas im Überblick angezeigt",
 				Toast.LENGTH_LONG);
 		toast.show();
-
-		// int imageId =
-		// getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-		// "drawable", getActivity().getPackageName());
-		// ((ImageView)
-		// rootView.findViewById(R.id.image)).setImageResource(imageId);
-		// getActivity().setTitle(planet);
 		return rootView;
 	}
+
 }
 

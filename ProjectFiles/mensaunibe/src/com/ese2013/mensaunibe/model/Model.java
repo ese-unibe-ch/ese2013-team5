@@ -20,7 +20,7 @@ public class Model {
 
 	MensaWebService webService;
 	JSONObject allMensas;
-	ArrayList<Mensa> Mensas = new ArrayList<Mensa>();
+	ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 
 	public Model() {
 		webService = new MensaWebService();
@@ -38,21 +38,25 @@ public class Model {
 	}
 
 	public ArrayList<Mensa> getMensas() {
-		return Mensas;
+		return mensas;
 	}
 
 	private void initializeMenuplans() throws JSONException {
-		for (int i = 0; i < Mensas.size(); i++) {
-			JSONObject menus = webService.requestMenusForMensa(Mensas.get(i)
+		for (int i = 0; i < mensas.size(); i++) {
+			JSONObject menus = webService.requestMenusForMensa(mensas.get(i)
 					.getId());
 
 			JSONArray array = menus.getJSONObject("result")
 					.getJSONObject("content").getJSONArray("menus");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
 
 =======
 			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, Mensas.get(i)));
+>>>>>>> original/master
+=======
+			mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, mensas.get(i)));
 >>>>>>> original/master
 		}
 	}
@@ -63,8 +67,17 @@ public class Model {
 		for (int i = 0; i < array.length(); i++) {
 			MensaBuilder mensaBuilder = new MensaBuilder(
 					array.getJSONObject(i));
-			Mensas.add(mensaBuilder.build());
+			mensas.add(mensaBuilder.build());
 		}
+	}
+
+	public Mensa getMensaById(int id) {
+		for(int i = 0; i < mensas.size(); i++){
+			if(mensas.get(i).getId() == id){
+				return mensas.get(i);
+			}
+		}
+		return null;
 	}
 
 }
