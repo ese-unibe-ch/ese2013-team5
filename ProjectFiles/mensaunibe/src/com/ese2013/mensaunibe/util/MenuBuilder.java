@@ -52,7 +52,6 @@ public class MenuBuilder {
 		this.setDay(json.getString("day"));
 		this.menuDetails = json.getJSONArray("menu").join(" ")
 				.replace('"', ' ').replace('\\', ' ');
-		System.out.println(menuDetails);
 		// TODO mensa id is NOT in the menu JSON -> must b retrieved
 		// elsewhere, if this is even needed
 		// this.mensaId = json.getInt("id");

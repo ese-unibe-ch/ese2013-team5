@@ -18,6 +18,7 @@ public class MensaBuilder {
 	private String plz;
 	private float lat;
 	private float lon;
+	private boolean isFavorite;
 
 	/**
 	 * Constructor to create builder directly from JSONObject
@@ -25,12 +26,13 @@ public class MensaBuilder {
 	 * @param json
 	 *            JSONObject representing the mensa that should be built
 	 */
-	public MensaBuilder(JSONObject json) {
+	public MensaBuilder(JSONObject json, boolean isFavorite) {
 		try {
 			parseJSONtoMensa(json);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		this.isFavorite = isFavorite;
 	}
 
 	/**
@@ -104,6 +106,10 @@ public class MensaBuilder {
 
 	public float getLon() {
 		return lon;
+	}
+	
+	public boolean isFavorite() {
+		return isFavorite;
 	}
 
 }
