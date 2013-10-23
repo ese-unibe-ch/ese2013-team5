@@ -64,6 +64,7 @@ public class MenuFragment extends Fragment {
 			fridayMenus.addAll(mensa.getMenus("Friday"));
 		}
 		
+		//TODO: make the list items look better; it looks awful like that
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> item;
 		for (int i = 0; i < mondayMenus.size(); i++) {

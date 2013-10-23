@@ -35,7 +35,7 @@ public class MensaDetailsFragment extends Fragment {
 		home = this.getActivity();
 		mensa = ((Home)	home).currentMensa;
 		
-		inflateHeader(inflater, container);
+		inflateHeader(rootView, container);
 		
 		inflateMenus(inflater, rootView);
 		
@@ -52,9 +52,9 @@ public class MensaDetailsFragment extends Fragment {
 		ArrayList<Menu> menus = new ArrayList<Menu>();
 		menus.addAll(mensa.getAllMenus());
 		
+		//TODO: make the list items look better; it looks awful like that
 		final ListView listview = (ListView) rootView
 			.findViewById(R.id.menus);
-		
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> item;
 		for (int i = 0; i < menus.size(); i++) {
@@ -78,19 +78,21 @@ public class MensaDetailsFragment extends Fragment {
 	 * @param inflater
 	 * @param container
 	 */
-	private void inflateHeader(LayoutInflater inflater, ViewGroup container) {
+	private void inflateHeader(View rootView, ViewGroup container) {
 		//you have to get the whole view so you can get 
 		//the textview with findViewById(int id)
-		View V = inflater.inflate(R.layout.fragment_mensadetails, container);
 		
-		TextView mensaName = (TextView) V.findViewById(R.id.mdname);
+		TextView mensaName = (TextView) rootView.findViewById(R.id.mdname);
 		mensaName.setText(mensa.getName());
 		
-		TextView mensaAddress = (TextView) V.findViewById(R.id.mdaddress);
+		TextView mensaAddress = (TextView) rootView.findViewById(R.id.mdaddress);
 		mensaAddress.setText(mensa.getStreet());
 		
-		TextView mensaPlz = (TextView) V.findViewById(R.id.mdplz);
+		TextView mensaPlz = (TextView) rootView.findViewById(R.id.mdplz);
 		mensaPlz.setText(mensa.getPlz());
 	}
+	
+	//TODO: implement method, so you return to the mensa list if you 
+	// click return
 	
 }

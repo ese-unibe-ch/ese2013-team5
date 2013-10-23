@@ -217,13 +217,6 @@ public class Home extends Activity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	
-	/*public void goToMensa(View view){
-		Fragment fragment = new MensaDetailsFragment();
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
-	}*/	
 
 	public static class NotificationsFragment extends Fragment {
 		private SimpleAdapter adapter;
