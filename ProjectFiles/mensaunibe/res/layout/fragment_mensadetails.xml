@@ -23,7 +23,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
-	        android:text="@string/mensa_address"
 	        android:textSize="14dp"
 	    />
 	    <TextView
@@ -31,7 +30,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
-	        android:text="@string/mensa_plz"
 	        android:textSize="14dp"
 	    />
 	    <ImageView
