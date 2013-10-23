@@ -16,7 +16,6 @@
 	        android:layout_height="wrap_content"
 	        android:ellipsize="marquee"
 	        android:singleLine="true"
-	        android:text="Mensa Name"
 	        android:textSize="24dp"
 	    />
 	    <TextView
@@ -24,15 +23,15 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
-	        android:text="Mensa Address"
+	        android:text="@string/mensa_address"
 	        android:textSize="14dp"
 	    />
 	    <TextView
-	        android:id="@+id/mdcity"
+	        android:id="@+id/mdplz"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
-	        android:text="Mensa PLZ"
+	        android:text="@string/mensa_plz"
 	        android:textSize="14dp"
 	    />
 	    <ImageView

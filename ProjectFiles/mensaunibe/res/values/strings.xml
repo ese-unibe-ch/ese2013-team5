@@ -16,5 +16,8 @@
     <string name="title_activity_mensalist">Mensa List</string>
     <string name="title_activity_mensamap">Mensa Map</string>
     <string name="title_activity_friends">Friends</string>
+    <string name="mensa_name">Mensaname</string>
+    <string name="mensa_address">Strasse</string>
+    <string name="mensa_plz">Plz/Ort</string>
 
 </resources>
