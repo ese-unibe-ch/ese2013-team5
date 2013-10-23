@@ -1,11 +1,16 @@
 package com.ese2013.mensaunibe.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ese2013.mensaunibe.util.LocalDataLoader;
+import com.ese2013.mensaunibe.util.LocalDataUpdater;
 import com.ese2013.mensaunibe.util.MensaBuilder;
 import com.ese2013.mensaunibe.util.MensaWebService;
 
@@ -18,12 +23,19 @@ import com.ese2013.mensaunibe.util.MensaWebService;
 // TODO maybe discuss better name and responsibilities for this class
 public class Model {
 
-	MensaWebService webService;
-	JSONObject allMensas;
-	ArrayList<Mensa> mensas = new ArrayList<Mensa>();
+	private MensaWebService webService;
+	private LocalDataLoader localDataLoader;
+	private LocalDataUpdater localDataUpdater;
+	private JSONObject allMensas;
+	private ArrayList<Mensa> mensas = new ArrayList<Mensa>();
+	private Set<Integer> favoriteIds;
+	private static Model instance;
 
 	public Model() {
 		webService = new MensaWebService();
+		localDataLoader = new LocalDataLoader();
+		favoriteIds = getFavoriteIds();
+		localDataUpdater = new LocalDataUpdater(this);
 		allMensas = webService.requestAllMensas();
 		try {
 			createMensalist();
@@ -35,6 +47,7 @@ public class Model {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		instance = this;
 	}
 
 	public ArrayList<Mensa> getMensas() {
@@ -66,9 +79,28 @@ public class Model {
 				"content");
 		for (int i = 0; i < array.length(); i++) {
 			MensaBuilder mensaBuilder = new MensaBuilder(
-					array.getJSONObject(i));
+					array.getJSONObject(i), isInFavIds(i));
 			mensas.add(mensaBuilder.build());
 		}
+	}
+	
+	private Set<Integer> getFavoriteIds() {
+		localDataLoader.execute();
+		Set<Integer> result = new HashSet<Integer>();
+		try {
+			result = localDataLoader.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	private boolean isInFavIds(int id) {
+		return favoriteIds.contains(id);
 	}
 
 	public Mensa getMensaById(int id) {
@@ -78,6 +110,20 @@ public class Model {
 			}
 		}
 		return null;
+	}
+	
+	public void updateLocalData() {
+		localDataUpdater.execute();
+	}
+	
+	public static Model getInstance() {
+		if (instance != null) {
+			return instance;
+		}
+		else {
+			instance = new Model();
+			return instance;
+		}
 	}
 
 }
