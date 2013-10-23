@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,9 +30,9 @@ public class CustomMensalistAdapter extends BaseAdapter {
 
 	public CustomMensalistAdapter(Context context, FragmentMensaList fragment, ArrayList<Mensa> list, int resource) {
 		super();
-		this.context = context;
+		this.context = context; // ActivityMain
 		this.mensas = list;
-		this.fragment = fragment;
+		this.fragment = fragment; // FragmentMensaList
 		//this.fragment = context.getApplicationContext().
 	}
 	
@@ -55,7 +56,7 @@ public class CustomMensalistAdapter extends BaseAdapter {
 //        
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
         ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
-        ImageButton starbutton = (ImageButton) rowView.findViewById(R.id.button_star);
+        CheckBox starcheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
         
         // the actual fields that contain text
         TextView name = (TextView) rowView.findViewById(R.id.name);
@@ -100,13 +101,14 @@ public class CustomMensalistAdapter extends BaseAdapter {
         final OnClickListener starListener = new OnClickListener() {
             @Override
             public void onClick(View starbutton) {
+            	// 
             	Toast toast = Toast.makeText(starbutton.getContext(),
         				"Mensa set to Favorite",
         				Toast.LENGTH_SHORT);
         		toast.show();
             }
         };
-        starbutton.setOnClickListener(starListener);
+        starcheckbox.setOnClickListener(starListener);
             
 		return rowView;
 	}
