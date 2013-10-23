@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
-import com.ese2013.mensaunibe.Home;
+import com.ese2013.mensaunibe.ActivityMain;
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
 
@@ -25,7 +25,7 @@ public class LocalDataUpdater extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(Home.getContextOfApp());
+				.getDefaultSharedPreferences(ActivityMain.getContextOfApp());
 		SharedPreferences.Editor editor = prefs.edit();
 		Set<String> favoriteIds = new HashSet<String>();
 		for (Mensa mensa : model.getMensas()) {
