@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,9 @@ public class FragmentMensaList extends Fragment {
 		((ActivityMain) main).currentMensa = ((ActivityMain) main).model.getMensas().get(position);
 		Fragment fragment = new FragmentMensaDetails();
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.addToBackStack(null);
+		fragmentTransaction.replace(R.id.content_frame, fragment).commit();
 	}
 
 
