@@ -14,5 +14,10 @@
     
     <string name="sidenav_open">Navigation öffnen</string>
     <string name="sidenav_close">Navigation schliessen</string>
+    
+    
+    <!-- Button Description Strings (Accessibility) -->
+    <string name="button_map_desc">Zu Mensa navigieren</string>
+    <string name="button_star_desc">Lieblingsmensa setzen</string>
 
 </resources>

@@ -16,8 +16,11 @@
     <string name="title_activity_mensalist">Mensa List</string>
     <string name="title_activity_mensamap">Mensa Map</string>
     <string name="title_activity_friends">Friends</string>
-    <string name="mensa_name">Mensaname</string>
-    <string name="mensa_address">Strasse</string>
-    <string name="mensa_plz">Plz/Ort</string>
-
+    
+    <!-- Button Description Strings (Accessibility) -->
+    <string name="button_map_desc">Navigate to Mensa</string>
+    <string name="button_star_desc">Set your favourite Mensa</string>
+    
+    <!-- Icon Description Strings (Accessibility) -->
+	<string name="icon_mensa_desc">Mensa Icon</string>
 </resources>
