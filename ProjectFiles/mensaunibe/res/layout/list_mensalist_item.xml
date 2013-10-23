@@ -66,16 +66,14 @@
        <ImageButton
            android:id="@+id/button_map"
            android:layout_width="32dp"
-           android:layout_height="32dp"
+           android:layout_height="match_parent"
            android:layout_gravity="center_vertical"
-           android:layout_marginRight="6dp"
            android:background="?android:attr/selectableItemBackground"
            android:contentDescription="@string/button_map_desc"
-           android:scaleType="fitStart"
-           android:src="@drawable/ic_navigationicon"
-       />
+           android:scaleType="fitCenter"
+           android:src="@drawable/ic_navigationicon" />
 
-        <ImageButton
+        <!-- <ImageButton
             android:id="@+id/button_star"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -83,8 +81,19 @@
             android:layout_marginRight="6dp"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/button_star_desc"
-            android:scaleType="fitStart"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_star"
+        />-->
+        
+        <CheckBox
+            android:id="@+id/checkbox_star"
+            android:layout_width="38dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:button="@drawable/unibe_checkbox_favorite"
+            android:contentDescription="@string/button_star_desc"
+            android:scaleType="fitCenter"
         />
 
     </TableRow>
