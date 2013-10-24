@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -65,13 +66,10 @@ public class ActivityMain extends Activity {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_sidenav);
 
-		// set a custom shadow that overlays the main content when the drawer
-		// opens
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
+		// set a custom shadow that overlays the main content when the drawer opens
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		// set up the drawer's list view with items and click listener
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.sidenav_item, mNavItems));
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.sidenav_item, mNavItems));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -193,8 +191,9 @@ public class ActivityMain extends Activity {
 		}
 	
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.addToBackStack(null);
+		fragmentTransaction.replace(R.id.content_frame, fragment).commit();
 
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
@@ -207,6 +206,13 @@ public class ActivityMain extends Activity {
 		mTitle = title;
 		getActionBar().setTitle(mTitle);
 	}
+	
+	// this overrides the behavior of the back button, but we need standard behavior inside the detail fragments
+	// how to do this?
+//	@Override
+//	public void onBackPressed() {
+//		mDrawerLayout.openDrawer(mDrawerList);
+//	}
 
 	/**
 	 * When using the ActionBarDrawerToggle, you must call it during
