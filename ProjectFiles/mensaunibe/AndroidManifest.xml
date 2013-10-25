@@ -40,22 +40,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--         <activity -->
-<!--             android:name="com.ese2013.mensaunibe.Mensalist" -->
-<!--             android:label="@string/title_activity_mensalist" > -->
-<!--         </activity> -->
-<!--         <activity -->
-<!--             android:name="com.ese2013.mensaunibe.Mensamap" -->
-<!--             android:label="@string/title_activity_mensamap" > -->
-<!--         </activity> -->
-<!--         <activity -->
-<!--             android:name="com.ese2013.mensaunibe.Friends" -->
-<!--             android:label="@string/title_activity_friends" > -->
-<!--         </activity> -->
-<!--         <activity -->
-<!--             android:name="com.ese2013.mensaunibe.Settings" -->
-<!--             android:label="@string/title_activity_settings" > -->
-<!--         </activity> -->
     </application>
 
 </manifest>

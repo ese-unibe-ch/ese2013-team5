@@ -1,13 +1,22 @@
 package com.ese2013.mensaunibe;
 
-import android.app.Fragment;
+
+import java.util.ArrayList;
+
 import android.os.Bundle;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Model;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -23,72 +32,43 @@ public class FragmentMensaMap extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_mensamap,
-				container, false);
-		// Gets the MapView from the XML layout and creates it
-		// MapFragment map = rootView.findViewById(R.id.mensamap);
-		// FragmentManager fragmentManager = getFragmentManager();
-		// MapFragment mapFragment =
-		// (MapFragment)fragmentManager.findFragmentById(R.id.mensamap);
-		// MapFragment mapFragment = (MapFragment)
-		// getFragmentManager().findFragmentById(R.id.mensamap);
-		// map = mapFragment.getMap();
-		// mapView.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		// Do a null check to confirm that we haven't already instantiated
-		// the map.
-		if (map == null) {
-			// Try to obtain the map from the MapFragment.
-			//map = ((MapFragment) getFragmentManager().findFragmentById(
-				//	R.id.mensamap)).getMap();
-			// Check if we were successful in obtaining the map.
-			if (map != null) {
-				map.setMapType(GoogleMap.MAP_TYPE_NORMAL); // added line
-				map.setMyLocationEnabled(true);
-				map.getUiSettings().setMyLocationButtonEnabled(true); // my
-																		// code
-																		// did
-																		// not
-																		// have
-																		// these
-																		// and
-																		// still
-																		// be
-																		// able
-																		// to
-																		// display
-																		// the
-																		// zoom
-																		// in,
-																		// zoom
-																		// out,
-																		// and
-																		// my
-																		// location
-																		// button
-				map.addMarker(new MarkerOptions()
-						.position(new LatLng(0, 0)).title("Marker"));
-				Toast toast = Toast.makeText(inflater.getContext(),
-						"Map NOT null", Toast.LENGTH_LONG);
-				toast.show();
-			} else {
-				Toast toast = Toast.makeText(inflater.getContext(),
-						"Map null", Toast.LENGTH_LONG);
-				toast.show();
-			}
-		}
+		View rootView = inflater.inflate(R.layout.fragment_mensamap, container, false);
+		
+		setUpMap(inflater);
+
+		// Do a null check to confirm that we haven't already instantiated the map.
+//		if (map == null) {
+//			// Try to obtain the map from the MapFragment.
+//			//map = ((MapFragment) getFragmentManager().findFragmentById(
+//				//	R.id.mensamap)).getMap();
+//			// Check if we were successful in obtaining the map.
+//			if (map != null) {
+//				map.setMapType(GoogleMap.MAP_TYPE_NORMAL); // added line
+//				map.setMyLocationEnabled(true);
+//				map.getUiSettings().setMyLocationButtonEnabled(true);
+//				map.addMarker(new MarkerOptions()
+//						.position(new LatLng(0, 0)).title("Marker"));
+//				Toast toast = Toast.makeText(inflater.getContext(),
+//						"Map NOT null", Toast.LENGTH_LONG);
+//				toast.show();
+//			} else {
+//				Toast toast = Toast.makeText(inflater.getContext(),
+//						"Map null", Toast.LENGTH_LONG);
+//				toast.show();
+//			}
+//		}
 
 		// if (map !=null){
-		// Toast toast = Toast.makeText(inflater.getContext(),
-		// "Map not null", Toast.LENGTH_LONG);
-		// toast.show();
+//		 Toast toast = Toast.makeText(inflater.getContext(),
+//		 "Map not null", Toast.LENGTH_LONG);
+//		 toast.show();
 		//
 		// } else {
-		// Toast toast = Toast.makeText(inflater.getContext(), "Map null",
-		// Toast.LENGTH_LONG);
-		// toast.show();
+//		 Toast toast = Toast.makeText(inflater.getContext(), "Map null",
+//		 Toast.LENGTH_LONG);
+//		 toast.show();
 		// }
 		// Gets to GoogleMap from the MapView and does initialization stuff
 		// GoogleMap map = mapView.getMap();
@@ -136,7 +116,34 @@ public class FragmentMensaMap extends Fragment {
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		map = null; // tried to prevent the app from crashing when map
+		//map = null; // tried to prevent the app from crashing when map
 					// fragment is called twice, didn't work...
+	}
+	
+	private void setUpMap(LayoutInflater inflater) {
+		// get all mensas for their coordinates to set markers
+		FragmentActivity main = this.getActivity();
+		Model model = ((ActivityMain) main).model;
+		ArrayList <Mensa> mensalist = model.getMensas();
+		
+	    // Do a null check to confirm that we have not already instantiated the map
+		// doesn't really work, when the map item in the nav is tapped twice, the app crashes...
+	    if (map == null) {
+			Toast toast = Toast.makeText(inflater.getContext(), "Map null", Toast.LENGTH_LONG);
+			toast.show();
+	        map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.mensamap)).getMap();
+	        // Check if we were successful in obtaining the map.
+	        if (map != null) {
+	        	map.getUiSettings().setMyLocationButtonEnabled(true);
+	        	map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+	        	map.setMyLocationEnabled(true);
+	        	for (Mensa mensa : mensalist) {
+	        		map.addMarker(new MarkerOptions().position(new LatLng(mensa.getLat(),mensa.getLon())));
+	        	}
+	            // The Map is verified. It is now safe to manipulate the map.
+	   		 	Toast toast1 = Toast.makeText(inflater.getContext(), "Map not null", Toast.LENGTH_LONG);
+				toast1.show();
+	        }
+	    }
 	}
 }

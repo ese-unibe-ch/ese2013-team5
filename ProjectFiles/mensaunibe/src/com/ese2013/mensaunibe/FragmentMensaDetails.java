@@ -1,15 +1,14 @@
 package com.ese2013.mensaunibe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
 import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 
 public class FragmentMensaDetails extends Fragment {
 	
-	Activity main;
+	FragmentActivity main;
 	Mensa mensa; // Mensa object, for which details are being showed
 	private AdapterCustomMenulist adapter;
 

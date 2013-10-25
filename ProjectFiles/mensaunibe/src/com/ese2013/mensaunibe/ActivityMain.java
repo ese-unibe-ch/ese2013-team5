@@ -1,19 +1,16 @@
 package com.ese2013.mensaunibe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -21,15 +18,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
-public class ActivityMain extends Activity {
+public class ActivityMain extends FragmentActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -38,7 +32,7 @@ public class ActivityMain extends Activity {
 	private CharSequence mTitle;
 	private String[] mNavItems;
 	
-	private static Context contextOfApp;
+	private static Context appContext;
 
 	// The model provides and manages the mensas objects for the app
 	public Model model;
@@ -56,7 +50,7 @@ public class ActivityMain extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		contextOfApp = getApplicationContext();
+		appContext = getApplicationContext();
 
 		// Model that is providing all the logic for the app is instantiated
 		this.model = new Model();
@@ -104,7 +98,7 @@ public class ActivityMain extends Activity {
 	}
 	
 	public static Context getContextOfApp() {
-		return contextOfApp;
+		return appContext;
 	}
 
 	@Override
@@ -157,7 +151,7 @@ public class ActivityMain extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/* The click listner for ListView in the navigation drawer */
+	/* The click listener for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		
 		@Override
@@ -190,7 +184,7 @@ public class ActivityMain extends Activity {
 			break;
 		}
 	
-		FragmentManager fragmentManager = getFragmentManager();
+		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.replace(R.id.content_frame, fragment).commit();
