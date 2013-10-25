@@ -183,7 +183,7 @@ public class ActivityMain extends Activity {
 			fragment = new FragmentMensaMap();
 			break;
 		case 4:
-			fragment = new NotificationsFragment();
+			fragment = new FragmentNotifications();
 			break;
 		case 5:
 			fragment = new FragmentFriends();
