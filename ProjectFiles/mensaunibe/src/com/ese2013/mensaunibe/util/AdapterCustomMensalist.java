@@ -3,13 +3,10 @@ package com.ese2013.mensaunibe.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ese2013.mensaunibe.FragmentMensaDetails;
 import com.ese2013.mensaunibe.FragmentMensaList;
 import com.ese2013.mensaunibe.R;
 import com.ese2013.mensaunibe.model.Mensa;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
