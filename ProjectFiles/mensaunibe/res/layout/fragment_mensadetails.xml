@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+    	android:orientation="vertical"
+    	android:background="@drawable/unibe_divider"
+    	android:padding="20dp">
+    	
+	    <TextView
+	        android:id="@+id/mdname"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:ellipsize="marquee"
+	        android:singleLine="true"
+	        android:textSize="24dp"
+	    />
+	    <TextView
+	        android:id="@+id/mdaddress"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:singleLine="true"
+	        android:textSize="14dp"
+	    />
+	    <TextView
+	        android:id="@+id/mdplz"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:singleLine="true"
+	        android:textSize="14dp"
+	    />
+	    <ImageView
+	        android:id="@+id/mdnavbutton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="fill_vertical|right|center_vertical"
+	        android:contentDescription="TODO"
+	        android:src="@drawable/ic_navigationicon"
+        />
+	</LinearLayout>
+    
+
+	<ListView
+	    android:id="@+id/menus"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	/>
+
+</LinearLayout>

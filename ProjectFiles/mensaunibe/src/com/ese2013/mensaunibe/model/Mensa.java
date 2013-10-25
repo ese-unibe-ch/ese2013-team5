@@ -1,0 +1,95 @@
+package com.ese2013.mensaunibe.model;
+
+import java.util.ArrayList;
+
+import com.ese2013.mensaunibe.util.MensaBuilder;
+
+/**
+ * Class representing a mensa and responsible for its menus. Needs to be
+ * instantiated via the provided builder.
+ * 
+ * @author ese2013-team5
+ * 
+ */
+public class Mensa {
+
+	private int id;
+	private String name;
+	private String street;
+	private String plz;
+	private float lat;
+	private float lon;
+	private WeeklyPlan weeklyPlan;
+	private boolean isFavorite = false;
+
+	public Mensa(MensaBuilder builder) {
+		this.id = builder.getId();
+		this.name = builder.getName();
+		this.street = builder.getStreet();
+		this.plz = builder.getPlz();
+		this.lat = builder.getLat();
+		this.lon = builder.getLon();
+	}
+
+	public WeeklyPlan getWeeklyPlan() {
+		return weeklyPlan;
+	}
+
+	public ArrayList<Menu> getMenus(String day) {
+		return weeklyPlan.get(day).getMenus();
+	}
+	
+	public ArrayList<Menu> getAllMenus(){
+		ArrayList<Menu> allMenus = new ArrayList<Menu>();
+		allMenus.addAll(getMenus("Monday"));
+		allMenus.addAll(getMenus("Tuesday"));
+		allMenus.addAll(getMenus("Wednesday"));
+		allMenus.addAll(getMenus("Thursday"));
+		allMenus.addAll(getMenus("Friday"));
+		return allMenus;
+	}
+
+	public void setWeeklyPlan(WeeklyPlan weeklyPlan) {
+		this.weeklyPlan = weeklyPlan;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public float getLat() {
+		return lat;
+	}
+
+	public float getLon() {
+		return lon;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public String getPlz() {
+		return plz;
+	}
+
+	public boolean isFavorite() {
+		return isFavorite;
+	}
+
+	/**
+	 * Sets whether this mensa is a favorite or not
+	 * 
+	 * @param isFavorite
+	 *            true if favorite else false
+	 */
+	public void setIsFavorite(boolean isFavorite) {
+		this.isFavorite = isFavorite;
+		Model.getInstance().updateLocalData();
+	}
+
+}
