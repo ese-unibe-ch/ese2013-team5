@@ -11,8 +11,8 @@ import org.json.JSONObject;
 
 import com.ese2013.mensaunibe.util.LocalDataLoader;
 import com.ese2013.mensaunibe.util.LocalDataUpdater;
-import com.ese2013.mensaunibe.util.MensaBuilder;
-import com.ese2013.mensaunibe.util.MensaWebService;
+import com.ese2013.mensaunibe.util.BuilderMensa;
+import com.ese2013.mensaunibe.util.WebService;
 
 /**
  * Provides the model for the mensa unibe app.
@@ -23,7 +23,7 @@ import com.ese2013.mensaunibe.util.MensaWebService;
 // TODO maybe discuss better name and responsibilities for this class
 public class Model {
 
-	private MensaWebService webService;
+	private WebService webService;
 	private LocalDataLoader localDataLoader;
 	private LocalDataUpdater localDataUpdater;
 	private JSONObject allMensas;
@@ -32,7 +32,7 @@ public class Model {
 	private static Model instance;
 
 	public Model() {
-		webService = new MensaWebService();
+		webService = new WebService();
 		localDataLoader = new LocalDataLoader();
 		favoriteIds = getFavoriteIds();
 		localDataUpdater = new LocalDataUpdater(this);
@@ -58,17 +58,17 @@ public class Model {
 		for (int i = 0; i < mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(mensas.get(i)
 					.getId());
-			JSONArray array = menus.getJSONObject("result")
-					.getJSONObject("content").getJSONArray("menus");
+//			JSONArray array = menus.getJSONObject("result").getJSONObject("content").getJSONArray("menus");
+			JSONArray array = menus.getJSONArray("menus");
 			mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, mensas.get(i)));
 		}
 	}
 
 	private void createMensalist() throws JSONException {
-		JSONArray array = allMensas.getJSONObject("result").getJSONArray(
-				"content");
+//		JSONArray array = allMensas.getJSONObject("result").getJSONArray("content");
+		JSONArray array = allMensas.getJSONArray("mensas");
 		for (int i = 0; i < array.length(); i++) {
-			MensaBuilder mensaBuilder = new MensaBuilder(
+			BuilderMensa mensaBuilder = new BuilderMensa(
 					array.getJSONObject(i), isInFavIds(i));
 			mensas.add(mensaBuilder.build());
 		}

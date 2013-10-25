@@ -14,12 +14,11 @@
             android:id="@+id/icon"
             android:layout_width="54dp"
             android:layout_height="fill_parent"
-            android:layout_marginRight="6dip"
+            android:layout_marginRight="6dp"
             android:paddingLeft="6dip"
             android:contentDescription="@string/icon_menu_desc"
             android:scaleType="center"
-            android:src="@drawable/ic_menuicon"
-        />
+            android:src="@drawable/ic_menuicon" />
 
         <LinearLayout
             android:id="@+id/content"
@@ -28,6 +27,17 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="3dip">
+            
+            <TextView
+                android:id="@+id/mensa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Mensaname"
+                android:textColor="@color/unibe_red"
+                android:textSize="16sp"
+            />
 
             <RelativeLayout
                 android:id="@+id/title_wrapper"
@@ -62,10 +72,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
-                android:singleLine="false"
+                android:singleLine="true"
+                android:inputType="textMultiLine"
                 android:text="Beschreibung des Menus kann sehr lang sein und nerven"
                 android:textColor="@color/unibe_gray_dark"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+            />
             
             <TextView
                 android:id="@+id/price"

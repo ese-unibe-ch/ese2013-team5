@@ -177,13 +177,13 @@ public class ActivityMain extends Activity {
 			fragment = new FragmentMensaList();
 			break;
 		case 2:
-			fragment = new FragmentMenu();
+			fragment = new FragmentMenuList();
 			break;
 		case 3:
 			fragment = new FragmentMensaMap();
 			break;
 		case 4:
-			fragment = new NotificationsFragment();
+			fragment = new FragmentNotifications();
 			break;
 		case 5:
 			fragment = new FragmentFriends();
@@ -230,68 +230,5 @@ public class ActivityMain extends Activity {
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
-	}
-
-
-	public static class NotificationsFragment extends Fragment {
-		private SimpleAdapter adapter;
-
-		public NotificationsFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_notifications,
-					container, false);
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.notifications);
-
-			// Fetch the string array from resouce arrays.xml > mensalist
-			// String[] notifications =
-			// getResources().getStringArray(R.array.notificationlist);
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-			final String[][] notifications = {
-					{ "Message Subject", "Short ellipsis from the content" },
-					{ "Super Message Subject",
-							"Short ellipsis from the content" },
-					{ "Nice Message Subject", "Short ellipsis from the content" },
-					{ "Shitty Message Subject",
-							"Short ellipsis from the content" },
-					{ "Bla Message Subject", "Short ellipsis from the content" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.list_item_1line, notifications);
-			HashMap<String, String> item;
-			for (int i = 0; i < notifications.length; i++) {
-				item = new HashMap<String, String>();
-				item.put("line1", notifications[i][0]);
-				item.put("line2", notifications[i][1]);
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_notificationlist_item, new String[] {
-							"line1", "line2" }, new int[] { R.id.line1,
-							R.id.line2 });
-
-			// setting the adapter for the ListView
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Notifications angezeigt",
-					Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
-	}
-
-	
+	}	
 }

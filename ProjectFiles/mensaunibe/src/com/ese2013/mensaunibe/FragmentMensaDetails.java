@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
+import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,27 +14,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class FragmentMensaDetails extends Fragment {
 	
-	Activity home;
-	Mensa mensa;		//Mensa object, whose details are being showed
-	private SimpleAdapter adapter;
+	Activity main;
+	Mensa mensa; // Mensa object, for which details are being showed
+	private AdapterCustomMenulist adapter;
 
 	
 	public FragmentMensaDetails(){
 		//empty constructor required for Fragment subclasses
 	}
 	
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_mensadetails,
-				container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_mensadetails, container, false);
 		
-		home = this.getActivity();
-		mensa = ((ActivityMain)	home).currentMensa;
+		main = this.getActivity();
+		mensa = ((ActivityMain)	main).currentMensa;
 		
 		inflateHeader(rootView, container);
 		
@@ -52,21 +50,9 @@ public class FragmentMensaDetails extends Fragment {
 		ArrayList<Menu> menus = new ArrayList<Menu>();
 		menus.addAll(mensa.getAllMenus());
 		
-		//TODO: make the list items look better; it looks awful like that
-		final ListView listview = (ListView) rootView
-			.findViewById(R.id.menus);
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		HashMap<String, String> item;
-		for (int i = 0; i < menus.size(); i++) {
-			item = new HashMap<String, String>();
-			item.put("line1", menus.get(i).getMenuDetails());
-			item.put("line2", menus.get(i).getDay());
-			list.add(item);
-		}
-		
-		adapter = new SimpleAdapter(inflater.getContext(), list,
-				R.layout.list_menulist_item, new String[] { "line1",
-						"line2" }, new int[] { R.id.line1, R.id.line2 });
+		final ListView listview = (ListView) rootView.findViewById(R.id.menus);
+
+		adapter = new AdapterCustomMenulist(inflater.getContext(), menus, R.layout.list_menulist_item);
 
 		// setting the adapter for the ListView
 		listview.setAdapter(adapter);
@@ -86,13 +72,10 @@ public class FragmentMensaDetails extends Fragment {
 		mensaName.setText(mensa.getName());
 		
 		TextView mensaAddress = (TextView) rootView.findViewById(R.id.mdaddress);
-		mensaAddress.setText(mensa.getStreet());
+		mensaAddress.setText(mensa.getAddress());
 		
 		TextView mensaPlz = (TextView) rootView.findViewById(R.id.mdplz);
-		mensaPlz.setText(mensa.getPlz());
+		mensaPlz.setText(mensa.getCity());
 	}
-	
-	//TODO: implement method, so you return to the mensa list if you 
-	// click return
 	
 }
