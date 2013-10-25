@@ -30,7 +30,7 @@ public class MensaTable {
 			+ COLUMN_CITY + " text not null, "
 			+ COLUMN_LAT + " real not null, "
 			+ COLUMN_LON + " real not null, "
-			+ COLUMN_FAVORITE + "integer not null"
+			+ COLUMN_FAVORITE + " integer not null"
 			+ ");";
 	
 	public static void onCreate(SQLiteDatabase db) {

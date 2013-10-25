@@ -10,7 +10,7 @@ import com.ese2013.mensaunibe.util.database.table.MenuTable;
 public class MensaDatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "mensa.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	public MensaDatabaseHelper() {
 		super(ActivityMain.getContextOfApp(), DATABASE_NAME, null, DATABASE_VERSION);
