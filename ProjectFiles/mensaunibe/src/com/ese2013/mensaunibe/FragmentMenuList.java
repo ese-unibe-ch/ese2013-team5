@@ -24,6 +24,7 @@ public class FragmentMenuList extends Fragment {
 	
 	//private SimpleAdapter adapter;
 	private AdapterCustomMenulist adapter;
+	private ActivityMain main;
 
 	public FragmentMenuList() {
 		// Empty constructor required for fragment subclasses
@@ -39,10 +40,8 @@ public class FragmentMenuList extends Fragment {
 		// to fetch it from the rootView
 		final ListView listview = (ListView) rootView.findViewById(R.id.menulist);
 
-		// Fetch the string array from resource arrays.xml > mensalist
-		// String[] menus = getResources().getStringArray(R.array.menulist);
-		FragmentActivity main = this.getActivity();
-		Model model = ((ActivityMain) main).model;
+		this.main = (ActivityMain) this.getActivity();
+		Model model = main.model;
 		
 		//initializing arraylists of menus for each day of the week
 		ArrayList<Mensa> mensas = model.getMensas();

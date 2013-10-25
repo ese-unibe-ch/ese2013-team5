@@ -26,7 +26,7 @@ import android.widget.Toast;
  */
 public class FragmentStart extends Fragment {
 	
-	FragmentActivity main;
+	ActivityMain main;
 	Mensa favmensa;	// Mensa object, for which details are being showed
 	private AdapterCustomFragmentPager pagerAdapter;
     private ViewPager pager;
@@ -48,8 +48,8 @@ public class FragmentStart extends Fragment {
 //        pager.setAdapter(pagerAdapter);
 		
 		// get the model
-		FragmentActivity main = this.getActivity();
-		Model model = ((ActivityMain) main).model;
+		this.main = (ActivityMain) this.getActivity();
+		Model model = main.model;
 		// get the favorite mensa(s)
 		// here we need to handle the case for one or multiple favorite mensas
 		// for now we just assume the ExWi Mensa with ID=1 is our favorite
