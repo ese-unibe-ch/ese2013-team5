@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class FragmentMensaDetails extends Fragment {
 	
-	FragmentActivity main;
+	ActivityMain main;
 	Mensa mensa; // Mensa object, for which details are being showed
 	private AdapterCustomMenulist adapter;
 
@@ -29,8 +29,8 @@ public class FragmentMensaDetails extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_mensadetails, container, false);
 		
-		main = this.getActivity();
-		mensa = ((ActivityMain)	main).currentMensa;
+		this.main = (ActivityMain) this.getActivity();
+		mensa = main.currentMensa;
 		
 		inflateHeader(rootView, container);
 		
