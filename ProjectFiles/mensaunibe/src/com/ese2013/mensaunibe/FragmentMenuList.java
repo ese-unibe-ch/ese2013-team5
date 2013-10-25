@@ -8,9 +8,9 @@ import com.ese2013.mensaunibe.model.Menu;
 import com.ese2013.mensaunibe.model.Model;
 import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +41,7 @@ public class FragmentMenuList extends Fragment {
 
 		// Fetch the string array from resource arrays.xml > mensalist
 		// String[] menus = getResources().getStringArray(R.array.menulist);
-		Activity main = this.getActivity();
+		FragmentActivity main = this.getActivity();
 		Model model = ((ActivityMain) main).model;
 		
 		//initializing arraylists of menus for each day of the week

@@ -1,19 +1,17 @@
 package com.ese2013.mensaunibe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -26,7 +24,7 @@ import com.ese2013.mensaunibe.util.AdapterCustomMensalist;
  */
 public class FragmentMensaList extends Fragment {
 	private AdapterCustomMensalist adapter;
-	private Activity main;
+	private FragmentActivity main;
 
 	public FragmentMensaList() {
 		// Empty constructor required for fragment subclasses

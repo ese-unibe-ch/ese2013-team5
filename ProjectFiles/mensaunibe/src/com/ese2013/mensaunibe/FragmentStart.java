@@ -2,16 +2,17 @@ package com.ese2013.mensaunibe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
 import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.AdapterCustomFragmentPager;
 import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,10 @@ import android.widget.Toast;
  */
 public class FragmentStart extends Fragment {
 	
-	Activity main;
+	FragmentActivity main;
 	Mensa favmensa;	// Mensa object, for which details are being showed
+	private AdapterCustomFragmentPager pagerAdapter;
+    private ViewPager pager;
 	private AdapterCustomMenulist adapter;
 
 	public FragmentStart() {
@@ -38,8 +41,14 @@ public class FragmentStart extends Fragment {
 		// inflate the view
 		View rootView = inflater.inflate(R.layout.fragment_mensadetails, container, false);
 		
+		// initialize the view pager
+		//pagerAdapter = new AdapterCustomFragmentPager(getActivity(), getChildFragmentManager());
+
+//        pager = (ViewPager) rootView.findViewById(R.id.pager);
+//        pager.setAdapter(pagerAdapter);
+		
 		// get the model
-		Activity main = this.getActivity();
+		FragmentActivity main = this.getActivity();
 		Model model = ((ActivityMain) main).model;
 		// get the favorite mensa(s)
 		// here we need to handle the case for one or multiple favorite mensas
