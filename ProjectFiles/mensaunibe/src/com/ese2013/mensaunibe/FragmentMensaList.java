@@ -19,13 +19,13 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.CustomMensalistAdapter;
+import com.ese2013.mensaunibe.util.AdapterCustomMensalist;
 
 /**
  * Fragment that appears in the "content_frame", shows mensalist
  */
 public class FragmentMensaList extends Fragment {
-	private CustomMensalistAdapter adapter;
+	private AdapterCustomMensalist adapter;
 	private Activity main;
 
 	public FragmentMensaList() {
@@ -50,7 +50,7 @@ public class FragmentMensaList extends Fragment {
 		// to fetch it from the rootView
 		final ListView listview = (ListView) rootView.findViewById(R.id.mensalist);
 
-		adapter = new CustomMensalistAdapter(getActivity(), this, mensalist, R.layout.list_mensalist_item);
+		adapter = new AdapterCustomMensalist(getActivity(), this, mensalist, R.layout.list_mensalist_item);
 
 		listview.setAdapter(adapter);
 		//listview.setOnItemClickListener(new MensalistItemClickListener());
