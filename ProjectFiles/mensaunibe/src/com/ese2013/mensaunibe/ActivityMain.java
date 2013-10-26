@@ -1,5 +1,7 @@
 package com.ese2013.mensaunibe;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -173,18 +176,26 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-		// Handle action buttons
-		/*
-		 * switch(item.getItemId()) { case R.id.action_websearch: // create
-		 * intent to perform web search for this planet Intent intent = new
-		 * Intent(Intent.ACTION_WEB_SEARCH);
-		 * intent.putExtra(SearchManager.QUERY, getActionBar().getTitle()); //
-		 * catch event that there's no activity to handle intent if
-		 * (intent.resolveActivity(getPackageManager()) != null) {
-		 * startActivity(intent); } else { Toast.makeText(this,
-		 * R.string.app_not_available, Toast.LENGTH_LONG).show(); } return true;
-		 * default: return super.onOptionsItemSelected(item); }
-		 */
+		
+		Fragment fragment = null;
+		switch (item.getItemId()) {
+	        case R.id.action_settings:
+	        	// this is very hacky as the support library doesn't support PreferenceFragment
+	        	// so we have to use the normal fragment manager here (which we can't with the viewPager as it seems)
+	        	// the problem is, that the both FragmentManagers don't know from each other
+	        	// which results in the system settings overlapping the content of the currently showed fragment
+	        	// so basically we just have to different FrameLayouts in the main activity, one is used for the normal
+	        	// content, the other for the settings and depending on what should be displayed they are hidden or not
+	        	View view = findViewById(R.id.content_frame);
+	        	view.setVisibility(View.GONE);
+	        	view = findViewById(R.id.settings_frame);
+	        	view.setVisibility(View.VISIBLE);
+	        	getFragmentManager().beginTransaction().replace(R.id.settings_frame, new FragmentSettings()).commit();
+//		        Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+		        break;
+	        default:
+	        	break;
+	    }
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -198,6 +209,11 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	}
 
 	private void selectItem(int position) {
+		// make the content frame visible again (could be hidden when visiting settings fragment)
+		View view = findViewById(R.id.content_frame);
+    	view.setVisibility(View.VISIBLE);
+    	view = findViewById(R.id.settings_frame);
+    	view.setVisibility(View.GONE);
 		Fragment fragment = null;
 		// update the main content by replacing fragments
 		switch (position) {
@@ -315,6 +331,14 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		this.nearestmensa = model.getMensaById(nearestmensaid);
 //		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
 		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+		if ( smallestdistance <= 100 ) {
+			// 100 is too big, should probably be smaller than 50 or less
+			// here we would save the mensaid to the users profile on the server
+			// then we can either show his friends that are in that mensa too
+			// or the total number people in that mensa, or both...
+			updateUserMensa();
+			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
+		}
 		// a very ugly and hacky way to show the closest mensa on the home screen
 		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
 		selectItem(0);
@@ -391,9 +415,39 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	}
 	
 	public void sendUserID() {
-		String userid = getUniquePsuedoID();
+		String deviceid = getUniquePsuedoID();
 		WebService webService = new WebService();
-		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?userid=" + userid); 
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+	}
+	
+	public void updateUserMensa() {
+		String deviceid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+	}
+	
+	public void updateUserName(String username) throws UnsupportedEncodingException {
+		String deviceid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&name=" + URLEncoder.encode(username, "UTF-8")); 
         try {
 			String status = jsonObj.getString("status");
 			Toast.makeText(this, status, Toast.LENGTH_LONG).show();

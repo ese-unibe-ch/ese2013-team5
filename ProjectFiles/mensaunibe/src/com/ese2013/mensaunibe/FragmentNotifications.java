@@ -30,8 +30,7 @@ public class FragmentNotifications extends Fragment {
 
 		// get the list view from the layout into a variable, it's important
 		// to fetch it from the rootView
-		final ListView listview = (ListView) rootView
-				.findViewById(R.id.notifications);
+		final ListView listview = (ListView) rootView.findViewById(R.id.notifications);
 
 		// Fetch the string array from resouce arrays.xml > mensalist
 		// String[] notifications =
