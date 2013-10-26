@@ -27,12 +27,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="3dip">
+            android:padding="6dip"
+            android:paddingRight="10dip"
+            android:paddingLeft="3dip">
 
             <RelativeLayout
                 android:id="@+id/title_wrapper"
                 android:layout_width="match_parent"
-            	android:layout_height="wrap_content">
+            	android:layout_height="wrap_content"
+            	android:paddingRight="3dip">
             	
 	            <TextView
 	                android:id="@+id/title"

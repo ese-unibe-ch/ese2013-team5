@@ -36,7 +36,7 @@ public class Mensa {
 	}
 
 	public ArrayList<Menu> getMenus(String day) {
-		return weeklyPlan.get(day).getMenus();
+		return weeklyPlan.getDailyPlan(day).getMenus();
 	}
 	
 	public ArrayList<Menu> getAllMenus(){

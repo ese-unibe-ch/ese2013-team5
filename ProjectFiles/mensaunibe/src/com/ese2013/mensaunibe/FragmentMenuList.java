@@ -22,9 +22,8 @@ import android.widget.Toast;
  */
 public class FragmentMenuList extends Fragment {
 	
-	//private SimpleAdapter adapter;
-	private AdapterCustomMenulist adapter;
 	private ActivityMain main;
+	private AdapterCustomMenulist adapter;
 
 	public FragmentMenuList() {
 		// Empty constructor required for fragment subclasses

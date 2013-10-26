@@ -23,8 +23,8 @@ import com.ese2013.mensaunibe.util.AdapterCustomMensalist;
  * Fragment that appears in the "content_frame", shows mensalist
  */
 public class FragmentMensaList extends Fragment {
-	private AdapterCustomMensalist adapter;
 	private ActivityMain main;
+	private AdapterCustomMensalist adapter;
 
 	public FragmentMensaList() {
 		// Empty constructor required for fragment subclasses

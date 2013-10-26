@@ -43,8 +43,6 @@ public class AdapterCustomMensalist extends BaseAdapter {
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
         ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
         CheckBox starcheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
-        // Set checkbox if mensa is favorite
-        starcheckbox.setChecked(mensas.get(position).isFavorite());
         
         // the actual fields that contain text
         TextView name = (TextView) rowView.findViewById(R.id.name);
@@ -85,13 +83,11 @@ public class AdapterCustomMensalist extends BaseAdapter {
         mapbutton.setOnClickListener(mapListener);
         
         // set the click listener for the favorite button
-        // is it must be possible to have multiple favorite mensas!
+        // is it possible to have multiple favorite mensas or just one?
         final OnClickListener starListener = new OnClickListener() {
             @Override
             public void onClick(View starbutton) {
-            	// set mensa as favorite
-            	Mensa m = mensas.get(position);
-            	m.setIsFavorite(!m.isFavorite());
+            	// 
             	Toast toast = Toast.makeText(starbutton.getContext(),
         				"Mensa set to Favorite",
         				Toast.LENGTH_SHORT);
