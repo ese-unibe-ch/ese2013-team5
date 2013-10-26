@@ -30,10 +30,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
  */
 public class FragmentMensaMap extends Fragment implements OnMarkerClickListener {
 
-	private GoogleMap map;
-	private Context context;
 	private ActivityMain main;
+	private Context context;
 	private ArrayList<Mensa> mensalist;
+	
+	private GoogleMap map;
 	private Location location;
 
 	public FragmentMensaMap() {
@@ -180,8 +181,7 @@ public class FragmentMensaMap extends Fragment implements OnMarkerClickListener 
 //	            };
 //	            locationManager.requestLocationUpdates(provider, 1000, 0, locationListener);
 	            // The Map is verified. It is now safe to manipulate the map.
-	   		 	Toast toast1 = Toast.makeText(context, "Map not null, location = " + location, Toast.LENGTH_LONG);
-				toast1.show();
+//	   		 	Toast.makeText(context, "Map not null, location = " + location, Toast.LENGTH_LONG).show();
 	        }
 	    }
 	}

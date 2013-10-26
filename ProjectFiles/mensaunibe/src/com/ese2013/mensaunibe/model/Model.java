@@ -9,11 +9,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ese2013.mensaunibe.util.BuilderMensa;
 import com.ese2013.mensaunibe.util.LocalDataLoader;
 import com.ese2013.mensaunibe.util.LocalDataUpdater;
+import com.ese2013.mensaunibe.util.BuilderMensa;
 import com.ese2013.mensaunibe.util.WebService;
-import com.ese2013.mensaunibe.util.database.MensaDatabase;
 
 /**
  * Provides the model for the mensa unibe app.
@@ -48,10 +47,6 @@ public class Model {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		MensaDatabase db = new MensaDatabase();
-		db.open();
-		db.storeMensas(mensas);
-		db.close();
 		instance = this;
 	}
 

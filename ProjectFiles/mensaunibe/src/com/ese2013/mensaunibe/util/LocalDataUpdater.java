@@ -1,18 +1,22 @@
 package com.ese2013.mensaunibe.util;
 
-import android.os.AsyncTask;
+import java.util.HashSet;
+import java.util.Set;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+
+import com.ese2013.mensaunibe.ActivityMain;
+import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.database.MensaDatabase;
 
 public class LocalDataUpdater extends AsyncTask<Void, Void, Void> {
 
 	private Model model;
-	private MensaDatabase database;
 
 	public LocalDataUpdater(Model model) {
 		this.model = model;
-		this.database = new MensaDatabase();
 	}
 
 	/**
@@ -20,10 +24,17 @@ public class LocalDataUpdater extends AsyncTask<Void, Void, Void> {
 	 */
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		 database.open();
-		 database.storeMensas(model.getMensas());
-		 database.close();
-		 return null;
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ActivityMain.getContextOfApp());
+		SharedPreferences.Editor editor = prefs.edit();
+		Set<String> favoriteIds = new HashSet<String>();
+		for (Mensa mensa : model.getMensas()) {
+			if (mensa.isFavorite())
+				favoriteIds.add(Integer.toString(mensa.getId()));
+		}
+		editor.putStringSet(LocalDataLoader.FAVORITE_MENSAS_KEY, favoriteIds);
+		editor.apply();
+		return null;
 	}
 
 }
