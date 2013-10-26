@@ -18,7 +18,6 @@ public class MensaTable {
 	public static final String COLUMN_CITY = "city";
 	public static final String COLUMN_LAT = "lat";
 	public static final String COLUMN_LON = "lon";
-	public static final String COLUMN_FAVORITE = "favorite";
 	// Table create statement
 	public static final String TABLE_CREATE = 
 			"create table "
@@ -29,8 +28,7 @@ public class MensaTable {
 			+ COLUMN_ADDRESS + " text not null, "
 			+ COLUMN_CITY + " text not null, "
 			+ COLUMN_LAT + " real not null, "
-			+ COLUMN_LON + " real not null, "
-			+ COLUMN_FAVORITE + " integer not null"
+			+ COLUMN_LON + " real not null"
 			+ ");";
 	
 	public static void onCreate(SQLiteDatabase db) {

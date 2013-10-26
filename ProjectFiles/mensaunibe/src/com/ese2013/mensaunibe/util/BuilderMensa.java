@@ -12,14 +12,19 @@ import com.ese2013.mensaunibe.model.Mensa;
  * 
  */
 public class BuilderMensa {
-	private int id;
-	private String name;
-	private String address;
-	private String city;
-	private float lat;
-	private float lon;
-	private boolean isFavorite;
+	private final String DEFAULT = "not available";
+	private int id = 0;
+	private String name = DEFAULT;
+	private String address = DEFAULT;
+	private String city = DEFAULT;
+	private float lat = 0;
+	private float lon = 0;
+	private boolean isFavorite = false;
 
+	public BuilderMensa() {
+		
+	}
+	// TODO push this somewhere else!
 	/**
 	 * Constructor to create builder directly from JSONObject
 	 * 
@@ -106,6 +111,11 @@ public class BuilderMensa {
 
 	public float getLon() {
 		return lon;
+	}
+	
+	public BuilderMensa setIsFavorite(boolean isfavorite) {
+		this.isFavorite = isfavorite;
+		return this;
 	}
 	
 	public boolean isFavorite() {

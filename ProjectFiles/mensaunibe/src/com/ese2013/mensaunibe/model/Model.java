@@ -1,9 +1,7 @@
 package com.ese2013.mensaunibe.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,17 +24,17 @@ public class Model {
 
 	private WebService webService;
 	private LocalDataLoader localDataLoader;
-	private LocalDataUpdater localDataUpdater;
+//	private LocalDataUpdater localDataUpdater;
 	private JSONObject allMensas;
 	private ArrayList<Mensa> mensas = new ArrayList<Mensa>();
-	private Set<Integer> favoriteIds;
+//	private Set<Integer> favoriteIds;
 	private static Model instance;
 
 	public Model() {
 		webService = new WebService();
 		localDataLoader = new LocalDataLoader();
-		favoriteIds = getFavoriteIds();
-		localDataUpdater = new LocalDataUpdater(this);
+//		favoriteIds = getFavoriteIds();
+//		localDataUpdater = new LocalDataUpdater(this);
 		allMensas = webService.requestAllMensas();
 		try {
 			createMensalist();
@@ -48,10 +46,10 @@ public class Model {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		MensaDatabase db = new MensaDatabase();
-		db.open();
-		db.storeMensas(mensas);
-		db.close();
+//		MensaDatabase db = new MensaDatabase();
+//		db.open();
+//		db.storeMensas(mensas);
+//		db.close();
 		instance = this;
 	}
 
@@ -70,33 +68,44 @@ public class Model {
 	}
 
 	private void createMensalist() throws JSONException {
-//		JSONArray array = allMensas.getJSONObject("result").getJSONArray("content");
+		localDataLoader.execute();
+		try {
+			if (localDataLoader.get().size() > 0)
+				mensas = localDataLoader.get();
+			else
+				getMensasFromJSON();
+		} catch (Exception e) {
+			getMensasFromJSON();
+		}
+	}
+	
+	private void getMensasFromJSON() throws JSONException {
 		JSONArray array = allMensas.getJSONArray("mensas");
 		for (int i = 0; i < array.length(); i++) {
 			BuilderMensa mensaBuilder = new BuilderMensa(
-					array.getJSONObject(i), isInFavIds(i));
+					array.getJSONObject(i), false/*isInFavIds(i)*/);
 			mensas.add(mensaBuilder.build());
 		}
 	}
 	
-	private Set<Integer> getFavoriteIds() {
-		localDataLoader.execute();
-		Set<Integer> result = new HashSet<Integer>();
-		try {
-			result = localDataLoader.get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	private Set<Integer> getFavoriteIds() {
+//		localDataLoader.execute();
+//		Set<Integer> result = new HashSet<Integer>();
+//		try {
+//			result = localDataLoader.get();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 	
-	private boolean isInFavIds(int id) {
-		return favoriteIds.contains(id);
-	}
+//	private boolean isInFavIds(int id) {
+//		return favoriteIds.contains(id);
+//	}
 
 	public Mensa getMensaById(int id) {
 		for(int i = 0; i < mensas.size(); i++){
@@ -107,8 +116,18 @@ public class Model {
 		return null;
 	}
 	
+	public List<Mensa> getFavoriteMensas() {
+		List<Mensa> result = new ArrayList<Mensa>();
+		for (Mensa m : mensas) {
+			if (m.isFavorite())
+				result.add(m);
+		}
+		return result;
+	}
+	
 	public void updateLocalData() {
-		localDataUpdater.execute();
+		LocalDataUpdater updater = new LocalDataUpdater(this);
+		updater.execute();
 	}
 	
 	public static Model getInstance() {
