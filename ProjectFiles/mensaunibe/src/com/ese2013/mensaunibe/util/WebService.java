@@ -42,6 +42,7 @@ public class WebService {
 	private WebRequest request;
 
 	public WebService() {
+		
 	}
 
 	/**
@@ -83,6 +84,25 @@ public class WebService {
 		try {
 			//request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN + TOKEN);
 			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
+			request.execute();
+			json = request.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+	
+	/**
+	 * Requests json from any url
+	 * 
+	 * @return The answer from the service JSONObject
+	 */
+	public JSONObject requestFromURL(String url) {
+		JSONObject json = null;
+		try {
+			request = new WebRequest(url);
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {
