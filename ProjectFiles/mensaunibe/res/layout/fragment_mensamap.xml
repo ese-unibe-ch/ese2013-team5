@@ -4,10 +4,10 @@
     android:orientation="vertical" >
 
     <fragment
-	    android:id="@+id/mensamap"
+        android:id="@+id/mensamap"
+	    android:name="com.google.android.gms.maps.SupportMapFragment"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:name="com.google.android.gms.maps.MapFragment"
-    />
+	/>
 
 </LinearLayout>

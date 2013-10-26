@@ -23,4 +23,7 @@
     
     <!-- Icon Description Strings (Accessibility) -->
 	<string name="icon_mensa_desc">Mensa Icon</string>
+	<string name="icon_menu_desc">Menu Icon</string>
+	
+	<string name="hint">Editor #%d</string>
 </resources>

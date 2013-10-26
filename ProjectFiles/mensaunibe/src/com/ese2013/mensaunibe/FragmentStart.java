@@ -1,78 +1,68 @@
 package com.ese2013.mensaunibe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.AdapterCustomFragmentPager;
+import com.viewpagerindicator.TitlePageIndicator;
 
-import android.app.Fragment;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
 
-/**
- * Fragment that appears in the "content_frame", shows mensalist or
- * favourite mensa menus
- */
 public class FragmentStart extends Fragment {
-	private SimpleAdapter adapter;
-
-	public FragmentStart() {
-		// Empty constructor required for fragment subclasses
+	
+	private ActivityMain main;
+	private Context context;
+	private Mensa mensa; // Mensa object, for which details are being showed
+	private Model model;
+	
+    @Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	    
+		View rootView = inflater.inflate(R.layout.fragment_start, container, false);
+	    
+		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
+		
+		this.main = (ActivityMain) this.getActivity();
+		this.context = inflater.getContext();
+		this.model = main.model;
+		this.mensa = model.getMensaById(1);
+		
+		inflateHeader(rootView, container);
+	
+		pager.setAdapter(buildAdapter());
+		
+		TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
+        indicator.setViewPager(pager);
+	
+		return(rootView);
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_start,
-				container, false);
-		// int i = getArguments().getInt(ARG_PLANET_NUMBER);
-		// String mensas =
-		// getResources().getStringArray(R.array.mensa_list)[i];
+    private PagerAdapter buildAdapter() {
+        return(new AdapterCustomFragmentPager(mensa, main, getChildFragmentManager()));
+    }
+  
+	/** private method to show the mensa-name and -address in the
+	*  view on top of the fragment
+	* 
+	* @param inflater
+	* @param container
+	*/
+	private void inflateHeader(View rootView, ViewGroup container) {
+		TextView mensaName = (TextView) rootView.findViewById(R.id.name);
+		mensaName.setText(mensa.getName());
 
-		// get the list view from the layout into a variable, it's important
-		// to fetch it from the rootView
-		final ListView listview = (ListView) rootView
-				.findViewById(R.id.menulist);
+		TextView mensaAddress = (TextView) rootView.findViewById(R.id.address);
+		mensaAddress.setText(mensa.getAddress());
 
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-		final String[][] menus = {
-				{ "Menu natürlich vegi",
-						"Gemüse Schnitzel «Wiener Art», Grillgemüse, Bratkartoffeln" },
-				{ "Menu einfach gut",
-						"Kalbsfleischkäse an Zwiebelsauce, Bratkartoffeln, Wirsing" },
-				{
-						"Menu voll anders",
-						"Paniertes Schweinsschnitzel mit Zitronenschnitz, Pommes Frites, Tagesgemüse, Menüsalat" } };
-
-		// Creating an array adapter to store the list of countries
-		// ArrayAdapter<String> adapter = new
-		// ArrayAdapter<String>(inflater.getContext(),
-		// R.layout.list_menulist_item, menus);
-		HashMap<String, String> item;
-		for (int i = 0; i < menus.length; i++) {
-			item = new HashMap<String, String>();
-			item.put("line1", menus[i][0]);
-			item.put("line2", menus[i][1]);
-			list.add(item);
-		}
-
-		adapter = new SimpleAdapter(inflater.getContext(), list,
-				R.layout.list_menulist_item, new String[] { "line1",
-						"line2" }, new int[] { R.id.line1, R.id.line2 });
-
-		// setting the adapter for the ListView
-		listview.setAdapter(adapter);
-
-		Toast toast = Toast
-				.makeText(
-						inflater.getContext(),
-						"Hier werden entweder alle Mensas im Überblick angezeigt oder im Fall einer gewählten Lieblingsmensa deren Menuansicht",
-						Toast.LENGTH_LONG);
-		toast.show();
-		return rootView;
+		TextView mensaPlz = (TextView) rootView.findViewById(R.id.city);
+		mensaPlz.setText(mensa.getCity());
 	}
 }

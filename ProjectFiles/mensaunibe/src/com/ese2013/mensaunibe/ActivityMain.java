@@ -1,35 +1,35 @@
 package com.ese2013.mensaunibe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class ActivityMain extends Activity {
+public class ActivityMain extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -38,7 +38,11 @@ public class ActivityMain extends Activity {
 	private CharSequence mTitle;
 	private String[] mNavItems;
 	
-	private static Context contextOfApp;
+	private static Context appContext;
+	
+	// prepare the location data, the variables must be public for use in fragments
+	public LocationClient locationClient;
+	public Location location;
 
 	// The model provides and manages the mensas objects for the app
 	public Model model;
@@ -56,7 +60,8 @@ public class ActivityMain extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		contextOfApp = getApplicationContext();
+		appContext = getApplicationContext();
+		
 
 		// Model that is providing all the logic for the app is instantiated
 		this.model = new Model();
@@ -101,10 +106,13 @@ public class ActivityMain extends Activity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+		
+		// initialize the locationClient
+		locationClient = new LocationClient(this, this, this);
 	}
 	
 	public static Context getContextOfApp() {
-		return contextOfApp;
+		return appContext;
 	}
 
 	@Override
@@ -157,7 +165,7 @@ public class ActivityMain extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/* The click listner for ListView in the navigation drawer */
+	/* The click listener for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		
 		@Override
@@ -177,20 +185,20 @@ public class ActivityMain extends Activity {
 			fragment = new FragmentMensaList();
 			break;
 		case 2:
-			fragment = new FragmentMenu();
+			fragment = new FragmentMenuList();
 			break;
 		case 3:
 			fragment = new FragmentMensaMap();
 			break;
 		case 4:
-			fragment = new NotificationsFragment();
+			fragment = new FragmentNotifications();
 			break;
 		case 5:
 			fragment = new FragmentFriends();
 			break;
 		}
 	
-		FragmentManager fragmentManager = getFragmentManager();
+		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.replace(R.id.content_frame, fragment).commit();
@@ -231,67 +239,44 @@ public class ActivityMain extends Activity {
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
+	
+	// the following methods handle the locationService for the map, the current position is determined here and then
+	// fetched from the FragmentMensaMap
+	@Override
+	protected void onResume() {
+		super.onResume();
 
-
-	public static class NotificationsFragment extends Fragment {
-		private SimpleAdapter adapter;
-
-		public NotificationsFragment() {
-			// Empty constructor required for fragment subclasses
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_notifications,
-					container, false);
-
-			// get the list view from the layout into a variable, it's important
-			// to fetch it from the rootView
-			final ListView listview = (ListView) rootView
-					.findViewById(R.id.notifications);
-
-			// Fetch the string array from resouce arrays.xml > mensalist
-			// String[] notifications =
-			// getResources().getStringArray(R.array.notificationlist);
-			ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-			final String[][] notifications = {
-					{ "Message Subject", "Short ellipsis from the content" },
-					{ "Super Message Subject",
-							"Short ellipsis from the content" },
-					{ "Nice Message Subject", "Short ellipsis from the content" },
-					{ "Shitty Message Subject",
-							"Short ellipsis from the content" },
-					{ "Bla Message Subject", "Short ellipsis from the content" } };
-
-			// Creating an array adapter to store the list of countries
-			// ArrayAdapter<String> adapter = new
-			// ArrayAdapter<String>(inflater.getContext(),
-			// R.layout.list_item_1line, notifications);
-			HashMap<String, String> item;
-			for (int i = 0; i < notifications.length; i++) {
-				item = new HashMap<String, String>();
-				item.put("line1", notifications[i][0]);
-				item.put("line2", notifications[i][1]);
-				list.add(item);
-			}
-
-			adapter = new SimpleAdapter(inflater.getContext(), list,
-					R.layout.list_notificationlist_item, new String[] {
-							"line1", "line2" }, new int[] { R.id.line1,
-							R.id.line2 });
-
-			// setting the adapter for the ListView
-			listview.setAdapter(adapter);
-
-			Toast toast = Toast.makeText(inflater.getContext(),
-					"Hier werden alle Notifications angezeigt",
-					Toast.LENGTH_LONG);
-			toast.show();
-			return rootView;
-		}
+		locationClient.connect();
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		locationClient.disconnect();
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient connection failed", Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
+		this.location = locationClient.getLastLocation();
+		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient disconnected", Toast.LENGTH_LONG).show();
+	}
 	
+	public Location getLocation() {
+		return location;
+	}
 }

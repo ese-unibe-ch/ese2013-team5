@@ -2,7 +2,7 @@ package com.ese2013.mensaunibe.model;
 
 import java.util.ArrayList;
 
-import com.ese2013.mensaunibe.util.MensaBuilder;
+import com.ese2013.mensaunibe.util.BuilderMensa;
 
 /**
  * Class representing a mensa and responsible for its menus. Needs to be
@@ -15,18 +15,18 @@ public class Mensa {
 
 	private int id;
 	private String name;
-	private String street;
-	private String plz;
+	private String address;
+	private String city;
 	private float lat;
 	private float lon;
 	private WeeklyPlan weeklyPlan;
 	private boolean isFavorite = false;
 
-	public Mensa(MensaBuilder builder) {
+	public Mensa(BuilderMensa builder) {
 		this.id = builder.getId();
 		this.name = builder.getName();
-		this.street = builder.getStreet();
-		this.plz = builder.getPlz();
+		this.address = builder.getAddress();
+		this.city = builder.getCity();
 		this.lat = builder.getLat();
 		this.lon = builder.getLon();
 	}
@@ -36,7 +36,7 @@ public class Mensa {
 	}
 
 	public ArrayList<Menu> getMenus(String day) {
-		return weeklyPlan.get(day).getMenus();
+		return weeklyPlan.getDailyPlan(day).getMenus();
 	}
 	
 	public ArrayList<Menu> getAllMenus(){
@@ -69,12 +69,12 @@ public class Mensa {
 		return lon;
 	}
 
-	public String getStreet() {
-		return street;
+	public String getAddress() {
+		return address;
 	}
 
-	public String getPlz() {
-		return plz;
+	public String getCity() {
+		return city;
 	}
 
 	public boolean isFavorite() {
