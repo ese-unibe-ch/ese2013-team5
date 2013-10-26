@@ -1,7 +1,17 @@
 package com.ese2013.mensaunibe;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.WebService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
@@ -19,6 +29,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +54,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	// prepare the location data, the variables must be public for use in fragments
 	public LocationClient locationClient;
 	public Location location;
+	public Map<Integer, Float> distances;
+	public int nearestmensaid;
+	public Mensa nearestmensa;
 
 	// The model provides and manages the mensas objects for the app
 	public Model model;
@@ -65,6 +79,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 
 		// Model that is providing all the logic for the app is instantiated
 		this.model = new Model();
+		
+		// initialize the locationClient
+		locationClient = new LocationClient(this, this, this);
 		
 		mTitle = mDrawerTitle = getTitle();
 		mNavItems = getResources().getStringArray(R.array.sidenav_items);
@@ -106,9 +123,6 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
-		
-		// initialize the locationClient
-		locationClient = new LocationClient(this, this, this);
 	}
 	
 	public static Context getContextOfApp() {
@@ -267,7 +281,34 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		// TODO Auto-generated method stub
 		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
 		this.location = locationClient.getLastLocation();
-		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG).show();
+		// loop trough all the mansa coordinates and determine the closest mensa
+		// fist get all the mensas in a list to loop over
+		ArrayList <Mensa> mensas = model.getMensas();
+		// initialize the distances array to save all distances in
+		Map<Integer, Float> distances = new HashMap<Integer, Float>();
+		for (Mensa mensa : mensas) {
+			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
+		}
+		// make the distances globally available, just for convenience
+		this.distances = distances;
+		// and now find the nearest mensa
+		int nearestmensaid = 0;
+		float smallestdistance = Float.MAX_VALUE;
+		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
+		    Float value = entry.getValue();
+		    if (value < smallestdistance) {
+		        nearestmensaid = entry.getKey();
+		        smallestdistance = value;
+		    }
+		}
+		// also make this globally available for convenience and fetch the mensa object
+		this.nearestmensaid = nearestmensaid;
+		this.nearestmensa = model.getMensaById(nearestmensaid);
+//		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+		// a very ugly and hacky way to show the closest mensa on the home screen
+		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
+		selectItem(0);
 	}
 
 	@Override
@@ -278,5 +319,39 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	
 	public Location getLocation() {
 		return location;
+	}
+	
+	// this method stupidly calculates the air distance between two points, but should be enough to determine the closest mensa
+	public static float getDistance(double startLat, double startLon, double endLat, double endLon){
+	    float[] resultArray = new float[99];
+	    Location.distanceBetween(startLat, startLon, endLat, endLon, resultArray);
+	    return resultArray[0];
+	}
+	
+	// this method asks the remote maps api for the path distance, e.g the distance over streets
+	public String getRouteDistance(double startLat, double startLon, double endLat, double endLon) {
+	    WebService webService = new WebService();
+	    String Distance = "error";
+	    String Status = "error";
+	    try {
+	        Log.e("Distance Link : ", "http://maps.googleapis.com/maps/api/directions/json?origin="+ startLat +","+ startLon +"&destination="+ endLat +","+ endLon +"&sensor=false");
+	        JSONObject jsonObj = webService.requestFromURL("http://maps.googleapis.com/maps/api/directions/json?origin="+ startLat +","+ startLon +"&destination="+ endLat +","+ endLon +"&sensor=false"); 
+	        Status = jsonObj.getString("status");
+	        if(Status.equalsIgnoreCase("OK")) {
+	            JSONArray routes = jsonObj.getJSONArray("routes"); 
+	            JSONObject zero = routes.getJSONObject(0);
+	            JSONArray legs = zero.getJSONArray("legs");
+	            JSONObject zero2 = legs.getJSONObject(0);
+	            JSONObject dist = zero2.getJSONObject("distance");
+	            Distance = dist.getString("text");
+	        } else {
+	            Distance = "Too Far";
+	        }
+	    } catch (JSONException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	    
+	    return Distance;
 	}
 }
