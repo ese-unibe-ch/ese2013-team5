@@ -1,39 +1,49 @@
 package com.ese2013.mensaunibe.util;
 
 
+import com.ese2013.mensaunibe.FragmentMenuListDay;
+import com.ese2013.mensaunibe.model.Mensa;
+
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-
-
-
 public class AdapterCustomFragmentPager extends FragmentPagerAdapter {
-	
-	Context ctx=null;
-	
-    public AdapterCustomFragmentPager(Context ctx, FragmentManager fragmentManager) {
-        super(fragmentManager);
-        this.ctx = ctx;
+    private Context context = null;
+	private Mensa mensa;
+
+    public AdapterCustomFragmentPager(Mensa mensa, Context context, FragmentManager fragmgr) {
+        super(fragmgr);
+        this.context = context;
+        this.mensa = mensa;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 5;
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-        case 0:
-//            return new ImageFragment(R.drawable.caesar_salad,menu_name[0], menu_description[0]);
-        case 1:
-//            return new ImageFragment(R.drawable.albondigas_pasta,menu_name[1], menu_description[1]);
-        case 2:
-//            return new ImageFragment(R.drawable.salmon_entrada,menu_name[2], menu_description[2]);
-        default:
-            return null;
-        }
+        return(FragmentMenuListDay.newInstance(position, mensa));
     }
+
+	@Override
+	public String getPageTitle(int position) {
+	    switch (position) {
+		    case 0:
+		        return "Montag";
+		    case 1:
+		        return "Dienstag";
+		    case 2:
+		        return "Mittwoch";
+		    case 3:
+		        return "Donnerstag";
+		    case 4:
+		        return "Freitag";
+		    default:
+		        return null;
+	    }
+	}
 }

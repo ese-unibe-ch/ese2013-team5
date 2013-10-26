@@ -63,7 +63,7 @@ public class WeeklyPlan {
 		this.dailyPlans[4] = new DailyPlan("Friday");
 	}
 
-	public DailyPlan get(String day) {
+	public DailyPlan getDailyPlan(String day) {
 		if(day.equals("Monday")) {return getMonday();}
 		if(day.equals("Tuesday")) {return getTuesday();}
 		if(day.equals("Wednesday")) {return getWednesday();}

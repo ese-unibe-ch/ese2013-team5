@@ -23,8 +23,8 @@ import com.ese2013.mensaunibe.util.AdapterCustomMensalist;
  * Fragment that appears in the "content_frame", shows mensalist
  */
 public class FragmentMensaList extends Fragment {
+	private ActivityMain main;
 	private AdapterCustomMensalist adapter;
-	private FragmentActivity main;
 
 	public FragmentMensaList() {
 		// Empty constructor required for fragment subclasses
@@ -35,15 +35,12 @@ public class FragmentMensaList extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_mensalist,
 				container, false);
-		main = this.getActivity();
-		Model model = ((ActivityMain) main).model;
+		this.main = (ActivityMain) this.getActivity();
+		Model model = main.model;
 	
 		ArrayList <Mensa> mensalist = model.getMensas();
 		
-//		Toast toast = Toast.makeText(main.getBaseContext(),
-//				"Hier werden alle Mensas im †berblick angezeigt",
-//				Toast.LENGTH_LONG);
-//		toast.show();
+//		Toast.makeText(main.getBaseContext(), "Hier werden alle Mensas im †berblick angezeigt", Toast.LENGTH_LONG).show();
 		// get the list view from the layout into a variable, it's important
 		// to fetch it from the rootView
 		final ListView listview = (ListView) rootView.findViewById(R.id.mensalist);
@@ -51,24 +48,11 @@ public class FragmentMensaList extends Fragment {
 		adapter = new AdapterCustomMensalist(getActivity(), this, mensalist, R.layout.list_mensalist_item);
 
 		listview.setAdapter(adapter);
-		//listview.setOnItemClickListener(new MensalistItemClickListener());
-		((ActivityMain) main).listView = listview;
-		//for(int i = 0; i < listview.getCount(); i++){
-			//Object view = listview.getItemAtPosition(i);
-			//((Home) home).mensalistItemIds.add(view.getId());
-		//}
+
+		main.listView = listview;
 		
 		return rootView;
 	}
-	
-//	private class MensalistItemClickListener implements OnItemClickListener {
-//
-//		@Override
-//		public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-//			selectItem(position);
-//		}
-//
-//	}
 
 	public void selectItem(int position) {
 		((ActivityMain) main).currentMensa = ((ActivityMain) main).model.getMensas().get(position);

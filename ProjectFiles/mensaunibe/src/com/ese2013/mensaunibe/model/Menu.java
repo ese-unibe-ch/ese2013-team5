@@ -17,14 +17,14 @@ public class Menu {
 	private String desc;
 	private Mensa mensa;
 	private int id;
-	private int mensaId;
+	private int mensaid;
 	private int week;
 	private String price;
 	private Double rating;
 
 	public Menu(BuilderMenu builder) {
 		this.id = builder.getMenuID();
-		this.mensaId = builder.getMensaID();
+		this.mensaid = builder.getMensaID();
 		this.mensa = builder.getMensa();
 		this.title = builder.getTitle();
 		this.desc = builder.getDesc();
@@ -40,7 +40,7 @@ public class Menu {
 	}
 	
 	public int getMensaID() {
-		return mensaId;
+		return mensaid;
 	}
 	
     public Mensa getMensa() {
@@ -65,10 +65,6 @@ public class Menu {
 
 	public String getDay() {
 		return day;
-	}
-	
-	public int getWeek() {
-		return week;
 	}
 	
 	public double getRating() {

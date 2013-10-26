@@ -1,80 +1,67 @@
 package com.ese2013.mensaunibe;
 
-import java.util.ArrayList;
-
 import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Menu;
-import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
+import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.AdapterCustomFragmentPager;
+import com.viewpagerindicator.TitlePageIndicator;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class FragmentMensaDetails extends Fragment {
 	
-	FragmentActivity main;
-	Mensa mensa; // Mensa object, for which details are being showed
-	private AdapterCustomMenulist adapter;
-
+	private ActivityMain main;
+	private Context context;
+	private Mensa mensa; // Mensa object, for which details are being showed
+	private Model model;
 	
-	public FragmentMensaDetails(){
-		//empty constructor required for Fragment subclasses
-	}
-	
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	    
 		View rootView = inflater.inflate(R.layout.fragment_mensadetails, container, false);
+	    
+		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
 		
-		main = this.getActivity();
-		mensa = ((ActivityMain)	main).currentMensa;
+		this.main = (ActivityMain) this.getActivity();
+		this.context = inflater.getContext();
+		this.model = main.model;
+		this.mensa = main.currentMensa;
 		
 		inflateHeader(rootView, container);
+	
+		pager.setAdapter(buildAdapter());
 		
-		inflateMenus(inflater, rootView);
-		
-		return rootView;
+		TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
+        indicator.setViewPager(pager);
+	
+		return(rootView);
 	}
 
-	/** private method to show all menus of the current mensa
-	 * 	in a listview under the header
-	 * 
-	 * @param inflater
-	 * @param rootView
-	 */
-	private void inflateMenus(LayoutInflater inflater, View rootView) {
-		ArrayList<Menu> menus = new ArrayList<Menu>();
-		menus.addAll(mensa.getAllMenus());
-		
-		final ListView listview = (ListView) rootView.findViewById(R.id.menus);
-
-		adapter = new AdapterCustomMenulist(inflater.getContext(), menus, R.layout.list_menulist_item);
-
-		// setting the adapter for the ListView
-		listview.setAdapter(adapter);
-	}
-
+    private PagerAdapter buildAdapter() {
+        return(new AdapterCustomFragmentPager(mensa, main, getChildFragmentManager()));
+    }
+  
 	/** private method to show the mensa-name and -address in the
-	 *  view on top of the fragment
-	 * 
-	 * @param inflater
-	 * @param container
-	 */
+	*  view on top of the fragment
+	* 
+	* @param inflater
+	* @param container
+	*/
 	private void inflateHeader(View rootView, ViewGroup container) {
-		//you have to get the whole view so you can get 
-		//the textview with findViewById(int id)
-		
-		TextView mensaName = (TextView) rootView.findViewById(R.id.mdname);
+		TextView mensaName = (TextView) rootView.findViewById(R.id.name);
 		mensaName.setText(mensa.getName());
-		
-		TextView mensaAddress = (TextView) rootView.findViewById(R.id.mdaddress);
+
+		TextView mensaAddress = (TextView) rootView.findViewById(R.id.address);
 		mensaAddress.setText(mensa.getAddress());
-		
-		TextView mensaPlz = (TextView) rootView.findViewById(R.id.mdplz);
+
+		TextView mensaPlz = (TextView) rootView.findViewById(R.id.city);
 		mensaPlz.setText(mensa.getCity());
 	}
-	
 }

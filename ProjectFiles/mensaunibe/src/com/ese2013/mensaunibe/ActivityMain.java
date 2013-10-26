@@ -2,9 +2,15 @@ package com.ese2013.mensaunibe;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -13,7 +19,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +27,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class ActivityMain extends FragmentActivity {
+public class ActivityMain extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -33,6 +39,10 @@ public class ActivityMain extends FragmentActivity {
 	private String[] mNavItems;
 	
 	private static Context appContext;
+	
+	// prepare the location data, the variables must be public for use in fragments
+	public LocationClient locationClient;
+	public Location location;
 
 	// The model provides and manages the mensas objects for the app
 	public Model model;
@@ -51,6 +61,7 @@ public class ActivityMain extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 		
 		appContext = getApplicationContext();
+		
 
 		// Model that is providing all the logic for the app is instantiated
 		this.model = new Model();
@@ -95,6 +106,9 @@ public class ActivityMain extends FragmentActivity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+		
+		// initialize the locationClient
+		locationClient = new LocationClient(this, this, this);
 	}
 	
 	public static Context getContextOfApp() {
@@ -224,5 +238,45 @@ public class ActivityMain extends FragmentActivity {
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
-	}	
+	}
+	
+	// the following methods handle the locationService for the map, the current position is determined here and then
+	// fetched from the FragmentMensaMap
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		locationClient.connect();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		locationClient.disconnect();
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient connection failed", Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
+		this.location = locationClient.getLastLocation();
+		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient disconnected", Toast.LENGTH_LONG).show();
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
 }
