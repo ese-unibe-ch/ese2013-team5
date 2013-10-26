@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -82,6 +84,13 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
+		
+		// send userid to server, this should only be done one or two times, basically first register
+		// the user, then check the next time and save the userid somewhere locally (api returns "registered" in status
+		// when a user/device is in the database
+		// we also need an EditText field in the system settings to add a username, which then would also be sent to the
+		// server for the whole notification and friends stuff, the api is ready for that...
+		sendUserID();
 		
 		mTitle = mDrawerTitle = getTitle();
 		mNavItems = getResources().getStringArray(R.array.sidenav_items);
@@ -353,5 +362,46 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    }
 	    
 	    return Distance;
+	}
+	
+	/**
+	 * Return Pseudo Unique ID to identify the user, will be sent to the server and doesn't contain anything private
+	 * @return ID 
+	 */
+	public static String getUniquePsuedoID() {
+	    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
+	    // returns 'null', then simply the ID returned will be soley based
+	    // off their Android device information.
+	    String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+
+	    // Only devices with API >= 9 have android.os.Build.SERIAL
+	    // If a user upgrades software or roots their phone, there will be a duplicate entry
+	    String serial = null; 
+	    try {
+	        serial = android.os.Build.class.getField("SERIAL").toString();
+	        // go ahead and return the serial for api => 9
+	        return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	    } catch (Exception e) { 
+	        // String needs to be initialized
+	        serial = "serial"; // some value
+	    }
+
+	    // Finally, combine the values we have found by using the UUID class to create a unique identifier
+	    return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	}
+	
+	public void sendUserID() {
+		String userid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?userid=" + userid); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
 	}
 }
