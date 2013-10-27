@@ -37,7 +37,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(resource, parent, false);
         
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);

@@ -4,16 +4,12 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;

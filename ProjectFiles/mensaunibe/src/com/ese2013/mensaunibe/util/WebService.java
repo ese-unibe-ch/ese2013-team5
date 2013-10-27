@@ -4,17 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -38,10 +34,10 @@ import android.os.AsyncTask;
  */
 public class WebService {
 
-	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
-	private final String MENSAS = "mensas";
-	private final String WEEKLYPLAN = "/weeklyplan";
-	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
+//	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
+//	private final String MENSAS = "mensas";
+//	private final String WEEKLYPLAN = "/weeklyplan";
+//	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
 
 	private WebRequest request;
 
