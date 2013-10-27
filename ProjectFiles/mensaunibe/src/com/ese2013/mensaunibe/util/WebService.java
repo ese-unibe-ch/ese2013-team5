@@ -83,7 +83,7 @@ public class WebService {
 		
 		try {
 			//request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN + TOKEN);
-			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
+			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + (currentWeek-1) + "&holder=menus");
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {
@@ -153,8 +153,7 @@ public class WebService {
 			}
 		}
 
-		private JSONObject convertStreamToJSON(InputStream in)
-				throws IOException, JSONException {
+		private JSONObject convertStreamToJSON(InputStream in) throws IOException, JSONException {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(in));
 			String line;
 			StringBuilder sb = new StringBuilder();
