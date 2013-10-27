@@ -34,14 +34,15 @@ import android.os.AsyncTask;
  */
 public class WebService {
 
-	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
-	private final String MENSAS = "mensas";
-	private final String WEEKLYPLAN = "/weeklyplan";
-	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
+//	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
+//	private final String MENSAS = "mensas";
+//	private final String WEEKLYPLAN = "/weeklyplan";
+//	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
 
 	private WebRequest request;
 
 	public WebService() {
+		
 	}
 
 	/**
@@ -83,6 +84,25 @@ public class WebService {
 		try {
 			//request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN + TOKEN);
 			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
+			request.execute();
+			json = request.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+	
+	/**
+	 * Requests json from any url
+	 * 
+	 * @return The answer from the service JSONObject
+	 */
+	public JSONObject requestFromURL(String url) {
+		JSONObject json = null;
+		try {
+			request = new WebRequest(url);
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {

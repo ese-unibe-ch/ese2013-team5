@@ -33,7 +33,13 @@ public class FragmentStart extends Fragment {
 		this.main = (ActivityMain) this.getActivity();
 		this.context = inflater.getContext();
 		this.model = main.model;
-		this.mensa = model.getMensaById(1);
+		if ( main.nearestmensa != null) {
+			this.mensa = main.nearestmensa;
+		} else {
+//			Toast.makeText(context, "Nearest mensa null", Toast.LENGTH_LONG).show();
+			// this should actually be the favourite mensa
+			this.mensa = model.getMensaById(1);
+		}
 		
 		inflateHeader(rootView, container);
 	
