@@ -3,7 +3,6 @@ package com.ese2013.mensaunibe;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +37,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -144,11 +143,16 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.home, menu);
-
-		View count = menu.findItem(R.id.notifications).getActionView();
+		inflater.inflate(R.menu.menu_action, menu);
+		final MenuItem menuitem = menu.findItem(R.id.action_notifications);
+		View count = menu.findItem(R.id.action_notifications).getActionView();
 		notifCount = (Button) count.findViewById(R.id.notification_count);
 		notifCount.setText(String.valueOf(mNotifCount));
+	    notifCount.setOnClickListener(new OnClickListener() {
+	        public void onClick(View v) {
+	            onOptionsItemSelected(menuitem);
+	        }
+	    });
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -177,7 +181,6 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 			return true;
 		}
 		
-		Fragment fragment = null;
 		switch (item.getItemId()) {
 	        case R.id.action_settings:
 	        	// this is very hacky as the support library doesn't support PreferenceFragment
@@ -193,9 +196,13 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	        	getFragmentManager().beginTransaction().replace(R.id.settings_frame, new FragmentSettings()).commit();
 //		        Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
 		        break;
+	        case R.id.action_notifications:
+	        	selectItem(4);
+	        	break;
 	        default:
 	        	break;
 	    }
+		
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -301,6 +308,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		Toast.makeText(this, "locationClient connection failed", Toast.LENGTH_LONG).show();
 	}
 
+	@SuppressLint("UseSparseArrays")
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		// TODO Auto-generated method stub

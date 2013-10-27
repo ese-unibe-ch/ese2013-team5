@@ -77,7 +77,7 @@
         android:textColor="@color/unibe_white"
         android:textSize="14sp"
         app:footerColor="@color/unibe_red"
-        app:footerLineHeight="3dp"
+        app:footerLineHeight="2dp"
         app:footerIndicatorHeight="4dp"
         app:footerIndicatorStyle="triangle"
         app:selectedColor="@color/unibe_white"
