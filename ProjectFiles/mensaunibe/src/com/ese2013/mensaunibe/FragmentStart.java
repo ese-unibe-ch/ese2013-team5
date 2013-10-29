@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class FragmentStart extends Fragment {
 	
@@ -37,7 +36,7 @@ public class FragmentStart extends Fragment {
 		if ( main.nearestmensa != null) {
 			this.mensa = main.nearestmensa;
 		} else {
-			Toast.makeText(context, "Nearest mensa null", Toast.LENGTH_LONG).show();
+//			Toast.makeText(context, "Nearest mensa null", Toast.LENGTH_LONG).show();
 			// this should actually be the favourite mensa
 			this.mensa = model.getMensaById(1);
 		}

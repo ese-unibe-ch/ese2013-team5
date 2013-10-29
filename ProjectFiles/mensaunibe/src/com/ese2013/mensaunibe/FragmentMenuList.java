@@ -10,7 +10,6 @@ import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

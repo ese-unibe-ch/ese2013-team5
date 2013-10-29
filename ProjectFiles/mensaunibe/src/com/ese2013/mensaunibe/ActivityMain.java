@@ -1,9 +1,11 @@
 package com.ese2013.mensaunibe;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -34,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -82,6 +86,13 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
+		
+		// send userid to server, this should only be done one or two times, basically first register
+		// the user, then check the next time and save the userid somewhere locally (api returns "registered" in status
+		// when a user/device is in the database
+		// we also need an EditText field in the system settings to add a username, which then would also be sent to the
+		// server for the whole notification and friends stuff, the api is ready for that...
+		sendUserID();
 		
 		mTitle = mDrawerTitle = getTitle();
 		mNavItems = getResources().getStringArray(R.array.sidenav_items);
@@ -132,11 +143,16 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.home, menu);
-
-		View count = menu.findItem(R.id.notifications).getActionView();
+		inflater.inflate(R.menu.menu_action, menu);
+		final MenuItem menuitem = menu.findItem(R.id.action_notifications);
+		View count = menu.findItem(R.id.action_notifications).getActionView();
 		notifCount = (Button) count.findViewById(R.id.notification_count);
 		notifCount.setText(String.valueOf(mNotifCount));
+	    notifCount.setOnClickListener(new OnClickListener() {
+	        public void onClick(View v) {
+	            onOptionsItemSelected(menuitem);
+	        }
+	    });
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -164,18 +180,29 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-		// Handle action buttons
-		/*
-		 * switch(item.getItemId()) { case R.id.action_websearch: // create
-		 * intent to perform web search for this planet Intent intent = new
-		 * Intent(Intent.ACTION_WEB_SEARCH);
-		 * intent.putExtra(SearchManager.QUERY, getActionBar().getTitle()); //
-		 * catch event that there's no activity to handle intent if
-		 * (intent.resolveActivity(getPackageManager()) != null) {
-		 * startActivity(intent); } else { Toast.makeText(this,
-		 * R.string.app_not_available, Toast.LENGTH_LONG).show(); } return true;
-		 * default: return super.onOptionsItemSelected(item); }
-		 */
+		
+		switch (item.getItemId()) {
+	        case R.id.action_settings:
+	        	// this is very hacky as the support library doesn't support PreferenceFragment
+	        	// so we have to use the normal fragment manager here (which we can't with the viewPager as it seems)
+	        	// the problem is, that the both FragmentManagers don't know from each other
+	        	// which results in the system settings overlapping the content of the currently showed fragment
+	        	// so basically we just have to different FrameLayouts in the main activity, one is used for the normal
+	        	// content, the other for the settings and depending on what should be displayed they are hidden or not
+	        	View view = findViewById(R.id.content_frame);
+	        	view.setVisibility(View.GONE);
+	        	view = findViewById(R.id.settings_frame);
+	        	view.setVisibility(View.VISIBLE);
+	        	getFragmentManager().beginTransaction().replace(R.id.settings_frame, new FragmentSettings()).commit();
+//		        Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+		        break;
+	        case R.id.action_notifications:
+	        	selectItem(4);
+	        	break;
+	        default:
+	        	break;
+	    }
+		
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -189,6 +216,11 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	}
 
 	private void selectItem(int position) {
+		// make the content frame visible again (could be hidden when visiting settings fragment)
+		View view = findViewById(R.id.content_frame);
+    	view.setVisibility(View.VISIBLE);
+    	view = findViewById(R.id.settings_frame);
+    	view.setVisibility(View.GONE);
 		Fragment fragment = null;
 		// update the main content by replacing fragments
 		switch (position) {
@@ -276,6 +308,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		Toast.makeText(this, "locationClient connection failed", Toast.LENGTH_LONG).show();
 	}
 
+	@SuppressLint("UseSparseArrays")
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		// TODO Auto-generated method stub
@@ -306,6 +339,14 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		this.nearestmensa = model.getMensaById(nearestmensaid);
 //		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
 		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+		if ( smallestdistance <= 100 ) {
+			// 100 is too big, should probably be smaller than 50 or less
+			// here we would save the mensaid to the users profile on the server
+			// then we can either show his friends that are in that mensa too
+			// or the total number people in that mensa, or both...
+			updateUserMensa();
+			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
+		}
 		// a very ugly and hacky way to show the closest mensa on the home screen
 		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
 		selectItem(0);
@@ -353,5 +394,76 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    }
 	    
 	    return Distance;
+	}
+	
+	/**
+	 * Return Pseudo Unique ID to identify the user, will be sent to the server and doesn't contain anything private
+	 * @return ID 
+	 */
+	public static String getUniquePsuedoID() {
+	    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
+	    // returns 'null', then simply the ID returned will be soley based
+	    // off their Android device information.
+	    String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+
+	    // Only devices with API >= 9 have android.os.Build.SERIAL
+	    // If a user upgrades software or roots their phone, there will be a duplicate entry
+	    String serial = null; 
+	    try {
+	        serial = android.os.Build.class.getField("SERIAL").toString();
+	        // go ahead and return the serial for api => 9
+	        return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	    } catch (Exception e) { 
+	        // String needs to be initialized
+	        serial = "serial"; // some value
+	    }
+
+	    // Finally, combine the values we have found by using the UUID class to create a unique identifier
+	    return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	}
+	
+	public void sendUserID() {
+		String deviceid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+	}
+	
+	public void updateUserMensa() {
+		String deviceid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+	}
+	
+	public void updateUserName(String username) throws UnsupportedEncodingException {
+		String deviceid = getUniquePsuedoID();
+		WebService webService = new WebService();
+		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&name=" + URLEncoder.encode(username, "UTF-8")); 
+        try {
+			String status = jsonObj.getString("status");
+			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // actually we should save this id somewhere to get it over sessions...should always be the same...
+        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
 	}
 }

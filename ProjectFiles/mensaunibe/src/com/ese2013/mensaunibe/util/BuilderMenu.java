@@ -21,7 +21,6 @@ public class BuilderMenu {
 	private String date = DEFAULT;
 	private String day = DEFAULT;
 	private double rating = 0;
-	private String menuDetails = DEFAULT;
 	private Mensa mensa = null;
 	private int id;
 	private int mensaid;
@@ -62,10 +61,6 @@ public class BuilderMenu {
 		this.date = json.getString("date");
 		this.day = json.getString("day");
 		this.week =json.getInt("week");
-		//this.menuDetails = json.getJSONArray("menu").join(" ").replace('"', ' ').replace('\\', ' ');
-		// TODO mensa id is NOT in the menu JSON -> must b retrieved
-		// elsewhere, if this is even needed
-		// this.mensaId = json.getInt("id");
 	}
 	
 	public BuilderMenu setMensaID(int mensaid) {

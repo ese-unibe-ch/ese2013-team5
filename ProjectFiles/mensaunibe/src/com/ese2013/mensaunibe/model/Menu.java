@@ -10,16 +10,15 @@ import com.ese2013.mensaunibe.util.BuilderMenu;
  */
 public class Menu {
 
-	
-	private String title;
-	private String day;
-	private String date;
-	private String desc;
-	private Mensa mensa;
 	private int id;
 	private int mensaid;
-	private int week;
+	private Mensa mensa;
+	private String title;
+	private String desc;
 	private String price;
+	private String date;
+	private String day;
+	private int week;
 	private Double rating;
 
 	public Menu(BuilderMenu builder) {
@@ -65,6 +64,10 @@ public class Menu {
 
 	public String getDay() {
 		return day;
+	}
+	
+	public int getWeek() {
+		return week;
 	}
 	
 	public double getRating() {

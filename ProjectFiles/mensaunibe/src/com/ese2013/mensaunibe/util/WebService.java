@@ -34,10 +34,10 @@ import android.os.AsyncTask;
  */
 public class WebService {
 
-	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
-	private final String MENSAS = "mensas";
-	private final String WEEKLYPLAN = "/weeklyplan";
-	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
+//	private final String BASE_URL = "http://mensa.xonix.ch/v1/";
+//	private final String MENSAS = "mensas";
+//	private final String WEEKLYPLAN = "/weeklyplan";
+//	private final String TOKEN = "?tok=6112255ca02b3040711015bbbda8d955";
 
 	private WebRequest request;
 
@@ -83,7 +83,7 @@ public class WebService {
 		
 		try {
 			//request = new WebRequest(BASE_URL + MENSAS + "/" + id + WEEKLYPLAN + TOKEN);
-			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
+			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + (currentWeek-1) + "&holder=menus");
 			request.execute();
 			json = request.get();
 		} catch (InterruptedException e) {
@@ -153,8 +153,7 @@ public class WebService {
 			}
 		}
 
-		private JSONObject convertStreamToJSON(InputStream in)
-				throws IOException, JSONException {
+		private JSONObject convertStreamToJSON(InputStream in) throws IOException, JSONException {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(in));
 			String line;
 			StringBuilder sb = new StringBuilder();

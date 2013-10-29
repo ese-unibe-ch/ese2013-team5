@@ -56,9 +56,24 @@ public class Model {
 		for (int i = 0; i < mensas.size(); i++) {
 			JSONObject menus = webService.requestMenusForMensa(mensas.get(i)
 					.getId());
+<<<<<<< HEAD
+
+			JSONArray array = menus.getJSONObject("result")
+					.getJSONObject("content").getJSONArray("menus");
+<<<<<<< HEAD
+<<<<<<< HEAD
+			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array));
+
+=======
+			Mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, Mensas.get(i)));
+>>>>>>> original/master
+=======
+=======
 //			JSONArray array = menus.getJSONObject("result").getJSONObject("content").getJSONArray("menus");
 			JSONArray array = menus.getJSONArray("menus");
+>>>>>>> original/master
 			mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, mensas.get(i)));
+>>>>>>> original/master
 		}
 	}
 

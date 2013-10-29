@@ -47,5 +47,19 @@
         <item>Notification 4</item>
         <item>Notification 5</item>
     </string-array>
+
+    <string-array name="settings_homescreen_titles">
+        <item>Liste meiner Lieblingsmensas</item>
+        <item>Die nächste Lieblingsmensa</item>
+        <item>Die nächste Mensa</item>
+        <item>Etwas anderes</item>
+    </string-array>
+    
+    <string-array name="settings_homescreen_values">
+        <item>favmensalist</item>
+        <item>nearestfavmensa</item>
+        <item>nearestmensa</item>
+        <item>somethingelse</item>
+    </string-array>
     
 </resources>
