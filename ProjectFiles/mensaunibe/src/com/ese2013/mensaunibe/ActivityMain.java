@@ -311,45 +311,45 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@SuppressLint("UseSparseArrays")
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
-		this.location = locationClient.getLastLocation();
-		// loop trough all the mansa coordinates and determine the closest mensa
-		// fist get all the mensas in a list to loop over
-		ArrayList <Mensa> mensas = model.getMensas();
-		// initialize the distances array to save all distances in
-		Map<Integer, Float> distances = new HashMap<Integer, Float>();
-		for (Mensa mensa : mensas) {
-			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
-		}
-		// make the distances globally available, just for convenience
-		this.distances = distances;
-		// and now find the nearest mensa
-		int nearestmensaid = 0;
-		float smallestdistance = Float.MAX_VALUE;
-		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
-		    Float value = entry.getValue();
-		    if (value < smallestdistance) {
-		        nearestmensaid = entry.getKey();
-		        smallestdistance = value;
-		    }
-		}
-		// also make this globally available for convenience and fetch the mensa object
-		this.nearestmensaid = nearestmensaid;
-		this.nearestmensa = model.getMensaById(nearestmensaid);
-//		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
-		if ( smallestdistance <= 100 ) {
-			// 100 is too big, should probably be smaller than 50 or less
-			// here we would save the mensaid to the users profile on the server
-			// then we can either show his friends that are in that mensa too
-			// or the total number people in that mensa, or both...
-			updateUserMensa();
-			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
-		}
-		// a very ugly and hacky way to show the closest mensa on the home screen
-		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
-		selectItem(0);
+//		// TODO Auto-generated method stub
+//		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
+//		this.location = locationClient.getLastLocation();
+//		// loop trough all the mansa coordinates and determine the closest mensa
+//		// fist get all the mensas in a list to loop over
+//		ArrayList <Mensa> mensas = model.getMensas();
+//		// initialize the distances array to save all distances in
+//		Map<Integer, Float> distances = new HashMap<Integer, Float>();
+//		for (Mensa mensa : mensas) {
+//			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
+//		}
+//		// make the distances globally available, just for convenience
+//		this.distances = distances;
+//		// and now find the nearest mensa
+//		int nearestmensaid = 0;
+//		float smallestdistance = Float.MAX_VALUE;
+//		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
+//		    Float value = entry.getValue();
+//		    if (value < smallestdistance) {
+//		        nearestmensaid = entry.getKey();
+//		        smallestdistance = value;
+//		    }
+//		}
+//		// also make this globally available for convenience and fetch the mensa object
+//		this.nearestmensaid = nearestmensaid;
+//		this.nearestmensa = model.getMensaById(nearestmensaid);
+////		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+//		if ( smallestdistance <= 100 ) {
+//			// 100 is too big, should probably be smaller than 50 or less
+//			// here we would save the mensaid to the users profile on the server
+//			// then we can either show his friends that are in that mensa too
+//			// or the total number people in that mensa, or both...
+//			updateUserMensa();
+//			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
+//		}
+//		// a very ugly and hacky way to show the closest mensa on the home screen
+//		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
+//		selectItem(0);
 	}
 
 	@Override

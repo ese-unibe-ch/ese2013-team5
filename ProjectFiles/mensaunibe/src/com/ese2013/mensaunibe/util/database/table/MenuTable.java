@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Nicolas Kessler
  * 
  */
-public class MenuTable {
+public class MenuTable implements Table {
 
 	// Database table
-	public static final String TABLE_MENU = "menu";
+	public static final String TABLE_NAME = "menu";
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_TITLE = "title";
 	public static final String COLUMN_DAY = "day";
@@ -24,7 +24,7 @@ public class MenuTable {
 	// Table create statement
 	public static final String TABLE_CREATE = 
 			"create table "
-			+ TABLE_MENU
+			+ TABLE_NAME
 			+ "("
 			+ COLUMN_ID + " integer primary key, "
 			+ COLUMN_TITLE + " text not null, "
@@ -37,12 +37,14 @@ public class MenuTable {
 			+ COLUMN_RATING + "real not null"
 			+ ");";
 	
-	public static void onCreate(SQLiteDatabase db) {
+	@Override
+	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(TABLE_CREATE);
 	}
 	
-	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("drop table if exists " + TABLE_MENU);
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("drop table if exists " + TABLE_NAME);
 		onCreate(db);
 	}
 

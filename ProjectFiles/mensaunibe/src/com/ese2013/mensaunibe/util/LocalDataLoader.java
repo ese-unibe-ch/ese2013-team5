@@ -25,21 +25,4 @@ public class LocalDataLoader extends AsyncTask<Void, Void, ArrayList<Mensa>> {
 		database.close();
 		return result;
 	}
-
-//	/**
-//	 * Loads all the IDs of the favorite mensas from the shared preferences
-//	 */
-//	@Override
-//	protected Set<Integer> doInBackground(Void... params) {
-//		SharedPreferences prefs = PreferenceManager
-//				.getDefaultSharedPreferences(ActivityMain.getContextOfApp());
-//		Set<String> favs = prefs.getStringSet(FAVORITE_MENSAS_KEY,
-//				new HashSet<String>());
-//		Set<Integer> result = new HashSet<Integer>();
-//		for (String s : favs) {
-//			result.add(Integer.parseInt(s));
-//		}
-//		return result;
-//	}
-
 }

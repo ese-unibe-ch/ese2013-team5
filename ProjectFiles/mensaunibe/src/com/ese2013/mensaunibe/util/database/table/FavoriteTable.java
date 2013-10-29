@@ -8,27 +8,27 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Nicolas Kessler
  * 
  */
-public class FavoriteTable {
+public class FavoriteTable implements Table {
 
 	// Database table
-	public static final String TABLE_FAVORITE = "favorite";
+	public static final String TABLE_NAME = "favorite";
 	public static final String COLUMN_ID = "_id";
-	public static final String COLUMN_FAVORITE = "favorite";
 	// Table create statement
 	public static final String TABLE_CREATE = 
 			"create table "
-			+ TABLE_FAVORITE
+			+ TABLE_NAME
 			+ "("
-			+ COLUMN_ID + " integer primary key, "
-			+ COLUMN_FAVORITE + " integer not null"
+			+ COLUMN_ID + " integer primary key"
 			+ ");";
 	
-	public static void onCreate(SQLiteDatabase db) {
+	@Override
+	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(TABLE_CREATE);
 	}
 	
-	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("drop table if exists " + TABLE_FAVORITE);
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("drop table if exists " + TABLE_NAME);
 		onCreate(db);
 	}
 	

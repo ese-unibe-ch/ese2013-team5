@@ -1,5 +1,7 @@
 package com.ese2013.mensaunibe.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -42,6 +44,14 @@ public class WeeklyPlan {
 
 	public DailyPlan getFriday() {
 		return dailyPlans[4];
+	}
+	
+	public ArrayList<Menu> getAllMenus() {
+		ArrayList<Menu> result = new ArrayList<Menu>();
+		for (DailyPlan p : dailyPlans) {
+			result.addAll(p.getMenus());
+		}
+		return result;
 	}
 
 	private void getMenusFromJSON(JSONArray array, Mensa mensa) throws JSONException {

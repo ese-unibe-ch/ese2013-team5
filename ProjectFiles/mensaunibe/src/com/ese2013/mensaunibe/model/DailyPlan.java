@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DailyPlan {
 
 	private String day;
-	ArrayList<Menu> menus;
+	private ArrayList<Menu> menus;
 
 	DailyPlan(String tDay) {
 		menus = new ArrayList<Menu>();
