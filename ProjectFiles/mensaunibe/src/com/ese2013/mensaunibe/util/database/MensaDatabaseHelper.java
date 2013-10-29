@@ -15,7 +15,7 @@ import com.ese2013.mensaunibe.util.database.table.Table;
 public class MensaDatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "mensa.db";
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 8;
 	private List<Table> tables = new ArrayList<Table>();
 
 	public MensaDatabaseHelper() {

@@ -11,23 +11,24 @@ import android.util.Log;
 
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
+import com.ese2013.mensaunibe.model.WeeklyPlan;
 import com.ese2013.mensaunibe.util.BuilderMensa;
+import com.ese2013.mensaunibe.util.BuilderMenu;
 import com.ese2013.mensaunibe.util.database.table.FavoriteTable;
 import com.ese2013.mensaunibe.util.database.table.MensaTable;
 import com.ese2013.mensaunibe.util.database.table.MenuTable;
 
 /**
- * Database for caching mensas and their menus locally
+ * Database Class as an interface between the SQLite Database 
+ * and the model
  * 
- * @author Nicolas Kessler
+ * @author ese2013-team5
  *
  */
 public class MensaDatabase {
 
 	private SQLiteDatabase database;
 	private MensaDatabaseHelper helper;
-	
-	private static final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME + " order by _id asc";
 
 	public MensaDatabase() {
 		helper = new MensaDatabaseHelper();
@@ -71,23 +72,52 @@ public class MensaDatabase {
 				database.insertWithOnConflict(FavoriteTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 			}
 			else {
-				database.delete(FavoriteTable.TABLE_NAME, "FavoriteTable.COLUMN_ID = " + mensa.getId(), null);
+				database.delete(FavoriteTable.TABLE_NAME, FavoriteTable.COLUMN_ID + " = " + mensa.getId(), null);
 			}
 		}
 	}
 
 	/**
-	 * Loads all mensas, their menu plans and their favorite status fromt he database
+	 * Loads all mensas not including their menus
 	 * @return ArrayList with all the mensas from the database
 	 */
 	public ArrayList<Mensa> loadAllMensas() {
 		ArrayList<Mensa> result = new ArrayList<Mensa>();
+		final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME + " order by _id asc";
 		Cursor cursor = database.rawQuery(SELECT_MENSAS, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			result.add(getMensaFromCursor(cursor));
 			cursor.moveToNext();
-			// TODO load menus
+		}
+		return result;
+	}
+	
+	/**
+	 * Loads the menu plan of a given mensa from the database
+	 * @param mensa The mensa for which the menus should be loaded
+	 * @return The WeeklyPan for the mensa
+	 */
+	public WeeklyPlan loadPlanForMensa(Mensa mensa) {
+		WeeklyPlan result = new WeeklyPlan();
+		final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+		for (String day : days) {
+			List<Menu> menus = getMenusForDay(mensa, day);
+			result.setMenusForDay(day, menus);
+		}
+		return result;
+	}
+
+	private List<Menu> getMenusForDay(Mensa mensa, String day) {
+		List<Menu> result = new ArrayList<Menu>();
+		final String SELECT_STATEMENT = "Select * from " + MenuTable.TABLE_NAME 
+				+ " where " + MenuTable.COLUMN_MENSA_ID + " = " + mensa.getId()
+				+ " and " + MenuTable.COLUMN_DAY + " = " + "'" + day + "'";
+		Cursor cursor = database.rawQuery(SELECT_STATEMENT, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			result.add(getMenuFromCursor(cursor, mensa));
+			cursor.moveToNext();
 		}
 		return result;
 	}
@@ -125,6 +155,24 @@ public class MensaDatabase {
 	}
 
 	/**
+	 * Returns a menu from the data on which the cursor points.
+	 * The cursor itself must not be affected by this!
+	 */
+	private Menu getMenuFromCursor(Cursor cursor, Mensa mensa) {
+		BuilderMenu builder = new BuilderMenu(mensa);
+		builder.setTitle(cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_TITLE)));
+		builder.setDesc(cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_DESC)));
+		builder.setPrice(cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_PRICE)));
+		builder.setWeek(cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_WEEK)));
+		builder.setDate(cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_DATE)));
+		builder.setDay(cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_DAY)));
+		builder.setRating(cursor.getDouble(cursor.getColumnIndex(MenuTable.COLUMN_RATING)));
+		builder.setMenuID(cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_ID)));
+		builder.setMensaID(cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_MENSA_ID)));
+		return builder.build();
+	}
+
+	/**
 	 * Returns a mensa from the data on which the cursor points.
 	 * The cursor itself must not be affected by this!
 	 */
@@ -140,7 +188,12 @@ public class MensaDatabase {
 		return builder.build();
 	}
 	
-	private boolean isMensaFavorite(int id) {
+	/**
+	 * Checks whether a mensa with a given id is a favorite or not
+	 * @param id The id of the mensa
+	 * @return true if the mensa is favorite else false
+	 */
+	public boolean isMensaFavorite(int id) {
 		String statement = "select * from " + FavoriteTable.TABLE_NAME 
 				+ " where " + FavoriteTable.COLUMN_ID + " = " + id + ";";
 		Cursor cursor = database.rawQuery(statement, null);

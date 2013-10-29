@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Outline for the menu-table for the mensa database
  * 
- * @author Nicolas Kessler
+ * @author ese2013-team5
  * 
  */
 public class MenuTable implements Table {
@@ -17,7 +17,7 @@ public class MenuTable implements Table {
 	public static final String COLUMN_DAY = "day";
 	public static final String COLUMN_DATE = "date";
 	public static final String COLUMN_DESC = "desc";
-	public static final String COLUMN_MENSA_ID	= "mensa id";
+	public static final String COLUMN_MENSA_ID	= "mensaId";
 	public static final String COLUMN_WEEK = "week";
 	public static final String COLUMN_PRICE = "price";
 	public static final String COLUMN_RATING = "rating";
@@ -34,7 +34,7 @@ public class MenuTable implements Table {
 			+ COLUMN_MENSA_ID	+ " integer not null, "
 			+ COLUMN_WEEK + " integer not null, "
 			+ COLUMN_PRICE + " text not null, "
-			+ COLUMN_RATING + "real not null"
+			+ COLUMN_RATING + " real not null"
 			+ ");";
 	
 	@Override

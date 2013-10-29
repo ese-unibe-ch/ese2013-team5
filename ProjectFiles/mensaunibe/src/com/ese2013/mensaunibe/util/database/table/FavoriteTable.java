@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Outline for the favorite-table for the mensa database
  * 
- * @author Nicolas Kessler
+ * @author ese2013-team5
  * 
  */
 public class FavoriteTable implements Table {

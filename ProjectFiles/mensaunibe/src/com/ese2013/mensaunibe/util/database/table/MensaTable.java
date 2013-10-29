@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Outline of the mensa-table for the database
  * 
- * @author Nicolas Kessler
+ * @author ese2013-team5
  *
  */
 public class MensaTable implements Table {

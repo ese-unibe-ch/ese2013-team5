@@ -1,10 +1,5 @@
 package com.ese2013.mensaunibe;
 
-import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.AdapterCustomFragmentPager;
-import com.viewpagerindicator.TitlePageIndicator;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.ese2013.mensaunibe.gui_util.AdapterCustomFragmentPager;
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Model;
+import com.viewpagerindicator.TitlePageIndicator;
 
 public class FragmentMensaDetails extends Fragment {
 	
