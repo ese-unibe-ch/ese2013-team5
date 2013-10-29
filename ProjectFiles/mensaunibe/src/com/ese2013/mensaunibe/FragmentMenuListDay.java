@@ -16,10 +16,6 @@ package com.ese2013.mensaunibe;
 
 import java.util.ArrayList;
 
-import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Menu;
-import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.ese2013.mensaunibe.gui_util.AdapterCustomMenulist;
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Menu;
 
 public class FragmentMenuListDay extends Fragment {
 	

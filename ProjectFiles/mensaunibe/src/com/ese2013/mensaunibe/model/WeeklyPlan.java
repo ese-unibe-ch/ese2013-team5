@@ -1,5 +1,8 @@
 package com.ese2013.mensaunibe.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -14,6 +17,10 @@ import com.ese2013.mensaunibe.util.BuilderMenu;
 public class WeeklyPlan {
 
 	private DailyPlan[] dailyPlans = new DailyPlan[5];
+	
+	public WeeklyPlan() {
+		makeDailyPlans();
+	}
 
 	public WeeklyPlan(JSONArray array, Mensa mensa) {
 		makeDailyPlans();
@@ -43,6 +50,30 @@ public class WeeklyPlan {
 	public DailyPlan getFriday() {
 		return dailyPlans[4];
 	}
+	
+	public ArrayList<Menu> getAllMenus() {
+		ArrayList<Menu> result = new ArrayList<Menu>();
+		for (DailyPlan p : dailyPlans) {
+			result.addAll(p.getMenus());
+		}
+		return result;
+	}
+
+	public DailyPlan getDailyPlan(String day) {
+		if(day.equals("Monday")) {return getMonday();}
+		if(day.equals("Tuesday")) {return getTuesday();}
+		if(day.equals("Wednesday")) {return getWednesday();}
+		if(day.equals("Thursday")) {return getThursday();}
+		if(day.equals("Friday")) {return getFriday();}
+		return null;
+	}
+	
+	public void setMenusForDay(String day, List<Menu> menus) {
+		DailyPlan p = getDailyPlan(day);
+		for (Menu m : menus) {
+			p.add(m);
+		}
+	}
 
 	private void getMenusFromJSON(JSONArray array, Mensa mensa) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
@@ -61,15 +92,6 @@ public class WeeklyPlan {
 		this.dailyPlans[2] = new DailyPlan("Wednesday");
 		this.dailyPlans[3] = new DailyPlan("Thursday");
 		this.dailyPlans[4] = new DailyPlan("Friday");
-	}
-
-	public DailyPlan getDailyPlan(String day) {
-		if(day.equals("Monday")) {return getMonday();}
-		if(day.equals("Tuesday")) {return getTuesday();}
-		if(day.equals("Wednesday")) {return getWednesday();}
-		if(day.equals("Thursday")) {return getThursday();}
-		if(day.equals("Friday")) {return getFriday();}
-		return null;
 	}
 
 }

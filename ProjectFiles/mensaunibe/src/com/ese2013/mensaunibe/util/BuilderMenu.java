@@ -24,7 +24,12 @@ public class BuilderMenu {
 	private Mensa mensa = null;
 	private int id;
 	private int mensaid;
+	
+	public BuilderMenu(Mensa mensa) {
+		this.mensa = mensa;
+	}
 
+	// TODO push this somewhere else
 	/**
 	 * Constructor to create a builder directly from a JSONObject
 	 * 
