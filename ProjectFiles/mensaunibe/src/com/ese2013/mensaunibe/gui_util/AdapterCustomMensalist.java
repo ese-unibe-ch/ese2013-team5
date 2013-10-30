@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.util;
+package com.ese2013.mensaunibe.gui_util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
         ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
         CheckBox starcheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
+        starcheckbox.setChecked(mensas.get(position).isFavorite());
         
         // the actual fields that contain text
         TextView name = (TextView) rowView.findViewById(R.id.name);
@@ -87,7 +88,8 @@ public class AdapterCustomMensalist extends BaseAdapter {
         final OnClickListener starListener = new OnClickListener() {
             @Override
             public void onClick(View starbutton) {
-            	// 
+            	Mensa m = mensas.get(position);
+            	m.setIsFavorite(!m.isFavorite());
             	Toast toast = Toast.makeText(starbutton.getContext(),
         				"Mensa set to Favorite",
         				Toast.LENGTH_SHORT);

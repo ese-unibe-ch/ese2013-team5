@@ -1,23 +1,13 @@
 package com.ese2013.mensaunibe;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.WebService;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -43,6 +33,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.WebService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
 
 public class ActivityMain extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener {
 	private DrawerLayout mDrawerLayout;
@@ -82,7 +80,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		
 
 		// Model that is providing all the logic for the app is instantiated
-		this.model = new Model();
+		this.model = Model.getInstance();
 		
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
@@ -138,6 +136,12 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	
 	public static Context getContextOfApp() {
 		return appContext;
+	}
+
+	@Override
+	protected void onStop() {
+		model.updateLocalData();
+		super.onStop();
 	}
 
 	@Override
@@ -311,45 +315,45 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@SuppressLint("UseSparseArrays")
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
-		this.location = locationClient.getLastLocation();
-		// loop trough all the mansa coordinates and determine the closest mensa
-		// fist get all the mensas in a list to loop over
-		ArrayList <Mensa> mensas = model.getMensas();
-		// initialize the distances array to save all distances in
-		Map<Integer, Float> distances = new HashMap<Integer, Float>();
-		for (Mensa mensa : mensas) {
-			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
-		}
-		// make the distances globally available, just for convenience
-		this.distances = distances;
-		// and now find the nearest mensa
-		int nearestmensaid = 0;
-		float smallestdistance = Float.MAX_VALUE;
-		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
-		    Float value = entry.getValue();
-		    if (value < smallestdistance) {
-		        nearestmensaid = entry.getKey();
-		        smallestdistance = value;
-		    }
-		}
-		// also make this globally available for convenience and fetch the mensa object
-		this.nearestmensaid = nearestmensaid;
-		this.nearestmensa = model.getMensaById(nearestmensaid);
-//		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
-		if ( smallestdistance <= 100 ) {
-			// 100 is too big, should probably be smaller than 50 or less
-			// here we would save the mensaid to the users profile on the server
-			// then we can either show his friends that are in that mensa too
-			// or the total number people in that mensa, or both...
-			updateUserMensa();
-			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
-		}
-		// a very ugly and hacky way to show the closest mensa on the home screen
-		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
-		selectItem(0);
+//		// TODO Auto-generated method stub
+//		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
+//		this.location = locationClient.getLastLocation();
+//		// loop trough all the mansa coordinates and determine the closest mensa
+//		// fist get all the mensas in a list to loop over
+//		ArrayList <Mensa> mensas = model.getMensas();
+//		// initialize the distances array to save all distances in
+//		Map<Integer, Float> distances = new HashMap<Integer, Float>();
+//		for (Mensa mensa : mensas) {
+//			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
+//		}
+//		// make the distances globally available, just for convenience
+//		this.distances = distances;
+//		// and now find the nearest mensa
+//		int nearestmensaid = 0;
+//		float smallestdistance = Float.MAX_VALUE;
+//		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
+//		    Float value = entry.getValue();
+//		    if (value < smallestdistance) {
+//		        nearestmensaid = entry.getKey();
+//		        smallestdistance = value;
+//		    }
+//		}
+//		// also make this globally available for convenience and fetch the mensa object
+//		this.nearestmensaid = nearestmensaid;
+//		this.nearestmensa = model.getMensaById(nearestmensaid);
+////		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+//		if ( smallestdistance <= 100 ) {
+//			// 100 is too big, should probably be smaller than 50 or less
+//			// here we would save the mensaid to the users profile on the server
+//			// then we can either show his friends that are in that mensa too
+//			// or the total number people in that mensa, or both...
+//			updateUserMensa();
+//			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
+//		}
+//		// a very ugly and hacky way to show the closest mensa on the home screen
+//		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
+//		selectItem(0);
 	}
 
 	@Override
@@ -391,7 +395,10 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    } catch (JSONException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
-	    }
+	    } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    
 	    return Distance;
 	}
@@ -424,12 +431,15 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	
 	public void sendUserID() {
 		String deviceid = getUniquePsuedoID();
-		WebService webService = new WebService();
-		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); 
+		WebService webService = new WebService();	
         try {
+        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); 
 			String status = jsonObj.getString("status");
 			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -440,11 +450,14 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	public void updateUserMensa() {
 		String deviceid = getUniquePsuedoID();
 		WebService webService = new WebService();
-		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
         try {
+        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
 			String status = jsonObj.getString("status");
 			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -455,11 +468,14 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	public void updateUserName(String username) throws UnsupportedEncodingException {
 		String deviceid = getUniquePsuedoID();
 		WebService webService = new WebService();
-		JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&name=" + URLEncoder.encode(username, "UTF-8")); 
         try {
+        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
 			String status = jsonObj.getString("status");
 			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

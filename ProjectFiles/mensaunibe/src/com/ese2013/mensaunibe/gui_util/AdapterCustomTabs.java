@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.util;
+package com.ese2013.mensaunibe.gui_util;
 
 import java.util.ArrayList;
 

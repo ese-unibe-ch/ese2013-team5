@@ -3,11 +3,6 @@ package com.ese2013.mensaunibe;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Menu;
-import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.AdapterCustomMenulist;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.ese2013.mensaunibe.gui_util.AdapterCustomMenulist;
+import com.ese2013.mensaunibe.model.Mensa;
+import com.ese2013.mensaunibe.model.Menu;
+import com.ese2013.mensaunibe.model.Model;
 
 /**
  * Fragment that appears in the "content_frame", shows Menulist

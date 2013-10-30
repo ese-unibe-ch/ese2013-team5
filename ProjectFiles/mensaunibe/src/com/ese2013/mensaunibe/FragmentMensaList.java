@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.ese2013.mensaunibe.gui_util.AdapterCustomMensalist;
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
-import com.ese2013.mensaunibe.util.AdapterCustomMensalist;
 
 /**
  * Fragment that appears in the "content_frame", shows mensalist
