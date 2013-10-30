@@ -15,13 +15,18 @@ import com.ese2013.mensaunibe.util.database.MensaDatabase;
 public class MensaFromWebFactory extends AbstractMensaFactory {
 	
 	private static WebService webService = new WebService();
+	private ArrayList<Mensa> mensas;
 
 	@Override
 	public ArrayList<Mensa> createMensaList() throws WebLoadException {
+		loadAll();
+		return mensas;
+	}
+	
+	private void loadAll() throws WebLoadException {
 		try {
-			ArrayList<Mensa> mensas = createMensas();
+			mensas = createMensas();
 			initializeMenuPlans(mensas);
-			return mensas;
 		} catch (Exception e) {
 			throw new WebLoadException(e);
 		}

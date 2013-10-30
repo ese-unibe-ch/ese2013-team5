@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.os.AsyncTask;
 
 import com.ese2013.mensaunibe.model.Mensa;
-import com.ese2013.mensaunibe.model.Model;
 
 /**
  * AsyncTask to create the model asynchronously
@@ -32,49 +31,57 @@ public class ModelCreator extends AsyncTask<Void, Void, ArrayList<Mensa>> {
 	protected ArrayList<Mensa> doInBackground(Void... arg0) {
 		try {
 			mensas = factory.createMensaList();
-		} catch (SqlLoadException e) {
-			exception = e;
-			e.printStackTrace();
-		} catch (WebLoadException e) {
+			wasSuccessful = true;
+		} catch (LoadException e) {
 			exception = e;
 			e.printStackTrace();
 		}
-		wasSuccessful = true;
 		return mensas;
 	}
 
-//	/**
-//	 * Checks whether the creation was successful or not
-//	 * 
-//	 * @return true of the creation was successful else false
-//	 */
-//	public boolean wasSuccessful() {
-//		return wasSuccessful;
-//	}
+	/**
+	 * Checks whether the creation was successful or not
+	 * 
+	 * @return true of the creation was successful else false
+	 */
+	public boolean wasSuccessful() {
+		return wasSuccessful;
+	}
 
-//	/**
-//	 * Returns the created mensa list. Should only be called before the task was
-//	 * executed!
-//	 * 
-//	 * @return The list of the created mensas
-//	 * @throws LoadException
-//	 *             when the creation of the mensas failed at some point
-//	 */
-//	public ArrayList<Mensa> getMensaList() throws LoadException {
-//		if (wasSuccessful) {
-//			return mensas;
-//		} else {
-//			throw exception;
-//		}
-//	}
+	/**
+	 * Returns the exception that was thrown during execution of the task
+	 * 
+	 * @return Exception that was thrown when executing. null if no exception
+	 *         was raised
+	 */
+	public LoadException getException() {
+		return exception;
+	}
 
-//	/**
-//	 * Informs the model that creation is finished
-//	 */
-//	@Override
-//	protected void onPostExecute(Void result) {
-//		Model.getInstance().onCreatorFinished(this);
-//		super.onPostExecute(result);
-//	}
+	// /**
+	// * Returns the created mensa list. Should only be called before the task
+	// was
+	// * executed!
+	// *
+	// * @return The list of the created mensas
+	// * @throws LoadException
+	// * when the creation of the mensas failed at some point
+	// */
+	// public ArrayList<Mensa> getMensaList() throws LoadException {
+	// if (wasSuccessful) {
+	// return mensas;
+	// } else {
+	// throw exception;
+	// }
+	// }
+
+	// /**
+	// * Informs the model that creation is finished
+	// */
+	// @Override
+	// protected void onPostExecute(Void result) {
+	// Model.getInstance().onCreatorFinished(this);
+	// super.onPostExecute(result);
+	// }
 
 }

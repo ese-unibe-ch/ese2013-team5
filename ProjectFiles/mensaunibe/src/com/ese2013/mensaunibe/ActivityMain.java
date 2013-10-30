@@ -139,6 +139,12 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	}
 
 	@Override
+	protected void onStop() {
+		model.updateLocalData();
+		super.onStop();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu_action, menu);

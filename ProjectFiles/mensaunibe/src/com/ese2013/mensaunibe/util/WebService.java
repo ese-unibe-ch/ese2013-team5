@@ -32,8 +32,6 @@ import android.net.Uri.Builder;
  */
 public class WebService {
 
-//	private WebRequest request;
-
 	public WebService() {
 		HttpParams myParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(myParams, 10000);
@@ -48,17 +46,6 @@ public class WebService {
 	 */
 	public JSONObject requestAllMensas() throws IOException {
 		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=mensa&holder=mensas");
-//		JSONObject json = null;
-//		try {
-//			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=mensa&holder=mensas");
-//			request.execute();
-//			json = request.get();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-//		return json;
 	}
 
 	/**
@@ -69,20 +56,9 @@ public class WebService {
 	 * @return The answer from the service as a JSONObject
 	 * @throws IOException when the request to the server failed
 	 */
-	public JSONObject requestMenusForMensa(int id) throws IOException {
-//		JSONObject json = null;  
+	public JSONObject requestMenusForMensa(int id) throws IOException { 
 		int currentWeek = clacWeekNumber();
-		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + (currentWeek-1) + "&holder=menus");
-//		try {
-//			request = new WebRequest("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + (currentWeek-1) + "&holder=menus");
-//			request.execute();
-//			json = request.get();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-//		return json;
+		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
 	}
 	
 	/**
