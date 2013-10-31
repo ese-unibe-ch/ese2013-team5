@@ -16,6 +16,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	
 	private static WebService webService = new WebService();
 	private ArrayList<Mensa> mensas;
+	private JSONObject mensasJSON;
 
 	@Override
 	public ArrayList<Mensa> createMensaList() throws WebLoadException {
@@ -36,7 +37,8 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		MensaDatabase database = new MensaDatabase();
 		database.open();
 		ArrayList<Mensa> result = new ArrayList<Mensa>();
-		JSONObject mensasJSON = webService.requestAllMensas();
+		JSONObject mensasJSON = webService.requestAllData();
+		this.mensasJSON = mensasJSON;
 		JSONArray array = mensasJSON.getJSONArray("mensas");
 		for (int i = 0; i < array.length(); i++) {
 			BuilderMensa mensaBuilder = new BuilderMensa(
@@ -48,11 +50,14 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private void initializeMenuPlans(List<Mensa> mensas) throws IOException, JSONException {
 		for (int i = 0; i < mensas.size(); i++) {
-			JSONObject menus = webService.requestMenusForMensa(mensas.get(i)
-					.getId());
-			JSONArray array = menus.getJSONArray("menus");
-			mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, mensas.get(i)));
+			JSONArray menus = mensasJSON.getJSONArray("mensas").getJSONObject(i).getJSONArray("menus");
+			mensas.get(i).setWeeklyPlan(new WeeklyPlan(menus, mensas.get(i)));
 		}
+//		for (int i = 0; i < mensas.size(); i++) {
+//			JSONObject menus = webService.requestMenusForMensa(mensas.get(i).getId());
+//			JSONArray array = menus.getJSONArray("menus");
+//			mensas.get(i).setWeeklyPlan(new WeeklyPlan(array, mensas.get(i)));
+//		}
 	}
 
 }

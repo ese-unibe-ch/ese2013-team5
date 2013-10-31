@@ -37,6 +37,16 @@ public class WebService {
 		HttpConnectionParams.setConnectionTimeout(myParams, 10000);
 		HttpConnectionParams.setSoTimeout(myParams, 10000);
 	}
+	
+	/**
+	 * Requests all the mensas including the menus from the web service
+	 * 
+	 * @return The answer from the service JSONObject
+	 * @throws IOException when the request to the server failed
+	 */
+	public JSONObject requestAllData() throws IOException {
+		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=mensafull");
+	}
 
 	/**
 	 * Requests all the mensas from the web service
@@ -45,7 +55,7 @@ public class WebService {
 	 * @throws IOException when the request to the server failed
 	 */
 	public JSONObject requestAllMensas() throws IOException {
-		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=mensa&holder=mensas");
+		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=mensa");
 	}
 
 	/**
@@ -58,7 +68,7 @@ public class WebService {
 	 */
 	public JSONObject requestMenusForMensa(int id) throws IOException { 
 		int currentWeek = clacWeekNumber();
-		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek + "&holder=menus");
+		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek);
 	}
 	
 	/**
