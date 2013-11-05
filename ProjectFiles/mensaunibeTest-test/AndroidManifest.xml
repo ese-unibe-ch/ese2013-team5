@@ -7,7 +7,7 @@
     <uses-sdk android:minSdkVersion="12" />
 
     <instrumentation
-        android:name="android.test.InstrumentationTestRunner"
+        android:name="com.zutubi.android.junitreport.JUnitReportTestRunner"
         android:targetPackage="com.ese2013.mensaunibe" />
 
     <application
