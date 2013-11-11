@@ -7,14 +7,14 @@
     <PreferenceCategory
         android:title="Einstellungen">
 
-        <com.ese2013.mensaunibe.util.CustomEditTextPreference
+        <com.ese2013.mensaunibe.util.gui.CustomEditTextPreference
             android:key="setting_username"
             android:title="Dein Username"
             android:dialogTitle="Username eingeben"
             android:defaultValue="Mensa UniBE User"
         />
 
-        <com.ese2013.mensaunibe.util.CustomListPreference
+        <com.ese2013.mensaunibe.util.gui.CustomListPreference
             android:key="setting_homescreen"
             android:title="Homescreen Konfiguration"
             android:dialogTitle="Bitte auswählen"

@@ -22,17 +22,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.ese2013.mensaunibe.gui_util.AdapterCustomMenulist;
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
+import com.ese2013.mensaunibe.util.gui.AdapterCustomMenulist;
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh;
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
 
 public class FragmentMenuListDay extends Fragment {
 	
 	private AdapterCustomMenulist adapter;
 	private Context context;
-	private ActivityMain main;
+//	private ActivityMain main;
 	
     private static final String KEY_POSITION = "position";
 	private String day;
@@ -93,9 +94,42 @@ public class FragmentMenuListDay extends Fragment {
 	  
         View rootView = inflater.inflate(R.layout.fragment_menulist_pager, container, false);
         this.context = inflater.getContext();
-        this.main = (ActivityMain) this.getActivity();
+//        this.main = (ActivityMain) this.getActivity();
     
-        final ListView listview = (ListView) rootView.findViewById(R.id.menulist);
+        final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
+        
+		// disable scrolling when list is refreshing
+		listview.setLockScrollWhileRefreshing(false);
+
+		// override the default strings
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
+		listview.setTextRefreshing("Lade Daten...");
+
+		// set the onRefreshListener for the pull down listview
+		listview.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
+				// call listView.onRefreshComplete() when the loading is done.
+
+				// For demo purposes, the code will pause here to
+				// force a delay when invoking the refresh
+				listview.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						
+						listview.onRefreshComplete("Daten neu geladen");
+					}
+				}, 2000);
+			}
+		});
+		
         ArrayList<Menu> menus = new ArrayList<Menu>();
         menus.addAll(mensa.getMenus(day));
     

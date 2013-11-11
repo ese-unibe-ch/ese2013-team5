@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.gui_util;
+package com.ese2013.mensaunibe.util.gui;
 
 
 import com.ese2013.mensaunibe.FragmentMenuListDay;
@@ -10,12 +10,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class AdapterCustomFragmentPager extends FragmentPagerAdapter {
-    private Context context = null;
+//    private Context context = null;
 	private Mensa mensa;
 
     public AdapterCustomFragmentPager(Mensa mensa, Context context, FragmentManager fragmgr) {
         super(fragmgr);
-        this.context = context;
+//        this.context = context;
         this.mensa = mensa;
     }
 

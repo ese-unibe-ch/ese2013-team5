@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.gui_util;
+package com.ese2013.mensaunibe.util.gui;
 
 import android.content.Context;
 import android.preference.ListPreference;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 
 public class CustomListPreference extends ListPreference {
 
-    private final static String TAG = CustomListPreference.class.getName();
+//    private final static String TAG = CustomListPreference.class.getName();
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);

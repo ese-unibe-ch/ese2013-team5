@@ -9,11 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.ese2013.mensaunibe.gui_util.AdapterCustomMensalist;
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
+import com.ese2013.mensaunibe.util.gui.AdapterCustomMensalist;
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh;
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
 
 /**
  * Fragment that appears in the "content_frame", shows mensalist
@@ -39,7 +40,39 @@ public class FragmentMensaList extends Fragment {
 //		Toast.makeText(main.getBaseContext(), "Hier werden alle Mensas im Überblick angezeigt", Toast.LENGTH_LONG).show();
 		// get the list view from the layout into a variable, it's important
 		// to fetch it from the rootView
-		final ListView listview = (ListView) rootView.findViewById(R.id.mensalist);
+		final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.mensalist);
+		
+		// disable scrolling when list is refreshing
+		listview.setLockScrollWhileRefreshing(false);
+
+		// override the default strings
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
+		listview.setTextRefreshing("Lade Daten...");
+
+		// set the onRefreshListener for the pull down listview
+		listview.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
+				// call listView.onRefreshComplete() when the loading is done.
+
+				// For demo purposes, the code will pause here to
+				// force a delay when invoking the refresh
+				listview.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						
+						listview.onRefreshComplete("Mensas neu geladen");
+					}
+				}, 2000);
+			}
+		});
 
 		adapter = new AdapterCustomMensalist(getActivity(), this, mensalist, R.layout.list_mensalist_item);
 

@@ -41,8 +41,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		this.mensasJSON = mensasJSON;
 		JSONArray array = mensasJSON.getJSONArray("mensas");
 		for (int i = 0; i < array.length(); i++) {
-			BuilderMensa mensaBuilder = new BuilderMensa(
-					array.getJSONObject(i), database.isMensaFavorite(i));
+			BuilderMensa mensaBuilder = new BuilderMensa(array.getJSONObject(i), database.isMensaFavorite(i));
 			result.add(mensaBuilder.build());
 		}
 		return result;

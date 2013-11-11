@@ -52,7 +52,7 @@ public class FragmentSettings extends PreferenceFragment implements OnSharedPref
     	if ( key.equals("setting_username") ) {
     		Toast.makeText(getActivity(), "Username updated, sending to server...", Toast.LENGTH_LONG).show();
     		try {
-				((ActivityMain) getActivity()).updateUserName(sharedPreferences.getString(key, "Mensa UniBE User"));
+				((ActivityMain) getActivity()).updateUser(sharedPreferences.getString(key, "Mensa UniBE User"));
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

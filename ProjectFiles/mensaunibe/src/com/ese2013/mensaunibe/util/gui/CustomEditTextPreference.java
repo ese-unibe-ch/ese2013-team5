@@ -1,4 +1,4 @@
-package com.ese2013.mensaunibe.gui_util;
+package com.ese2013.mensaunibe.util.gui;
 
 import android.content.Context;
 import android.preference.EditTextPreference;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 
 public class CustomEditTextPreference extends EditTextPreference {
 
-    private final static String TAG = CustomEditTextPreference.class.getName();
+//    private final static String TAG = CustomEditTextPreference.class.getName();
 
     public CustomEditTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);

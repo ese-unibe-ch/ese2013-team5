@@ -3,12 +3,14 @@ package com.ese2013.mensaunibe;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh;
+import com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -30,7 +32,39 @@ public class FragmentNotifications extends Fragment {
 
 		// get the list view from the layout into a variable, it's important
 		// to fetch it from the rootView
-		final ListView listview = (ListView) rootView.findViewById(R.id.notifications);
+		final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.notifications);
+		
+		// disable scrolling when list is refreshing
+		listview.setLockScrollWhileRefreshing(false);
+
+		// override the default strings
+		listview.setTextPullToRefresh("Ziehen fŸr Update");
+		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+		listview.setTextRefreshing("Lade Daten...");
+
+		// set the onRefreshListener for the pull down listview
+		listview.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
+				// call listView.onRefreshComplete() when the loading is done.
+
+				// For demo purposes, the code will pause here to
+				// force a delay when invoking the refresh
+				listview.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						
+						listview.onRefreshComplete("Notifications neu geladen");
+					}
+				}, 2000);
+			}
+		});
 
 		// Fetch the string array from resouce arrays.xml > mensalist
 		// String[] notifications =

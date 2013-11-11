@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import android.net.Uri;
 import android.net.Uri.Builder;
+import android.util.Log;
 
 /**
  * This class is responsible for connecting to the mensa web service and
@@ -67,7 +68,7 @@ public class WebService {
 	 * @throws IOException when the request to the server failed
 	 */
 	public JSONObject requestMenusForMensa(int id) throws IOException { 
-		int currentWeek = clacWeekNumber();
+		int currentWeek = calcWeekNumber();
 		return requestFromURL("http://api.031.be/mensaunibe/v1/?type=menu&query[mensaid]=" + id + "&query[week]=" + currentWeek);
 	}
 	
@@ -81,11 +82,12 @@ public class WebService {
 		try {
 			return convertStreamToJSON(getHttpStream(url));
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IOException("bad request to the server");
 		}
 	}
 	
-	private int clacWeekNumber() {
+	private int calcWeekNumber() {
 		Calendar calendar = new GregorianCalendar();
 		Date now = new Date();   
 		calendar.setTime(now);     
@@ -93,10 +95,13 @@ public class WebService {
 	}
 
 	private InputStream getHttpStream(String urlString) throws IOException {
+		Log.i("WebService", "making request to " + urlString);
+		String userAgent = "MensaUniBe Android App dev version";
 		HttpClient client = new DefaultHttpClient();
 		Uri uri = Uri.parse(urlString);
 		Builder uriBuilder = uri.buildUpon();
 		HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
+		httpGet.setHeader("User-Agent", userAgent);
 		HttpResponse response = client.execute(httpGet);
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();
@@ -118,5 +123,5 @@ public class WebService {
 		}
 		bf.close();
 		return new JSONObject(sb.toString());
-	}
+	}	 
 }

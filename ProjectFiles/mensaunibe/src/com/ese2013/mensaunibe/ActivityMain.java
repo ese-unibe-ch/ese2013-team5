@@ -1,7 +1,13 @@
 package com.ese2013.mensaunibe;
 
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,8 +19,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -62,6 +71,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 
 	// The model provides and manages the mensas objects for the app
 	public Model model;
+	public WebService webService = new WebService();
+	// global UI Thread handler
+	public Handler mHandler = new Handler();
 	
 	public ListView listView;
 	public Mensa currentMensa;
@@ -82,6 +94,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		// Model that is providing all the logic for the app is instantiated
 		this.model = Model.getInstance();
 		
+		// try to fix phones with settings key and force them so show and use the actionbar menu
+		getOverflowMenu();
+		
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
 		
@@ -90,7 +105,21 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		// when a user/device is in the database
 		// we also need an EditText field in the system settings to add a username, which then would also be sent to the
 		// server for the whole notification and friends stuff, the api is ready for that...
-		sendUserID();
+//		sendUserID();
+		new WebLoadAsync() { 
+	        protected void onPostExecute(JSONObject json) {
+	        	String status = null;
+				try {
+					status = json.getString("status");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
+	        }
+	    }.execute("http://api.031.be/mensaunibe/getdata/?deviceid=" + getUniquePsuedoID()); // start the background processing
+
 		
 		mTitle = mDrawerTitle = getTitle();
 		mNavItems = getResources().getStringArray(R.array.sidenav_items);
@@ -136,6 +165,59 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	
 	public static Context getContextOfApp() {
 		return appContext;
+	}
+	
+	private void getOverflowMenu() {
+
+	    try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	         Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	         if (menuKeyField != null) {
+	             menuKeyField.setAccessible(true);
+	             menuKeyField.setBoolean(config, false);
+	         }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	/**
+	 * this method is JUST for the view pager
+	 * It's needed because the Java week starts at sunday, eg sunday = 1
+	 * the pageview array o the viewpager starts at 0 and ends at 4 for friday
+	 * so we need to return the correct values for that
+	 * @return
+	 */
+	public int calcWeekDay() {
+		Calendar calendar = new GregorianCalendar();
+		Date now = new Date();   
+		calendar.setTime(now);
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		switch(day) {
+			// sunday
+			case 1: 
+				return 4;
+			// monday
+			case 2:
+				return 0;
+			// tuesday
+			case 3:
+				return 1;
+			// wednesday
+			case 4:
+				return 2;
+			// thursday
+			case 5:
+				return 3;
+			// friday
+			case 6:
+				return 4;
+			// saturday
+			case 7:
+				return 4;
+			default:
+				return 0;
+		}
 	}
 
 	@Override
@@ -429,23 +511,23 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
 	}
 	
-	public void sendUserID() {
-		String deviceid = getUniquePsuedoID();
-		WebService webService = new WebService();	
-        try {
-        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); 
-			String status = jsonObj.getString("status");
-			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        // actually we should save this id somewhere to get it over sessions...should always be the same...
-        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
-	}
+//	public void sendUserID() {
+//		String deviceid = getUniquePsuedoID();
+//		try {
+//			JSONObject statusJSON = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid);
+//			String status = statusJSON.getString("status");
+//			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//        // actually we should save this id somewhere to get it over sessions...should always be the same...
+//        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+//	}
 	
 	public void updateUserMensa() {
 		String deviceid = getUniquePsuedoID();
@@ -465,21 +547,52 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
         // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
 	}
 	
-	public void updateUserName(String username) throws UnsupportedEncodingException {
-		String deviceid = getUniquePsuedoID();
-		WebService webService = new WebService();
-        try {
-        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
-			String status = jsonObj.getString("status");
-			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void updateUser(String username) throws UnsupportedEncodingException {
+		new WebLoadAsync() { 
+	        protected void onPostExecute(JSONObject json) {
+	        	String status = null;
+				try {
+					status = json.getString("status");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
+	        }
+	    }.execute("http://api.031.be/mensaunibe/getdata/?deviceid=" + getUniquePsuedoID() + "&name=" + URLEncoder.encode(username, "UTF-8")); // start the background processing
+
         // actually we should save this id somewhere to get it over sessions...should always be the same...
         // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+	}
+	
+	public class WebLoadAsync extends AsyncTask<String, String, JSONObject> {
+		
+		@Override
+	    protected JSONObject doInBackground(String...urls) {
+	        try {
+				JSONObject json = webService.requestFromURL(urls[0]);
+				return json;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        return null;
+	    }
+		
+	    @Override
+	    protected void onPostExecute(JSONObject json) {
+	    	// this can be overwritten inline when calling the async task
+//	    	String status = null;
+//			try {
+//				status = json.getString("status");
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
+
+	    }
 	}
 }

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" >
+    android:padding="6dip">
 
     <ImageView
         android:id="@+id/icon"
@@ -12,7 +12,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_friendicon" />
+        android:src="@drawable/ic_friendicon"
+    />
 
     <TextView
         android:id="@+id/line2"
@@ -25,7 +26,8 @@
         android:singleLine="true"
         android:text="Description"
         android:textColor="@color/unibe_gray_dark"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+    />
 
     <TextView
         android:id="@+id/line1"
@@ -39,6 +41,7 @@
         android:gravity="center_vertical"
         android:text="Example application"
         android:textColor="@color/unibe_black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+    />
 
 </RelativeLayout> 

@@ -17,6 +17,12 @@
     <string name="title_activity_mensamap">Mensa Map</string>
     <string name="title_activity_friends">Friends</string>
     
+    <!-- Pull to refresh strings -->
+    <string name="ptr_pull_to_refresh">Pull to refresh</string>
+    <string name="ptr_release_to_refresh">Release to refresh</string>
+    <string name="ptr_refreshing">Refreshing…</string>
+    <string name="ptr_last_updated">Updated: %1$s</string>
+    
     <!-- Button Description Strings (Accessibility) -->
     <string name="button_map_desc">Navigate to Mensa</string>
     <string name="button_star_desc">Set your favourite Mensa</string>
