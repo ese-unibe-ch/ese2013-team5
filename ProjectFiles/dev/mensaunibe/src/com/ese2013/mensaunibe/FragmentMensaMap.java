@@ -4,6 +4,7 @@ package com.ese2013.mensaunibe;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ese2013.mensaunibe.lib.route.Routing;
+import com.ese2013.mensaunibe.lib.route.RoutingListener;
 import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Model;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,12 +26,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Fragment that appears in the "content_frame", shows mensamap
  */
-public class FragmentMensaMap extends Fragment implements OnMarkerClickListener {
+public class FragmentMensaMap extends Fragment implements OnMarkerClickListener, RoutingListener {
 
 	private ActivityMain main;
 	private Context context;
@@ -37,10 +41,16 @@ public class FragmentMensaMap extends Fragment implements OnMarkerClickListener 
 	private GoogleMap map = null;
 	private Location location;
 	private SupportMapFragment mapFragment;
+	private Polyline route;
 
 	public FragmentMensaMap() {
 		// Empty constructor required for fragment subclasses
 	}
+	
+	// needed to communicate back from an async task to the invoking fragment
+    public interface FragmentCallback {
+        public void onTaskDone(PolylineOptions options);
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,7 +142,8 @@ public class FragmentMensaMap extends Fragment implements OnMarkerClickListener 
         	
         	if ( location != null ){
                 // just for testing purposes, set the marker where the blue dot is (should be like that)
-            	map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())));
+        		// with the route drawing this marker is nicely crashing the app as we cannot navigate to where we are already
+            	//map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())));
             }
         	
         	
@@ -191,13 +202,57 @@ public class FragmentMensaMap extends Fragment implements OnMarkerClickListener 
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		map.addPolyline(
-				new PolylineOptions()
-				.add(new LatLng(location.getLatitude(), location.getLongitude()), marker.getPosition())
-				.geodesic(true)
-		);
+		displayRoute(new LatLng(location.getLatitude(), location.getLongitude()), marker.getPosition());
+		
+//		map.addPolyline(
+//				new PolylineOptions()
+//				.add(new LatLng(location.getLatitude(), location.getLongitude()), marker.getPosition())
+//				.geodesic(true)
+//		);
 		Toast toast = Toast.makeText(context, "Clicked a marker, draw route..." + marker.getPosition(), Toast.LENGTH_LONG);
 		toast.show();
 		return false;
 	}
+	
+    // create a route and display on the map 
+    private void displayRoute(LatLng start, LatLng end) {
+    	Routing routing = new Routing(context, Routing.TravelMode.WALKING);
+        routing.registerListener(this);
+        routing.execute(start, end);
+    }
+
+    @Override
+    public void onRoutingFailure() {
+      // The Routing request failed
+    }
+
+    @Override
+    public void onRoutingStart() {
+      // The Routing Request starts
+    }
+
+    @Override
+    public void onRoutingSuccess(PolylineOptions mPolyOptions) {
+      PolylineOptions polyoptions = new PolylineOptions();
+      polyoptions.color(Color.RED);
+      polyoptions.width(5);
+      polyoptions.addAll(mPolyOptions.getPoints());
+      if ( route != null ) {
+		  // remove any existing routes to other markers
+		  route.remove();
+      }
+      route = map.addPolyline(polyoptions);
+
+//      // Start marker
+//      MarkerOptions options = new MarkerOptions();
+//      options.position(start);
+//      options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
+//      map.addMarker(options);
+//
+//      // End marker
+//      options = new MarkerOptions();
+//      options.position(end);
+//      options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));  
+//      map.addMarker(options);
+    }
 }

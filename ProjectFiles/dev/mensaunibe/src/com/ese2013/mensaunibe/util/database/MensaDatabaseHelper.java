@@ -19,7 +19,7 @@ public class MensaDatabaseHelper extends SQLiteOpenHelper {
 	private List<Table> tables = new ArrayList<Table>();
 
 	public MensaDatabaseHelper() {
-		super(ActivityMain.getContextOfApp(), DATABASE_NAME, null, DATABASE_VERSION);
+		super(ActivityMain.getContext(), DATABASE_NAME, null, DATABASE_VERSION);
 		tables.add(new MensaTable());
 		tables.add(new FavoriteTable());
 		tables.add(new MenuTable());

@@ -1,6 +1,7 @@
 package com.ese2013.mensaunibe.util.gui;
 
 
+import com.ese2013.mensaunibe.FragmentMenuListAllDay;
 import com.ese2013.mensaunibe.FragmentMenuListDay;
 import com.ese2013.mensaunibe.model.Mensa;
 
@@ -18,6 +19,10 @@ public class AdapterCustomFragmentPager extends FragmentPagerAdapter {
 //        this.context = context;
         this.mensa = mensa;
     }
+    
+    public AdapterCustomFragmentPager(Context context, FragmentManager fragmgr) {
+        super(fragmgr);
+    }
 
     @Override
     public int getCount() {
@@ -26,7 +31,11 @@ public class AdapterCustomFragmentPager extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return(FragmentMenuListDay.newInstance(position, mensa));
+    	if ( mensa != null ) {
+    		return(FragmentMenuListDay.newInstance(position, mensa));
+    	} else {
+    		return(FragmentMenuListAllDay.newInstance(position));
+    	}
     }
 
 	@Override

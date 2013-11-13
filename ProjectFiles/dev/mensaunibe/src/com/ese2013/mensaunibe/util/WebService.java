@@ -20,8 +20,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.util.Log;
