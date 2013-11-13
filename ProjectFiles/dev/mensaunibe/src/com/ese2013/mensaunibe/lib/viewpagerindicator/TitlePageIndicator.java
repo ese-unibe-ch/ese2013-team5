@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.viewpagerindicator;
+package com.ese2013.mensaunibe.lib.viewpagerindicator;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -37,6 +37,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import java.util.ArrayList;
+
+import com.ese2013.mensaunibe.R;
 
 /**
  * A TitlePageIndicator is a PageIndicator which displays the title of left view

@@ -8,7 +8,6 @@ import com.ese2013.mensaunibe.model.Mensa;
 import com.ese2013.mensaunibe.model.Menu;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Gravity;
@@ -25,7 +24,7 @@ import android.widget.Toast;
 
 public class AdapterCustomMenulist extends BaseAdapter {
 	private Context context;
-	private ViewGroup parent;
+//	private ViewGroup parent;
 	private List<Menu> menus;
 	private LayoutInflater inflater;
 	private int resource;
@@ -41,7 +40,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
 		// get a reference to the parent view for the rating dialog
-		this.parent = parent;
+//		this.parent = parent;
 
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(resource, parent, false);

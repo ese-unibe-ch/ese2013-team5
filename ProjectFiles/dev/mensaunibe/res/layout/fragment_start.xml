@@ -58,7 +58,7 @@
         android:layout_weight="1"
     />
 	
-   	<com.viewpagerindicator.TitlePageIndicator
+   	<com.ese2013.mensaunibe.lib.viewpagerindicator.TitlePageIndicator
 	    android:id="@+id/indicator"
 	    android:layout_height="wrap_content"
         android:layout_width="fill_parent"

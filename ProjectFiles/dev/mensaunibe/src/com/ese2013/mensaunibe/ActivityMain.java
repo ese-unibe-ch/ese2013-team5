@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -60,7 +64,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	private CharSequence mTitle;
 	private String[] mNavItems;
 	
-	private static Context appContext;
+	private static Context context;
 	
 	// prepare the location data, the variables must be public for use in fragments
 	public LocationClient locationClient;
@@ -77,10 +81,15 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	
 	public ListView listView;
 	public Mensa currentMensa;
-	
 
-	static Button notifCount;
-	static int mNotifCount = 2;
+	private SharedPreferences settings;
+	private Editor settingseditor;
+	private String deviceid;
+	
+	public static final String PREFS_NAME = "MensaunibePrefs";
+	
+	public Button notifCount;
+	public int mNotifCount = (int) (Math.random() * 15 + 1);
 
 	@SuppressLint("NewApi")
 	@Override
@@ -88,7 +97,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		appContext = getApplicationContext();
+		context = getApplicationContext();
 		
 
 		// Model that is providing all the logic for the app is instantiated
@@ -100,25 +109,56 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
 		
-		// send userid to server, this should only be done one or two times, basically first register
-		// the user, then check the next time and save the userid somewhere locally (api returns "registered" in status
-		// when a user/device is in the database
-		// we also need an EditText field in the system settings to add a username, which then would also be sent to the
-		// server for the whole notification and friends stuff, the api is ready for that...
-//		sendUserID();
-		new WebLoadAsync() { 
-	        protected void onPostExecute(JSONObject json) {
-	        	String status = null;
-				try {
-					status = json.getString("status");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		// set up the shared prefs
+		this.settings = context.getSharedPreferences(PREFS_NAME, 0);
+		this.settingseditor = settings.edit();
+		
+		settingseditor.remove("somestring");
+		settingseditor.commit();
+		
+		Toast.makeText(context, "settings " + settings.getAll(), Toast.LENGTH_LONG).show();
+		
+		// check if a device id is stored in shared prefs
+		this.deviceid = settings.getString("deviceid", null);
+		
+		if ( deviceid == null ) {
+			Toast.makeText(context, "no deviceid in shared prefs creating one, prefs: " + settings.getAll(), Toast.LENGTH_LONG).show();
+		    settingseditor.putString("deviceid", getUniquePsuedoID());
+		    settingseditor.commit();
+		} else {
+			Toast.makeText(context, "deviceid in shared prefs: " + deviceid, Toast.LENGTH_LONG).show();
+		}
+		
+		// check if the user is already registered in the api
+		Boolean registered = settings.getBoolean("registered", false);
+		
+		if ( !registered ) {
+			Toast.makeText(context, "device is not registered in the API, trying to register", Toast.LENGTH_LONG).show();
+			// register the device in the API only when necessary
+			new WebLoadAsync(new AsyncCallback() { 
+	            @Override
+	            public void onTaskDone(JSONObject json) {
+	            	String status = null;
+					try {
+						status = json.getString("status");
+					    if ( status.equals("registered") ) {;
+							Toast.makeText(context, "saving status to shared prefs", Toast.LENGTH_LONG).show();
+					    	settingseditor.putBoolean("registered", true);
+						    settingseditor.commit();
+					    } else {
+					    	Toast.makeText(context, "status not registered", Toast.LENGTH_LONG).show();
+					    }
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
-				Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
-	        }
-	    }.execute("http://api.031.be/mensaunibe/getdata/?deviceid=" + getUniquePsuedoID()); // start the background processing
+//					Toast.makeText(context, status, Toast.LENGTH_LONG).show();
+	            }
+		    }).execute("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid); // start the background processing
+		} else {
+			Toast.makeText(context, "device is registered in the API", Toast.LENGTH_LONG).show();
+		}
 
 		
 		mTitle = mDrawerTitle = getTitle();
@@ -163,8 +203,8 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		}
 	}
 	
-	public static Context getContextOfApp() {
-		return appContext;
+	public static Context getContext() {
+		return context;
 	}
 	
 	private void getOverflowMenu() {
@@ -225,14 +265,14 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		model.updateLocalData();
 		super.onStop();
 	}
-
+                  
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu_action, menu);
 		final MenuItem menuitem = menu.findItem(R.id.action_notifications);
 		View count = menu.findItem(R.id.action_notifications).getActionView();
-		notifCount = (Button) count.findViewById(R.id.notification_count);
+		this.notifCount = (Button) count.findViewById(R.id.notification_count);
 		notifCount.setText(String.valueOf(mNotifCount));
 	    notifCount.setOnClickListener(new OnClickListener() {
 	        public void onClick(View v) {
@@ -242,19 +282,17 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@SuppressWarnings("unused")
-	private void setNotifCount(int count) {
-		int mNotifCount = count;
-		invalidateOptionsMenu();
+	public void setNotifCount(int count) {
+//		String countstring = String.valueOf(count);
+//		notifCount.setText(String.valueOf(mNotifCount));
+//		invalidateOptionsMenu();
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		@SuppressWarnings("unused")
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		// If the nav drawer is open, hide action items related to the content view
+		// boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 		// menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -280,7 +318,6 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	        	view = findViewById(R.id.settings_frame);
 	        	view.setVisibility(View.VISIBLE);
 	        	getFragmentManager().beginTransaction().replace(R.id.settings_frame, new FragmentSettings()).commit();
-//		        Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
 		        break;
 	        case R.id.action_notifications:
 	        	selectItem(4);
@@ -368,7 +405,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggls
+		// Pass any configuration change to the drawer toggle
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 	
@@ -377,8 +414,10 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// getting some null pointer here, dunno why...
+		//setNotifCount((int) (Math.random() * 15 + 1));
 
-		locationClient.connect();
+		locationClient.connect();    
 	}
 
 	@Override
@@ -397,45 +436,45 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	@SuppressLint("UseSparseArrays")
 	@Override
 	public void onConnected(Bundle connectionHint) {
-//		// TODO Auto-generated method stub
-//		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
-//		this.location = locationClient.getLastLocation();
-//		// loop trough all the mansa coordinates and determine the closest mensa
-//		// fist get all the mensas in a list to loop over
-//		ArrayList <Mensa> mensas = model.getMensas();
-//		// initialize the distances array to save all distances in
-//		Map<Integer, Float> distances = new HashMap<Integer, Float>();
-//		for (Mensa mensa : mensas) {
-//			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
-//		}
-//		// make the distances globally available, just for convenience
-//		this.distances = distances;
-//		// and now find the nearest mensa
-//		int nearestmensaid = 0;
-//		float smallestdistance = Float.MAX_VALUE;
-//		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
-//		    Float value = entry.getValue();
-//		    if (value < smallestdistance) {
-//		        nearestmensaid = entry.getKey();
-//		        smallestdistance = value;
-//		    }
-//		}
-//		// also make this globally available for convenience and fetch the mensa object
-//		this.nearestmensaid = nearestmensaid;
-//		this.nearestmensa = model.getMensaById(nearestmensaid);
-////		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-//		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
-//		if ( smallestdistance <= 100 ) {
-//			// 100 is too big, should probably be smaller than 50 or less
-//			// here we would save the mensaid to the users profile on the server
-//			// then we can either show his friends that are in that mensa too
-//			// or the total number people in that mensa, or both...
-//			updateUserMensa();
-//			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
-//		}
-//		// a very ugly and hacky way to show the closest mensa on the home screen
-//		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
-//		selectItem(0);
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "locationClient connected", Toast.LENGTH_LONG).show();
+		this.location = locationClient.getLastLocation();
+		// loop trough all the mansa coordinates and determine the closest mensa
+		// fist get all the mensas in a list to loop over
+		ArrayList <Mensa> mensas = model.getMensas();
+		// initialize the distances array to save all distances in
+		Map<Integer, Float> distances = new HashMap<Integer, Float>();
+		for (Mensa mensa : mensas) {
+			distances.put(mensa.getId(), getDistance(location.getLatitude(), location.getLongitude(), mensa.getLat(), mensa.getLon()));
+		}
+		// make the distances globally available, just for convenience
+		this.distances = distances;
+		// and now find the nearest mensa
+		int nearestmensaid = 0;
+		float smallestdistance = Float.MAX_VALUE;
+		for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
+		    Float value = entry.getValue();
+		    if (value < smallestdistance) {
+		        nearestmensaid = entry.getKey();
+		        smallestdistance = value;
+		    }
+		}
+		// also make this globally available for convenience and fetch the mensa object
+		this.nearestmensaid = nearestmensaid;
+		this.nearestmensa = model.getMensaById(nearestmensaid);
+//		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "closest mensa: " + nearestmensa.getName(), Toast.LENGTH_SHORT).show();
+		if ( smallestdistance <= 100 ) {
+			// 100 is too big, should probably be smaller than 50 or less
+			// here we would save the mensaid to the users profile on the server
+			// then we can either show his friends that are in that mensa too
+			// or the total number people in that mensa, or both...
+			updateUserMensa();
+			Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
+		}
+		// a very ugly and hacky way to show the closest mensa on the home screen
+		// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
+		selectItem(0);
 	}
 
 	@Override
@@ -455,7 +494,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    return resultArray[0];
 	}
 	
+	// UNUSED
 	// this method asks the remote maps api for the path distance, e.g the distance over streets
+	// currently not used, would be more accurate, but also make many remote requests each time
 	public String getRouteDistance(double startLat, double startLon, double endLat, double endLon) {
 	    WebService webService = new WebService();
 	    String Distance = "error";
@@ -490,6 +531,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	 * @return ID 
 	 */
 	public static String getUniquePsuedoID() {
+		Toast.makeText(context, "getUniquePseudoID method running", Toast.LENGTH_LONG).show();
 	    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
 	    // returns 'null', then simply the ID returned will be soley based
 	    // off their Android device information.
@@ -508,7 +550,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 	    }
 
 	    // Finally, combine the values we have found by using the UUID class to create a unique identifier
-	    return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	    String deviceid = new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+	    
+	    return deviceid;
 	}
 	
 //	public void sendUserID() {
@@ -530,27 +574,11 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 //	}
 	
 	public void updateUserMensa() {
-		String deviceid = getUniquePsuedoID();
-		WebService webService = new WebService();
-        try {
-        	JSONObject jsonObj = webService.requestFromURL("http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid); 
-			String status = jsonObj.getString("status");
-			Toast.makeText(this, status, Toast.LENGTH_LONG).show();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        // actually we should save this id somewhere to get it over sessions...should always be the same...
-        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
-	}
-	
-	public void updateUser(String username) throws UnsupportedEncodingException {
-		new WebLoadAsync() { 
-	        protected void onPostExecute(JSONObject json) {
-	        	String status = null;
+		String url = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + nearestmensaid;
+		new WebLoadAsync(new AsyncCallback() { 
+            @Override
+            public void onTaskDone(JSONObject json) {
+            	String status = null;
 				try {
 					status = json.getString("status");
 				} catch (JSONException e) {
@@ -559,14 +587,35 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 				}
 
 				Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
-	        }
-	    }.execute("http://api.031.be/mensaunibe/getdata/?deviceid=" + getUniquePsuedoID() + "&name=" + URLEncoder.encode(username, "UTF-8")); // start the background processing
+            }
+	    }).execute(url);
+	}
+	
+	public void updateUser(String username) throws UnsupportedEncodingException {
+		String url = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&name=" + URLEncoder.encode(username, "UTF-8");
+		new WebLoadAsync(new AsyncCallback() { 
+            @Override
+            public void onTaskDone(JSONObject json) {
+            	String status = null;
+				try {
+					status = json.getString("status");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-        // actually we should save this id somewhere to get it over sessions...should always be the same...
-        // if the status is "registered" then this should be saved persistent somewhere to not always make this request!
+				Toast.makeText(ActivityMain.this, status, Toast.LENGTH_LONG).show();
+            }
+	    }).execute(url); // start the background processing
 	}
 	
 	public class WebLoadAsync extends AsyncTask<String, String, JSONObject> {
+		
+		private AsyncCallback callback;
+
+		public WebLoadAsync(AsyncCallback asyncCallback) {
+			this.callback = asyncCallback;
+		}
 		
 		@Override
 	    protected JSONObject doInBackground(String...urls) {
@@ -582,6 +631,7 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		
 	    @Override
 	    protected void onPostExecute(JSONObject json) {
+	    	callback.onTaskDone(json);
 	    	// this can be overwritten inline when calling the async task
 //	    	String status = null;
 //			try {
@@ -595,4 +645,8 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 
 	    }
 	}
+	
+    public interface AsyncCallback {
+        public void onTaskDone(JSONObject json);
+    }
 }
