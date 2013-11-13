@@ -44,6 +44,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 			BuilderMensa mensaBuilder = new BuilderMensa(array.getJSONObject(i), database.isMensaFavorite(i));
 			result.add(mensaBuilder.build());
 		}
+		database.close();
 		return result;
 	}
 

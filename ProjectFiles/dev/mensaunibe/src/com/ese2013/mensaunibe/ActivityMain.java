@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -109,12 +110,9 @@ public class ActivityMain extends FragmentActivity implements ConnectionCallback
 		// initialize the locationClient
 		locationClient = new LocationClient(this, this, this);
 		
-		// set up the shared prefs
-		this.settings = context.getSharedPreferences(PREFS_NAME, 0);
+		// set up the shared prefs, just use the default ones
+		this.settings = PreferenceManager.getDefaultSharedPreferences(context);
 		this.settingseditor = settings.edit();
-		
-		settingseditor.remove("somestring");
-		settingseditor.commit();
 		
 		Toast.makeText(context, "settings " + settings.getAll(), Toast.LENGTH_LONG).show();
 		
