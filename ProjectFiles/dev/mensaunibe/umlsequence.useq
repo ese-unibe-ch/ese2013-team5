@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence-diagram version="1.1.4" icons="true" automaticImage="PNG">  
+  <object id="1" language="java" name="com.ese2013.mensaunibe.ActivityMain" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/ActivityMain.java" binary="false" label="activityMain" type="class" 
+    autoSize="true">    
+    <position height="-1" width="-1" x="142" y="0"/>    
+    <execution id="2">      
+      <position height="63" width="130" x="5" y="99"/>    
+    </execution>    
+    <execution id="5">      
+      <position height="21" width="130" x="5" y="523"/>    
+    </execution>  
+  </object>  
+  <object id="6" language="java" name="com.ese2013.mensaunibe.model.Model" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/model/Model.java" binary="false" label="model" type="class" 
+    autoSize="true">    
+    <position height="-1" width="-1" x="141" y="0"/>    
+    <execution id="4">      
+      <position height="21" width="161" x="139" y="120"/>    
+    </execution>    
+    <execution id="7">      
+      <position height="63" width="161" x="139" y="171"/>    
+    </execution>  
+  </object>  
+  <object id="10" language="java" name="com.ese2013.mensaunibe.util.ModelCreator" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/ModelCreator.java" binary="false" label="modelCreator" 
+    type="class" autoSize="true">    
+    <position height="-1" width="-1" x="283" y="0"/>    
+    <execution id="11">      
+      <position height="63" width="146" x="304" y="252"/>    
+    </execution>    
+    <execution id="9">      
+      <position height="21" width="146" x="304" y="192"/>    
+    </execution>  
+  </object>  
+  <object id="14" language="java" name="com.ese2013.mensaunibe.util.AbstractMensaFactory" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/AbstractMensaFactory.java" binary="false" 
+    label="abstractMensaFactory" type="class" autoSize="true">    
+    <position height="-1" width="-1" x="402" y="0"/>    
+    <execution id="13">      
+      <position height="21" width="178" x="454" y="273"/>    
+    </execution>    
+    <execution id="15">      
+      <position height="63" width="178" x="454" y="314"/>    
+    </execution>  
+  </object>  
+  <object id="18" language="java" name="com.ese2013.mensaunibe.util.MensaFromWebFactory" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/MensaFromWebFactory.java" binary="false" 
+    label="mensaFromWebFactory" type="class" autoSize="true">    
+    <position height="-1" width="-1" x="564" y="0"/>    
+    <execution id="17">      
+      <position height="21" width="185" x="636" y="335"/>    
+    </execution>    
+    <execution id="19">      
+      <position height="63" width="185" x="636" y="368"/>    
+    </execution>  
+  </object>  
+  <object id="22" language="java" name="com.ese2013.mensaunibe.util.WebService" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/WebService.java" binary="false" label="webService" type="class" 
+    autoSize="true">    
+    <position height="-1" width="-1" x="812" y="0"/>    
+    <execution id="21">      
+      <position height="21" width="146" x="825" y="389"/>    
+    </execution>    
+    <execution id="23">      
+      <position height="63" width="146" x="825" y="426"/>    
+    </execution>  
+  </object>  
+  <object id="26" language="java" name="com.ese2013.mensaunibe.util.BuilderMensa" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/BuilderMensa.java" binary="false" label="builderMensa" 
+    type="class" autoSize="true">    
+    <position height="-1" width="-1" x="897" y="0"/>    
+    <execution id="25">      
+      <position height="21" width="146" x="975" y="447"/>    
+    </execution>    
+    <execution id="27">      
+      <position height="63" width="146" x="975" y="502"/>    
+    </execution>  
+  </object>  
+  <message id="3" operation="getInstance():com.ese2013.mensaunibe.model.Model">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </message>  
+  <message id="8" operation="ModelCreator(boolean)">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="9"/>  
+  </message>  
+  <message id="12" operation="createMensaList():java.util.ArrayList&lt;Mensa&gt;">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="13"/>  
+  </message>  
+  <message id="16" operation="loadAll():void">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="17"/>  
+  </message>  
+  <message id="20" operation="requestAllData():org.json.JSONObject">    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="21"/>  
+  </message>  
+  <message id="24" operation="build():com.ese2013.mensaunibe.model.Mensa">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="25"/>  
+  </message>  
+  <message id="28" 
+    operation="onCreateView(java.lang.String,android.content.Context,android.util.AttributeSet):android.view.View">    
+    <end type="SOURCE" refId="27"/>    
+    <end type="TARGET" refId="5"/>  
+  </message>
+</sequence-diagram>
