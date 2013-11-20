@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.4" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="com.ese2013.mensaunibe.util.gui.AdapterCustomFragmentPager" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/AdapterCustomFragmentPager.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-480" y="796"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.ese2013.mensaunibe.util.gui.AdapterCustomMensalist" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/AdapterCustomMensalist.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-460" y="506"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.ese2013.mensaunibe.util.gui.AdapterCustomMenulist" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/AdapterCustomMenulist.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-374" y="175"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.ese2013.mensaunibe.util.gui.AdapterCustomTabs" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/AdapterCustomTabs.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1083" y="382"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.ese2013.mensaunibe.util.gui.AdapterCustomTabs.TabInfo" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/AdapterCustomTabs.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1072" y="701"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.ese2013.mensaunibe.util.gui.CustomEditTextPreference" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomEditTextPreference.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-368" y="-49"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="com.ese2013.mensaunibe.util.gui.CustomListPreference" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListPreference.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="134" width="263" x="693" y="-6"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" 
+    name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.PTROnGlobalLayoutListener" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="221" x="-260" y="915"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" 
+    name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.HeaderAnimationListener" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="170" width="224" x="207" y="915"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="10" language="java" 
+    name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="80" width="166" x="1" y="915"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="11" language="java" 
+    name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.PTROnItemLongClickListener" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="338" x="841" y="915"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" 
+    name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.PTROnItemClickListener" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="288" x="513" y="915"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="13" language="java" name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh.State" 
+    project="mensaunibe" file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="204" x="452" y="1125"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </enumeration>  
+  <class id="14" language="java" name="com.ese2013.mensaunibe.util.gui.CustomListViewPullToRefresh" project="mensaunibe" 
+    file="/mensaunibe/src/com/ese2013/mensaunibe/util/gui/CustomListViewPullToRefresh.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="1052" width="352" x="452" y="-177"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="15">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="16" name="stateAtAnimationStart"/>      
+      <multiplicity id="17" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="18">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="9"/>  
+  </nesting>  
+  <association id="19">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="20" name="onRefreshListener"/>      
+      <multiplicity id="21" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="22">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="23" name="mTabs"/>      
+      <multiplicity id="24" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="25">    
+    <bendpoint x="461" y="915"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="26" name="state"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="28">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="10"/>  
+  </nesting>  
+  <nesting id="29">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
+  <nesting id="30">    
+    <bendpoint x="482" y="915"/>    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="13"/>  
+  </nesting>  
+  <nesting id="31">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="8"/>  
+  </nesting>  
+  <nesting id="32">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="11"/>  
+  </nesting>  
+  <nesting id="33">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="12"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
