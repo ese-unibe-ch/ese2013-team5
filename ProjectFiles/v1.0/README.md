@@ -2,8 +2,6 @@
 
 Project: **Mensa@Unibe**
 
-We have added an APK file to install the app without compiling (due problems with Maps API Key), it can be found here: http://goo.gl/Txbt3f
-
 #### ToDo for release v1.0
 
 - Documentation for the domain model exists and is helpful, concise, correct.
