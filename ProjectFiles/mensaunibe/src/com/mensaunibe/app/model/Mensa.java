@@ -63,8 +63,24 @@ public class Mensa implements Serializable {
 		}
 	}
 	
+	public String getName(String lang) {
+		if (lang.equals("de")) {
+			return name;
+		} else {
+			return name_en;
+		}
+	}
+	
 	public String getDesc() {
 		if (getLocale().equals("de")) {
+			return desc;
+		} else {
+			return desc_en;
+		}
+	}
+	
+	public String getDesc(String lang) {
+		if (lang.equals("de")) {
 			return desc;
 		} else {
 			return desc_en;
@@ -89,6 +105,11 @@ public class Mensa implements Serializable {
 	
 	public MenuList getMenuList() {
 		return menulistObj;
+	}
+	
+	public void setMenuList(MenuList list) {
+		this.menulistObj = list;
+		
 	}
 	
 	private String getLocale() {

@@ -1,6 +1,7 @@
 package com.mensaunibe.app.model;
 
 import com.mensaunibe.app.controller.ActivityMain;
+import com.mensaunibe.util.database.DatabaseManager;
 import com.mensaunibe.util.tasks.TaskCreateModel;
 import com.mensaunibe.util.tasks.TaskListener;
 import com.mensaunibe.util.tasks.TaskLocation;
@@ -24,11 +25,13 @@ public class DataHandler extends Fragment implements TaskListener {
 	private static final String TAG = DataHandler.class.getSimpleName();
 	
 	private static ActivityMain mController;
+	private static DatabaseManager mDBManager;
 	private MensaList mModel;
 	
 	private Location mLocation;
 	private Mensa mClosestMensa;
 	private Mensa mCurrentMensa;
+	
 	
 	/**
 	 * Custom methods
@@ -40,6 +43,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		// Keep this Fragment even during config changes
 		instance.setRetainInstance(true);
 		mController = controller;
+		mDBManager = new DatabaseManager(mController.getContext());
 		return instance;
 	}
 	
@@ -83,6 +87,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		if (result != null) {
 			if (result instanceof MensaList) {
 				mModel = (MensaList) result;
+				mDBManager.save((MensaList) result);
 			} else if (result instanceof Location) {
 				mLocation = (Location) result;
 			}
