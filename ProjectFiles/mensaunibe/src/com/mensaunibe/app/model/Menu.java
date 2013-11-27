@@ -76,6 +76,14 @@ public class Menu implements Serializable {
 		}
 	}
 	
+	public String getTitle(String lang) {
+		if (lang.equals("de")) {
+			return title;
+		} else {
+			return title_en;
+		}
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -88,8 +96,26 @@ public class Menu implements Serializable {
 		}
 	}
 	
+	public String getDesc(String lang) {
+		if (lang.equals("de")) {
+			return desc;
+		} else{
+			return desc_en;
+		}
+	}
+	
+
+	
 	public String getPrice() {
 		if (getLocale().equals("de")) {
+			return price;
+		} else {
+			return price_en;
+		}
+	}
+	
+	public String getPrice(String lang) {
+		if (lang.equals("de")) {
 			return price;
 		} else {
 			return price_en;
@@ -104,6 +130,14 @@ public class Menu implements Serializable {
 		}
 	}
 
+	public String getDate(String lang) {
+		if (lang.equals("de")) {
+			return date;
+		} else {
+			return date_en;
+		}
+	}
+	
 	public String getDay() {
 		return day;
 	}
