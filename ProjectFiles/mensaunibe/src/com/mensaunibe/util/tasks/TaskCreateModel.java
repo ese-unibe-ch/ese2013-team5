@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.mensaunibe.app.controller.ActivityMain;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.util.ServiceWebRequest;
+import com.mensaunibe.util.database.DatabaseManager;
 
 public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	
@@ -22,11 +23,12 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	
 	private ArrayList<TaskListener> mListeners;
 	private ServiceWebRequest mWebService;
+	private DatabaseManager mDBManager;
 
 	
 	public TaskCreateModel(ActivityMain controller, Fragment fragment) {
 		this.mController = controller;
-		
+		this.mDBManager = new DatabaseManager(controller);
 		this.mListeners = new ArrayList<TaskListener>();
 		this.mWebService = new ServiceWebRequest(mController);
 	}
@@ -66,20 +68,23 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	@Override
     protected MensaList doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to create the model");
-		
-		final JsonObject jsonObj = mWebService.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
-    	final MensaList model = new Gson().fromJson(jsonObj, MensaList.class);
+		MensaList model = null;
+		if(mWebService.hasConnection(2000)){
+			final JsonObject jsonObj = mWebService.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
+    		model = new Gson().fromJson(jsonObj, MensaList.class);
 
-    	// show fake progress
-    	for (int i = 0; i <= 100; i++) {
-            try {
-                Thread.sleep(10);
-                this.publishProgress(i);
-            } catch (InterruptedException e) {
-                return null;
-            }
-        }
-
+    		//show fake progress
+    		for (int i = 0; i <= 100; i++) {
+            	try {
+                	Thread.sleep(10);
+                	this.publishProgress(i);
+            	} catch (InterruptedException e) {
+                	return null;
+            	}
+        	}
+		}else{
+			model = mDBManager.load();
+		}
     	return model;
     }
 

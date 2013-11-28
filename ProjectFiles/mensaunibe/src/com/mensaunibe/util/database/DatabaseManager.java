@@ -7,14 +7,15 @@ import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
 import com.mensaunibe.util.database.tables.MensaTable;
+import com.mensaunibe.util.database.tables.MenuTable;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * class to manage all functionalities of the database,
- * like save/load
+ * class to manage all functionalities of the database.
+ * save objects with save(), load the Model with load()
  *
  */
 public class DatabaseManager {
@@ -46,7 +47,7 @@ public class DatabaseManager {
 	
 	public void save(Menu menu){
 		ContentValues values = mDBService.toValue(menu);
-		mDB.insertWithOnConflict(MensaTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+		mDB.insertWithOnConflict(MenuTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public MensaList load(){

@@ -33,10 +33,11 @@ public class DataHandler extends Fragment implements TaskListener {
 	private Mensa mCurrentMensa;
 	
 	
-	/**
-	 * Custom methods
-	 */
-	// get a new instance of the data fragment
+/**
+ * 
+ * @param controller; takes the ActivityMain as parameter
+ * @return instance of the DataHandler
+ */
 	public static DataHandler newInstance(ActivityMain controller) {
 		Log.i(TAG, "newInstance()");
 		DataHandler instance = new DataHandler();
@@ -47,9 +48,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		return instance;
 	}
 	
-	/**
-	 * Overrides
-	 */
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 	    Log.i(TAG, "onActivityCreated(Bundle)");
