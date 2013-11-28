@@ -13,6 +13,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * simple helper class extending SQLiteOpenHelper
+ * to create a SQLiteDatabase. </br>
+ * 
+ * </br>code to create and get the writable database: </br>
+ * <code>
+ * DatabaseHelper helper = new DatabaseHelper(context);</br>
+ * SQLiteDatabase db = helper.getWritableDatabase();
+ * </code>
+ */
 public class DatabaseHelper extends SQLiteOpenHelper{
 
 	public static DatabaseHelper instance;

@@ -14,11 +14,20 @@ import com.mensaunibe.app.model.MenuList;
 import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
 
+/**
+ * helper class for the DatabaseManager. </br>
+ * consists methods to convert objects into storable values and vice versa
+ *
+ */
 public class DatabaseService {
 	
 	private final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME 
 			+ " order by _id asc";
 
+	/**
+	 * @param m: Mensa to convert into storable values
+	 * @return ContentValues which can be stored in the Database
+	 */
 	public ContentValues toValue(Mensa m) {
 		ContentValues values = new ContentValues();
 		values.put(MensaTable.COLUMN_ID, m.getId());
@@ -33,6 +42,10 @@ public class DatabaseService {
 		return values;
 	}
 	
+	/**
+	 * @param m: Menu to convert into storable values
+	 * @return ContentValues which can be stored in the Database
+	 */
 	public ContentValues toValue(Menu m){
 		ContentValues values = new ContentValues();
 		values.put(MenuTable.COLUMN_MENSA_ID, m.getMensaID());
@@ -47,11 +60,18 @@ public class DatabaseService {
 		values.put(MenuTable.COLUMN_RATING, m.getRating());
 		values.put(MenuTable.COLUMN_TITLE, m.getTitle("de"));
 		values.put(MenuTable.COLUMN_TITLE_EN, m.getTitle("en"));
+		values.put(MenuTable.COLUMN_TYPE, m.getType());
 		values.put(MenuTable.COLUMN_WEEK, m.getWeek());
 		return values;
 	}
 	
-
+	/**
+	 * creates the whole model as a MensaList from the database
+	 * @param db
+	 * database from which the model is created
+	 * @return
+	 * the model as a MensaList
+	 */
 	public MensaList createMensalist(SQLiteDatabase db) {
 		List<Mensa> list = new ArrayList<Mensa>();
 		Cursor cursor = db.rawQuery(SELECT_MENSAS, null);
@@ -64,12 +84,18 @@ public class DatabaseService {
 		return new MensaList(list);
 	}
 
+	/**
+	 * fetches all menus from the database and stores them in the mensalist's mensa objects
+	 * @param mensalist list of mensas to be inflated
+	 * @param db database where the menus are stored
+	 */
 	private void addMenus(List<Mensa> mensalist, SQLiteDatabase db) {
 		for(Mensa mensa : mensalist){
 			List<Menu> menulist = new ArrayList<Menu>();
 			final String SELECT_MENUS = "select * from " + MenuTable.TABLE_NAME
 					+ " where " + MenuTable.COLUMN_MENSA_ID + " = " + mensa.getId();
 			Cursor cursor = db.rawQuery(SELECT_MENUS, null);
+			cursor.moveToFirst();
 			while(!cursor.isAfterLast()){
 				menulist.add(getMenuFromCursor(cursor));
 				cursor.moveToNext();
@@ -78,6 +104,10 @@ public class DatabaseService {
 		}
 	}
 
+	/**
+	 * Returns a menu from the data on which the cursor points.
+	 * The cursor itself must not be affected by this!
+	 */
 	private Menu getMenuFromCursor(Cursor cursor) {
 		int id = cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_ID));
 		int mensaid = cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_MENSA_ID));

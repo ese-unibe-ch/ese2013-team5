@@ -30,6 +30,7 @@ public class MenuTable implements Table {
 			+ COLUMN_ID + " integer primary key, "
 			+ COLUMN_TITLE + " text not null, "
 			+ COLUMN_TITLE_EN + " text not null, "
+			+ COLUMN_TYPE + " text not null, "
 			+ COLUMN_DAY + " text not null, "
 			+ COLUMN_DATE + " text not null, "
 			+ COLUMN_DATE_EN + " text not null, "
