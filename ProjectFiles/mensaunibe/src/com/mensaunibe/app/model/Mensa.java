@@ -36,6 +36,8 @@ public class Mensa implements Serializable {
 	@SerializedName("menulist")
 	private MenuList menulistObj;
 	
+	private boolean isFavorite;
+	
 	private String locale;
  
 	public Mensa(int id, String name, String name_en, String desc, String desc_en, String address, String city, float lat, float lon, MenuList menulistObj) {
@@ -148,5 +150,13 @@ public class Mensa implements Serializable {
 			Log.e(TAG, "getDailyMenus(String): menulistObj was null");
 			return new ArrayList<Menu>();
 		}
-	} 
+	}
+
+	public boolean isFavorite() {
+		return isFavorite;
+	}
+	
+	public void setIsFavorite(boolean b){
+		isFavorite = b;
+	}
 }

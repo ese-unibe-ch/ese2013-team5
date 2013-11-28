@@ -1,6 +1,7 @@
 package com.mensaunibe.util.tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mensaunibe.app.controller.ActivityMain;
+import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.util.ServiceWebRequest;
 import com.mensaunibe.util.database.DatabaseManager;
@@ -72,7 +74,7 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		if(mWebService.hasConnection(2000)){
 			final JsonObject jsonObj = mWebService.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
     		model = new Gson().fromJson(jsonObj, MensaList.class);
-
+    		setFavorites(model);
     		//show fake progress
     		for (int i = 0; i <= 100; i++) {
             	try {
@@ -88,7 +90,14 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
     	return model;
     }
 
-    @Override
+    private void setFavorites(MensaList model) {
+    	List<Mensa> mensalist = model.getMensas();
+    	for(Mensa mensa : mensalist){
+    		mensa.setIsFavorite(mDBManager.isFavorite(mensa));
+    	}
+	}
+
+	@Override
     protected void onPostExecute(MensaList model) {
         this.notifyOnTaskComplete(model);
         this.removeListeners();

@@ -11,6 +11,7 @@ import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
 import com.mensaunibe.app.model.MenuList;
+import com.mensaunibe.util.database.tables.FavoriteTable;
 import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
 
@@ -77,7 +78,7 @@ public class DatabaseService {
 		Cursor cursor = db.rawQuery(SELECT_MENSAS, null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
-			list.add(getMensaFromCursor(cursor));
+			list.add(getMensaFromCursor(cursor, db));
 			cursor.moveToNext();
 		}
 		addMenus(list, db);
@@ -131,7 +132,7 @@ public class DatabaseService {
 	 * Returns a mensa from the data on which the cursor points.
 	 * The cursor itself must not be affected by this!
 	 */
-	private Mensa getMensaFromCursor(Cursor cursor) {
+	private Mensa getMensaFromCursor(Cursor cursor, SQLiteDatabase db) {
 		int id = cursor.getInt(cursor.getColumnIndex(MensaTable.COLUMN_ID));
 		String name = cursor.getString(cursor.getColumnIndex(MensaTable.COLUMN_NAME));
 		String name_en = cursor.getString(cursor.getColumnIndex(MensaTable.COLUMN_NAME_EN));
@@ -141,6 +142,20 @@ public class DatabaseService {
 		String city = cursor.getString(cursor.getColumnIndex(MensaTable.COLUMN_CITY));
 		float lat = cursor.getFloat(cursor.getColumnIndex(MensaTable.COLUMN_LAT));
 		float lon = cursor.getFloat(cursor.getColumnIndex(MensaTable.COLUMN_LON));
-		return new Mensa(id, name, name_en, desc, desc_en, address, city, lat, lon, null);
+		Mensa mensa = new Mensa(id, name, name_en, desc, desc_en, address, city, lat, lon, null);
+		mensa.setIsFavorite(isFavorite(mensa, db));
+		return mensa;
+	}
+
+	public boolean isFavorite(Mensa mensa, SQLiteDatabase mDB) {
+		final String SELECT_FAVORITES = "select * from " + FavoriteTable.TABLE_NAME 
+				+ " where " + FavoriteTable.COLUMN_ID + " = " + mensa.getId();
+		Cursor cursor = mDB.rawQuery(SELECT_FAVORITES, null);
+		cursor.moveToFirst();
+		if(cursor.getCount() == 0){
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
