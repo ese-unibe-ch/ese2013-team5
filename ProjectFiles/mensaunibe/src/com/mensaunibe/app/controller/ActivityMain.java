@@ -449,4 +449,8 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 			mDataHandler.loadModel();
 		}
 	}
+
+	public void updateDB() {
+		this.mDataHandler.updateDB();
+	}
 }

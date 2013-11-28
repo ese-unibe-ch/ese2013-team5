@@ -109,6 +109,10 @@ public class FragmentMensaList extends Fragment {
 		fragmentTransaction.replace(R.id.frame_content, fragment).commit();
 	}
 
+	public void updateFavorite(Mensa mensa) {
+		mData.updateFavorite(mensa);
+	}
+
 
 }
 

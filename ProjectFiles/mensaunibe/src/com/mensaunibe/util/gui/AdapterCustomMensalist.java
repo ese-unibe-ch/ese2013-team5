@@ -12,6 +12,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,8 +49,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
         ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
         CheckBox starcheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
-//        starcheckbox.setChecked(mensa.isFavorite());
-        
+        starcheckbox.setChecked(mensa.isFavorite());       
         // the actual fields that contain text
         TextView name = (TextView) rowView.findViewById(R.id.name);
         TextView address = (TextView) rowView.findViewById(R.id.address);
@@ -82,17 +83,16 @@ public class AdapterCustomMensalist extends BaseAdapter {
         mapbutton.setOnClickListener(mapListener);
         
         // set the click listener for the favorite button
-        final OnClickListener starListener = new OnClickListener() {
-            @Override
-            public void onClick(View starbutton) {
-//            	Mensa mensa = mMensas.get(position);
-            	// TODO: reimplement favorite functionality in model
-//            	mensa.setFavorite(!m.isFavorite());
-//            	mensa.setFavorite(mensa.getId());
-            	//Toast.makeText(starbutton.getContext(), "Mensa set to Favorite", Toast.LENGTH_SHORT).show();
-            }
+        final OnCheckedChangeListener starListener = new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				Mensa mensa = mMensaList.get(position);
+				mensa.setIsFavorite(isChecked);
+				mFragment.updateFavorite(mensa);
+			}
         };
-        starcheckbox.setOnClickListener(starListener);
+        starcheckbox.setOnCheckedChangeListener(starListener);
             
 		return rowView;
 	}

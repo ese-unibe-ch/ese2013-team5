@@ -227,4 +227,18 @@ public class DataHandler extends Fragment implements TaskListener {
     public void setLocation(Location location) {
     	mLocation = location;
     }
+
+
+	public void updateDB() {
+		mDBManager.save(mModel);
+	}
+
+
+	public void updateFavorite(Mensa mensa) {
+		if(mensa.isFavorite()){
+			mDBManager.saveFavorite(mensa);
+		} else {
+			mDBManager.removeFavorite(mensa);
+		}
+	}
 }
