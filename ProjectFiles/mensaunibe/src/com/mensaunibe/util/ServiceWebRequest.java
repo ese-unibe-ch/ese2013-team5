@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -28,82 +27,105 @@ public class ServiceWebRequest {
 	private static final String TAG = ServiceWebRequest.class.getSimpleName();
 	
 	private static ActivityMain mController;
+
+	private boolean mConnectionReady;
 	
 	public ServiceWebRequest(ActivityMain controller) {
 		mController = controller;
 	}
 	
-    public JsonObject getJSON(String url, int timeout) {
-    	Log.i(TAG, "getJSON(" + url + ", " + timeout + ")");
-    	
-    	if (this.hasConnection(2000)) {
-	    	HttpURLConnection c = null;
-	    	
-	        try {
-	            URL u = new URL(url);
-	            c = (HttpURLConnection) u.openConnection();
-	            c.setRequestMethod("GET");
-	            c.setRequestProperty("Content-length", "0");
-	            c.setUseCaches(false);
-	            c.setAllowUserInteraction(false);
-	            c.setConnectTimeout(timeout);
-	            c.setReadTimeout(timeout);
-	            c.connect();
-	            int status = c.getResponseCode();
+	public int getLastUpdate() {
+		Log.i(TAG, "getLastUpdate()");
+		
+		JsonObject jsonObj = getJSON("http://api.031.be/mensaunibe/v1/?type=lastupdate", 5000);
+		
+		if (jsonObj.isJsonObject()) {
+			return jsonObj.get("lastupdate").getAsInt();
+		} else {
+			return 0;
+		}
+	}
 	
-	            switch (status) {
-	                case 200:
-	                case 201:                    
-	                    // parse input stream to string (with Scanner)
-	                	// parse string to JsonObject with Gson JsonParser
-	                	JsonObject jsonObj = new JsonParser()
-	                		.parse(new Scanner(new BufferedInputStream(c.getInputStream())).useDelimiter("\\A").next())
-	                		.getAsJsonObject();
-	                	
-	                	if (jsonObj.isJsonObject()) {
-	                		return jsonObj;
-	                	} else {
-	                		Log.e(TAG, "getJSON(): jsonObj was not a JsonObject");
-	                	}
-	                default:
-	                	// something went wrong
-	                	Log.e(TAG, "getJSON(): Request Error, Status Code: " + status);
-	            }
+	public JsonObject getJSON(String url, int timeout) {
+		Log.i(TAG, "getJSON(" + url + ", " + timeout + ")");
+		
+		if (mConnectionReady || hasConnection(2000)) {	  
+			
+			HttpURLConnection c = getConnection(url, timeout);
+
+			try {
+				if (c != null) {
+					int status = c.getResponseCode();
+					switch (status) {
+						case 200:
+						case 201:                    
+		                    // parse input stream to string (with Scanner)
+		                	// parse string to JsonObject with Gson JsonParser
+						JsonObject jsonObj = new JsonParser()
+						.parse(new Scanner(new BufferedInputStream(c.getInputStream())).useDelimiter("\\A").next())
+						.getAsJsonObject();
+						
+						if (jsonObj.isJsonObject()) {
+							return jsonObj;
+						} else {
+							Log.e(TAG, "getJSON(): jsonObj was not a JsonObject");
+						}
+						default:
+		                	// something went wrong
+						Log.e(TAG, "getJSON(): Request Error, Status Code: " + status);
+					}
+				}
+			} catch (IOException ex) {
+				Log.e(TAG, "getJSON() Exception: " + ex);
+				if (c != null) { c.disconnect(); }
+			} finally {
+				if (c != null) { 
+					c.disconnect();
+					Log.i(TAG, "getJSON(): Connection closed properly");
+				}
+			}
+		} else {
+			Log.e(TAG, "getJSON(): Internet not available, ask to turn of Wifi");
+			getDialog();
+		}
+		
+		return null;
+	}
 	
-	        } catch (MalformedURLException ex) {
-	            Log.e(TAG, "getJSON() Exception: " + ex);
-	        } catch (ConnectException ex) {
-	        	Log.e(TAG, "getJSON() Exception: " + ex);
-	        	c.disconnect();
-	        	retryRequest(url, timeout, ex);
-	        } catch (SocketTimeoutException ex) {
-	        	Log.e(TAG, "getJSON() Exception: " + ex);
-	        	c.disconnect();
-	        	retryRequest(url, timeout, ex);
-	        } catch (IOException ex) {
-	            Log.e(TAG, "getJSON() Exception: " + ex);
-	        } finally {
-	            if (c != null) {
-	                c.disconnect();
-	                Log.i(TAG, "getJSON(): Connection closed");
-	            }
-	        }
-    	} else {
-    		Log.e(TAG, "getJSON(): Internet not available, ask to turn of Wifi");
-			// ask to turn of wifi and fall trough to mobile network check
-			SimpleDialogBuilder dialog = getDialog();
-			dialog.setTitle("Internet not reachable!")
-			.setMessage("Could not reach the internet through wifi, would you like to turn Wifi off and use the mobile network instead?")
-			.setPositiveButtonText("Yes")
-			.setNegativeButtonText("No")
-			.setCancelableOnTouchOutside(false)
-			.setRequestCode(444)
-			.show();
-    	}
-    	
-    	return null;
-    }
-    
+	public HttpURLConnection getConnection(String url, int timeout) {
+		HttpURLConnection c = null;
+		try {
+			URL u = new URL(url);
+			c = (HttpURLConnection) u.openConnection();
+			c.setRequestMethod("GET");
+			c.setRequestProperty("Content-length", "0");
+			c.setUseCaches(false);
+			c.setAllowUserInteraction(false);
+			c.setConnectTimeout(timeout);
+			c.setReadTimeout(timeout);
+			c.connect();
+			
+			return c;
+			
+		} catch (MalformedURLException ex) {
+			Log.e(TAG, "getJSON() Exception: " + ex);
+			if (c != null) { c.disconnect(); }
+		} catch (ConnectException ex) {
+			Log.e(TAG, "getJSON() Exception: " + ex);
+			if (c != null) { c.disconnect(); }
+			retryRequest(url, timeout, ex);
+		} catch (SocketTimeoutException ex) {
+			Log.e(TAG, "getJSON() Exception: " + ex);
+			if (c != null) { c.disconnect(); }
+			retryRequest(url, timeout, ex);
+		} catch (IOException ex) {
+			Log.e(TAG, "getJSON() Exception: " + ex);
+			if (c != null) { c.disconnect(); }
+		}
+		
+		return null;
+	}
+	
     /**
     * Checks if the device has Internet connection.
     * 
@@ -112,47 +134,84 @@ public class ServiceWebRequest {
     public boolean hasConnection(int timeout) {
     	Log.i(TAG, "hasConnection(" + timeout +")");
     	ConnectivityManager cm = mController.getConnectivityManager();
-	
+    	
     	NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    	int timer = 0;
-    	while(activeNetwork == null && timer <= 2000) {
-    		Log.e(TAG, "hasConnection(): No active network is available");
+    	while(activeNetwork == null) {
+    		Log.e(TAG, "hasConnection(): No active network is available, loop till its available!");
     		activeNetwork = cm.getActiveNetworkInfo();
-    		timer++;
     	}
     	
-        NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiNetwork != null && wifiNetwork.isConnected()) {
+    	NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    	if (wifiNetwork != null && wifiNetwork.isConnected()) {
         	// wifi connection detected, let's try to reach google to see if the internet really works
-        	Log.i(TAG, "hasConnection(): Wifi connected, checking internet access...");
-        	if (isReachableByTcp("www.google.com", 80, timeout)) {
-				Log.i(TAG, "hasConnection(): Google reachable over Wifi");
-				return true;
-			} else {
-				Log.i(TAG, "hasConnection(): Google not reachable over Wifi");
-				return false;
-			}
-        } else {
-        	Log.i(TAG, "hasConnection(): Wifi not connected!");
-        }
+    		Log.i(TAG, "hasConnection(): Wifi connected, checking internet access...");
+    		if (verifyConnection("http://www.google.ch", timeout)) {
+    			Log.i(TAG, "Google.ch reachable");
+	    		if (isReachableByTcp("api.031.be", 80, timeout)) {
+	    			Log.i(TAG, "hasConnection(): API reachable over Wifi");
+	    			mConnectionReady = true;
+	    			return true;
+	    		} else {
+	    			Log.e(TAG, "hasConnection(): API seems to be down, not reachable by TCP!");
+	    			mConnectionReady = false;
+	    			return false;
+	    		}
+    		} else {
+    			Log.i(TAG, "hasConnection(): API not reachable over Wifi");
+    			return false;
+    		}
+    	} else {
+    		Log.i(TAG, "hasConnection(): Wifi not connected!");
+    	}
 
-        NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mobileNetwork != null && mobileNetwork.isConnected()) {
-        	Log.i(TAG, "hasConnection(): Mobile internet connected");
-            return true;
-        } else {
-        	Log.i(TAG, "hasConnection(): No mobile internet connected!");
-        }
+    	NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+    	if (mobileNetwork != null && mobileNetwork.isConnected()) {
+    		Log.i(TAG, "hasConnection(): Mobile internet connected");
+    		mConnectionReady = true;
+    		return true;
+    	} else {
+    		Log.i(TAG, "hasConnection(): No mobile internet connected!");
+    	}
 
-        if (activeNetwork != null && activeNetwork.isConnected()) {
-        	Log.i(TAG, "hasConnection(): Network connected");
-            return true;
-        } else {
-        	Log.i(TAG, "hasConnection(): No network connected");
-        }
-        
+    	if (activeNetwork != null && activeNetwork.isConnected()) {
+    		Log.i(TAG, "hasConnection(): Network connected");
+    		mConnectionReady = true;
+    		return true;
+    	} else {
+    		Log.i(TAG, "hasConnection(): No network connected");
+    	}
+    	
         // if no network is available at all
-        return false;
+    	mConnectionReady = false;
+    	return false;
+    }
+    
+    public boolean verifyConnection(String url, int timeout) {
+    	Log.i(TAG, "verifyConnection(" + url + ", " + timeout + ")");
+    	HttpURLConnection c = getConnection(url, timeout);
+
+    	if (c != null) {
+    		int status;
+    		try {
+    			status = c.getResponseCode();
+    			switch (status) {
+    				case 200:
+    				case 201:
+    				return true;
+    				case 307:
+    				Log.i(TAG, "verifyConnection(): Probably a walled garden portal!");
+    				default:
+    				return false;
+    			}
+    		} catch (IOException ex) {
+    			Log.e(TAG, "verifyConnection() Exception: " + ex);
+    			if (c != null) { c.disconnect(); }
+    		} finally {
+    			if (c != null) { c.disconnect(); }
+    		}
+    	}
+    	
+    	return false;
     }
     
     /**
@@ -161,7 +220,10 @@ public class ServiceWebRequest {
      * 
      * InetAddress.getByName("www.domain.tld").isReachable(timeout) is not working because
      * it tries to establish a ICMP (which needs root access) or TCP Port 7 (which is usually not open)
-     * so we need another way to check if the internet is really reachable.
+     * so we need another way to check if the internet is really reachable. This actually doesn't work in
+     * capitve portals like the one from unibe or swisscom bc they send back a 307 (temporary redirect)
+     * so we basically use this method to check if the api is up and for the real check of
+     * full internet access via wifi we use the new method verifyConnection();
      * 
      * @param host the address to verify
      * @param port the port to connect to, we use 80 as the HTTP port is what we need
@@ -170,17 +232,17 @@ public class ServiceWebRequest {
      */
     public static boolean isReachableByTcp(String host, int port, int timeout) {
     	Log.i(TAG, "isReachableByTcp(" + host + ", " + port + ", " + timeout + ")");
-        try {
-            Socket socket = new Socket();
-            SocketAddress socketAddress = new InetSocketAddress(host, port);
-            socket.connect(socketAddress, timeout);
-            socket.close();
-            
-            return true;
-        } catch (IOException ex) {
-        	Log.e(TAG, "isReachableByTcp() Exception: " + ex);
-            return false;
-        }
+    	try {
+    		Socket socket = new Socket();
+    		SocketAddress socketAddress = new InetSocketAddress(host, port);
+    		socket.connect(socketAddress, timeout);
+    		socket.close();
+    		Log.i(TAG, host + " is reachable by TCP");
+    		return true;
+    	} catch (IOException ex) {
+    		Log.e(TAG, "isReachableByTcp() Exception: " + ex);
+    		return false;
+    	}
     }
     
     /**
@@ -198,8 +260,17 @@ public class ServiceWebRequest {
      * Gets a dialog to confirm / deny
      * @return an instance of SimpleDialogBuilder
      */
-    private SimpleDialogBuilder getDialog() {
+    private static void getDialog() {
+    	// TODO: Put the strings into the xml file and translate them!
     	Log.i(TAG, "getDialog()");
-    	return SimpleDialogFragment.createBuilder(mController.getContext(), mController.getSupportFragmentManager());
+		// ask to turn of wifi and fall trough to mobile network check
+    	SimpleDialogBuilder dialog = SimpleDialogFragment.createBuilder(mController.getContext(), mController.getSupportFragmentManager());
+    	dialog.setTitle("Internet not reachable!")
+    	.setMessage("Could not reach the internet through wifi, would you like to turn Wifi off and use the mobile network instead?")
+    	.setPositiveButtonText("Yes")
+    	.setNegativeButtonText("No")
+    	.setCancelableOnTouchOutside(false)
+    	.setRequestCode(444)
+    	.show();
     }
 }

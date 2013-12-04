@@ -156,7 +156,7 @@ public class Mensa implements Serializable {
 		return isFavorite;
 	}
 	
-	public void setIsFavorite(boolean b){
+	public void setFavorite(boolean b){
 		isFavorite = b;
 	}
 }

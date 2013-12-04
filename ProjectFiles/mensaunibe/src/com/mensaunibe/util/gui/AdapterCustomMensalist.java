@@ -2,6 +2,7 @@ package com.mensaunibe.util.gui;
 
 import java.util.List;
 import com.mensaunibe.R;
+import com.mensaunibe.app.controller.ActivityMain;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.views.FragmentMensaList;
 
@@ -25,14 +26,14 @@ public class AdapterCustomMensalist extends BaseAdapter {
 	@SuppressWarnings("unused")
 	private static final String TAG = AdapterCustomMensalist.class.getSimpleName();
 	
-	private Context mContext;
+	private ActivityMain mController;
 	private FragmentMensaList mFragment;
 	private List<Mensa> mMensaList;
 	private int mResource;
 
-	public AdapterCustomMensalist(Context context, FragmentMensaList fragment, List<Mensa> mensalist, int resource) {
+	public AdapterCustomMensalist(ActivityMain controller, FragmentMensaList fragment, List<Mensa> mensalist, int resource) {
 		super();
-		this.mContext = context;
+		this.mController = controller;
 		this.mFragment = fragment;
 		this.mMensaList = mensalist;
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
@@ -41,7 +42,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
-		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = mInflater.inflate(mResource, parent, false);
         
         Mensa mensa = mMensaList.get(position);
@@ -88,7 +89,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				Mensa mensa = mMensaList.get(position);
-				mensa.setIsFavorite(isChecked);
+				mensa.setFavorite(isChecked);
 				mFragment.updateFavorite(mensa);
 			}
         };

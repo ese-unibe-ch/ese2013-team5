@@ -21,6 +21,7 @@ import com.mensaunibe.lib.dialogs.SimpleDialogListener;
 import com.mensaunibe.util.gui.CustomNavigationDrawer;
 import com.mensaunibe.util.tasks.TaskListener;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -35,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ActivityMain extends FragmentActivity implements TaskListener, SimpleDialogListener, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -68,6 +70,8 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 		// handle action bar hiding on app start for the splash screen (prevents flickering)
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 	    getActionBar().hide();
+	    getActionBar().setCustomView(R.layout.actionbar_status);
+	    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
 	    
 	    // set the waiting variable to false initially
 		mWait = false;
@@ -93,7 +97,7 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 		attachSplashScreen();
 
 		// initialize retaining data loader fragment for data persistence
-		attachModelHandler();
+		attachDataHandler();
 		
 		setContentView(R.layout.activity_main);
 		
@@ -227,10 +231,12 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 			if (result instanceof MensaList) {
 				// call method again to remove the splashscreen and check the model availability
 		    	getLoadStatus();
-		    	// load the current location + closest mensa
-				mDataHandler.loadLocation();
 		    	// set up the navigation drawer
 		    	attachNavigationDrawer(si);
+		    	// load the current location + closest mensa
+				mDataHandler.loadLocation();
+				// write the model to the db
+				//mDataHandler.updateDB();
 			}
     	} else {
     		Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
@@ -261,14 +267,13 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 	 * Custom Methods
 	 */
     // create the data loader fragment if not present
-    private void attachModelHandler() {
-    	Log.i(TAG, "attachDataFragment()");
+    private void attachDataHandler() {
+    	Log.i(TAG, "attachDataHandler()");
 		mDataHandler = (DataHandler) fm.findFragmentByTag("data");
 		
 		// if not instantiated yet, create a new FragmentData
 		if (mDataHandler == null) {
 			mDataHandler = DataHandler.newInstance(this);
-//			mDataHandler.setProgressListener(this);
             mDataHandler.loadModel();
 			fm.beginTransaction().add(mDataHandler, "data").commit();
 		} else {
@@ -281,7 +286,14 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 	// returns an instance of the data fragment
 	public DataHandler getDataHandler() {
 		Log.i(TAG, "getDataHandler()");
-		return mDataHandler;
+		if (mDataHandler != null) {
+			return mDataHandler;
+		} else {
+			Log.e(TAG, "getDataHandler(): mDataHandler was null, probably lost sync!");
+			Toast.makeText(this, "DataHandler was null, probably lost sync!", Toast.LENGTH_SHORT).show();
+			attachDataHandler();
+			return mDataHandler;
+		}
 	}
 	
 	// check if the model is already instantiated
@@ -448,9 +460,5 @@ public class ActivityMain extends FragmentActivity implements TaskListener, Simp
 		if (!mDataHandler.hasModel()) {
 			mDataHandler.loadModel();
 		}
-	}
-
-	public void updateDB() {
-		this.mDataHandler.updateDB();
 	}
 }

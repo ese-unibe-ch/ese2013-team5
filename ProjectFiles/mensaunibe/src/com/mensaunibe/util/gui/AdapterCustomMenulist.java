@@ -3,6 +3,7 @@ package com.mensaunibe.util.gui;
 import java.util.List;
 
 import com.mensaunibe.R;
+import com.mensaunibe.app.controller.ActivityMain;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
@@ -28,23 +29,23 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	// for logging and debugging purposes
 	private static final String TAG = AdapterCustomMenulist.class.getSimpleName();
 	
-	private Context mContext;
+	private ActivityMain mController;
 
 	private MensaList mModel;
 	private List<Menu> mMenus;
 	private int mResource;
 
-	public AdapterCustomMenulist(Context context, MensaList mensalist, List<Menu> menulist, int resource) {
+	public AdapterCustomMenulist(ActivityMain controller, MensaList mensalist, List<Menu> menulist, int resource) {
 		super();
-		this.mContext = context; // ActivityMain
+		this.mController = controller;
 		this.mModel = mensalist;
 		this.mMenus = menulist;
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
 	}
 	
-	public AdapterCustomMenulist(Context context, List<Menu> menulist, int resource) {
+	public AdapterCustomMenulist(ActivityMain controller, List<Menu> menulist, int resource) {
 		super();
-		this.mContext = context; // ActivityMain
+		this.mController = controller;
 		this.mMenus = menulist;
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
 	}
@@ -55,13 +56,13 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		// get a reference to the parent view for the rating dialog
 //		this.parent = parent;
 
-		LayoutInflater mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = mInflater.inflate(mResource, parent, false);
         
         LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
         
         // the actual fields that contain text
-        Menu menu = mMenus.get(position);
+        final Menu menu = mMenus.get(position);
         if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
         	TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
         	// get the mensa name for the menu overview (FragmentMenuList)
@@ -83,16 +84,13 @@ public class AdapterCustomMenulist extends BaseAdapter {
         price.setText(menu.getPrice());
         date.setText(menu.getDate());
 
-        // set the click listener for the list item
-        // should open mensa details
+        // set the click listener for the menu item
         final OnClickListener rowListener = new OnClickListener() {
             @Override
             public void onClick(View rowView) {
-            	// show the mensadetails for the clicked mensa
-            	//fragment.selectItem(position);
-            	// delete after developement, just to show that it works
-            	Toast.makeText(mContext, "Menu clicked, show rating...", Toast.LENGTH_SHORT).show();
-            	showRating();
+            	// TODO: remove dev toast
+            	Toast.makeText(mController, "Menu clicked, show rating...", Toast.LENGTH_SHORT).show();
+            	showRating(menu.getMenuID());
             }
         };
         grid.setOnClickListener(rowListener);
@@ -115,17 +113,17 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		return position;
 	}
 	
-	public void showRating() {
-		final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+	public void showRating(final int menuid) {
+		final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mController);
 		
 //		View dialogLayout = inflater.inflate(R.layout.dialog_rating, parent);
-		final RatingBar rating = new RatingBar(mContext);
+		final RatingBar rating = new RatingBar(mController);
 //		final RatingBar rating = (RatingBar) dialogLayout.findViewById(R.id.rating_bar);
 		rating.setMax(5);
 		rating.setStepSize(1.0f);
 		rating.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
-		LinearLayout parentLayout = new LinearLayout(mContext);
+		LinearLayout parentLayout = new LinearLayout(mController);
         parentLayout.setGravity(Gravity.CENTER);
         parentLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         parentLayout.addView(rating);
@@ -139,7 +137,8 @@ public class AdapterCustomMenulist extends BaseAdapter {
 			public void onClick(DialogInterface dialog, int which) {
 				//txtView.setText(String.valueOf(rating.getProgress()));
 				// send rating to server
-				Toast.makeText(mContext, "Send Vote to server..." + String.valueOf(rating.getProgress()), Toast.LENGTH_SHORT).show();
+				mController.getDataHandler().APIRegisterRating(menuid, rating.getProgress());
+				Toast.makeText(mController, "Send Vote for menu with ID = " + menuid + " to server..." + String.valueOf(rating.getProgress()), Toast.LENGTH_SHORT).show();
 				dialog.dismiss();
 			}
 		});

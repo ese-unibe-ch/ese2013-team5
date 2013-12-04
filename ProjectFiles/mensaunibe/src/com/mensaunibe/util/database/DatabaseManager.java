@@ -1,6 +1,5 @@
 package com.mensaunibe.util.database;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.mensaunibe.app.model.Mensa;
@@ -13,6 +12,7 @@ import com.mensaunibe.util.database.tables.MenuTable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * class to manage all functionalities of the database.
@@ -21,54 +21,65 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class DatabaseManager {
 	
+	// for logging and debugging purposes
+	private static final String TAG = DatabaseManager.class.getSimpleName();
+	
+	private DatabaseHelper mDBHelper;
 	private SQLiteDatabase mDB;
-	private DatabaseHelper mHelper;
 	private DatabaseService mDBService;
 	
-	public DatabaseManager(Context cont){
-		this.mHelper = new DatabaseHelper(cont);
-		this.mDB = mHelper.getWritableDatabase();
+	public DatabaseManager(Context context){
+		this.mDBHelper = new DatabaseHelper(context);
+		this.mDB = mDBHelper.getWritableDatabase();
 		this.mDBService = new DatabaseService();
 	}
 	
-	public void save(MensaList mensalist){
+	public void save(MensaList mensalist) {
+		Log.i(TAG, "save()");
 		List<Mensa> list = mensalist.getMensas();
-		for (Mensa mensa : list){
+		for(Mensa mensa : list) {
 			save(mensa);
-			if(mensa.isFavorite()){
+			if (mensa.isFavorite()) {
 				saveFavorite(mensa);
 			}
-			for(Menu menu : mensa.getAllMenus()){
+			
+			for(Menu menu : mensa.getAllMenus()) {
 				save(menu);
 			}
 		}
 	}
 
 	public void saveFavorite(Mensa mensa) {
+		Log.i(TAG, "saveFavorite()");
 		ContentValues values = new ContentValues();
 		values.put(FavoriteTable.COLUMN_ID, mensa.getId());
 		mDB.insertWithOnConflict(FavoriteTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public void removeFavorite(Mensa mensa) {
-		mDB.delete(FavoriteTable.TABLE_NAME, FavoriteTable.COLUMN_ID + " = ?", 
-				new String[] { "" + mensa.getId() });
+		Log.i(TAG, "removeFavorite()");
+		mDB.delete(FavoriteTable.TABLE_NAME, FavoriteTable.COLUMN_ID + " = ?", new String[] { "" + mensa.getId() });
 	}
-	public boolean isFavorite(Mensa mensa){
+	
+	public boolean isFavorite(Mensa mensa) {
+		//Log.i(TAG, "isFavorite()");
 		return mDBService.isFavorite(mensa, mDB);
 	}
 
 	public void save(Mensa m) {
+		//Log.i(TAG, "save(Mensa)");
 		ContentValues values = mDBService.toValue(m);
 		mDB.insertWithOnConflict(MensaTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
-	public void save(Menu menu){
+	public void save(Menu menu) {
+		//Log.i(TAG, "save(Menu)");
 		ContentValues values = mDBService.toValue(menu);
 		mDB.insertWithOnConflict(MenuTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public MensaList load(){
+		Log.i(TAG, "load()");
 		return mDBService.createMensalist(mDB);
 	}
 

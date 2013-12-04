@@ -33,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	
 	public DatabaseHelper(Context cont) {
 		super(cont, DATABASE_NAME, null, DATABASE_VERSION);
-		this.instance = this;
+		instance = this;
 	}
 
 	@Override
