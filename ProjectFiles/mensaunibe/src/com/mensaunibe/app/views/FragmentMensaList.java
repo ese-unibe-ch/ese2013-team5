@@ -110,7 +110,7 @@ public class FragmentMensaList extends Fragment {
 	}
 
 	public void updateFavorite(Mensa mensa) {
-		mData.updateFavorite(mensa);
+		mData.DBUpdateFavorite(mensa);
 	}
 
 

@@ -1,12 +1,19 @@
 package com.mensaunibe.app.model;
 
+import java.util.UUID;
+
 import com.mensaunibe.app.controller.ActivityMain;
+import com.mensaunibe.util.ServicePersistenceManager;
+import com.mensaunibe.util.ServiceWebRequest;
 import com.mensaunibe.util.database.DatabaseManager;
 import com.mensaunibe.util.tasks.TaskCreateModel;
 import com.mensaunibe.util.tasks.TaskListener;
 import com.mensaunibe.util.tasks.TaskLocation;
+import com.mensaunibe.util.tasks.TaskUpdateAPI;
+import com.mensaunibe.util.tasks.TaskUpdateDB;
 
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,12 +32,16 @@ public class DataHandler extends Fragment implements TaskListener {
 	private static final String TAG = DataHandler.class.getSimpleName();
 	
 	private static ActivityMain mController;
+	private static ServicePersistenceManager mPersistenceManager;
 	private static DatabaseManager mDBManager;
+	private static ServiceWebRequest mWebService;
+
 	private MensaList mModel;
 	
 	private Location mLocation;
 	private Mensa mClosestMensa;
 	private Mensa mCurrentMensa;
+	private static String mDeviceId;
 	
 	
 /**
@@ -44,7 +55,12 @@ public class DataHandler extends Fragment implements TaskListener {
 		// Keep this Fragment even during config changes
 		instance.setRetainInstance(true);
 		mController = controller;
+		mPersistenceManager = new ServicePersistenceManager(mController);
 		mDBManager = new DatabaseManager(mController.getContext());
+		mWebService = new ServiceWebRequest(mController);
+		
+		mDeviceId = getDeviceId();
+		
 		return instance;
 	}
 	
@@ -86,9 +102,10 @@ public class DataHandler extends Fragment implements TaskListener {
 		if (result != null) {
 			if (result instanceof MensaList) {
 				mModel = (MensaList) result;
-				mDBManager.save((MensaList) result);
 			} else if (result instanceof Location) {
 				mLocation = (Location) result;
+			} else if (result instanceof String) {
+				Log.i(TAG, (String) result);
 			}
 		} else {
 			Log.e(TAG, "onTaskComplete(): result was null!");
@@ -105,55 +122,6 @@ public class DataHandler extends Fragment implements TaskListener {
 		// unused
 	}
 	
-//    /**
-//     * @return the result
-//     */
-//    public Object getResult() {
-//    	Log.i(TAG, "getResult()");
-//    	if (!Double.isNaN(mResult)) {
-//    		return mResult;
-//    	} else if (mModel != null) {
-//    		return mModel;
-//    	} else {
-//    		return null;
-//    	}
-//    }
-
-//    /**
-//     * Returns true if a result has already been calculated
-//     *
-//     * @return true if a result has already been calculated
-//     * @see #getResult()
-//     */
-//    public boolean hasResult() {
-//    	Log.i(TAG, "hasResult()");
-//    	if (mModel != null || !Double.isNaN(mResult)) {
-//    		return true;
-//    	} else {
-//    		return false;
-//    	}
-//    }
-
-//    /**
-//     * Removes the ProgressListener
-//     *
-//     * @see #setProgressListener(ProgressListener)
-//     */
-//    public void removeProgressListener() {
-//    	Log.i(TAG, "removeProgressListener()");
-////        mFragmentListener = null;
-//    }
-
-//    /**
-//     * Sets the ProgressListener to be notified of updates
-//     *
-//     * @param listener ProgressListener to notify
-//     * @see #removeProgressListener()
-//     */
-//    public void setProgressListener(TaskListener listener) {
-//    	Log.i(TAG, "setProgressListener()");
-////        mFragmentListener = listener;
-//    }
 	public void setClosestMensa(int mensaid) {
 		Log.i(TAG, "setClosestMensa(" + mensaid + ")");
 		mClosestMensa = mModel.getMensaById(mensaid);
@@ -170,7 +138,7 @@ public class DataHandler extends Fragment implements TaskListener {
     }
     
     public Mensa getCurrentMensa() {
-    	Log.i(TAG, "getCurrentMensa(), mCurrentMensa = " + mCurrentMensa);
+    	Log.i(TAG, "getCurrentMensa()");
     	return mCurrentMensa;
     }
 
@@ -195,7 +163,7 @@ public class DataHandler extends Fragment implements TaskListener {
     }
     
     public MensaList getModel() {
-    	Log.i(TAG, "getModel(), currentMensa = " + mCurrentMensa);
+    	Log.i(TAG, "getModel()");
     	return mModel;
     }
     
@@ -220,25 +188,93 @@ public class DataHandler extends Fragment implements TaskListener {
     }
     
     public Location getLocation() {
-    	Log.i(TAG, "getModel(), currentMensa = " + mCurrentMensa);
+    	Log.i(TAG, "getLocation()");
     	return mLocation;
     }
     
     public void setLocation(Location location) {
+    	Log.i(TAG, "setLocation()");
     	mLocation = location;
     }
+    
+    public ServiceWebRequest getWebService() {
+    	return mWebService;
+    }
+    
+    public ServicePersistenceManager getPersistenceManager() {
+    	return mPersistenceManager;
+    }
+    
+    public DatabaseManager getDatabaseManager() {
+    	return mDBManager;
+    }
 
-
-	public void updateDB() {
+	public void DBUpdate() {
+		Log.i(TAG, "DBUpdate()");
+    	TaskUpdateDB mTask = new TaskUpdateDB(mController);
+        mTask.addListener(this);
+        mTask.execute();
 		mDBManager.save(mModel);
 	}
 
-
-	public void updateFavorite(Mensa mensa) {
+	public void DBUpdateFavorite(Mensa mensa) {
+		Log.i(TAG, "DBUpdateFavorite()");
 		if(mensa.isFavorite()){
 			mDBManager.saveFavorite(mensa);
 		} else {
 			mDBManager.removeFavorite(mensa);
 		}
+	}
+    
+	/**
+	 * Returns a Pseudo Unique ID to identify the user, will be sent to the server and doesn't contain anything private
+	 * @return deviceId 
+	 */
+	public static String getDeviceId() {
+		Log.i(TAG, "getDeviceId()");
+		String deviceid = (String) mPersistenceManager.getData("string", "deviceid");
+		
+		if (deviceid == null) {
+			Log.i(TAG, "getDeviceId(): Creating and saving new device ID");
+		    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
+		    // returns 'null', then simply the ID returned will be soley based
+		    // off their Android device information.
+		    String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+	
+		    // Only devices with API >= 9 have android.os.Build.SERIAL
+		    // If a user upgrades software or roots their phone, there will be a duplicate entry
+		    String serial = null; 
+		    try {
+		        serial = android.os.Build.class.getField("SERIAL").toString();
+		        // go ahead and return the serial for api => 9
+		        return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+		    } catch (Exception e) { 
+		        // String needs to be initialized
+		        serial = "serial"; // some value
+		    }
+	
+		    // Finally, combine the values we have found by using the UUID class to create a unique identifier
+		    deviceid = new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+		    // save the id to shared prefs for later usage
+		    mPersistenceManager.setData("string", "deviceid", deviceid);
+		}
+		
+	    return deviceid;
+	}
+	
+	public void APIRegisterUser() {
+		Log.i(TAG, "APIRegisterUser(" + mDeviceId + ")");
+
+    	TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId);
+        mTask.addListener(this);
+        mTask.execute();
+	}
+	
+	public void APIRegisterRating(int menuid, int rating) {
+		Log.i(TAG, "APIRegisterUser(" + menuid + ", " + rating + ")");
+
+    	TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId, menuid, rating);
+        mTask.addListener(this);
+        mTask.execute();
 	}
 }

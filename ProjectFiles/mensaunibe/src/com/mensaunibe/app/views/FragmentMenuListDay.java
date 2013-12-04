@@ -144,7 +144,7 @@ public class FragmentMenuListDay extends Fragment {
         
         menus.addAll(mMensa.getDailyMenus(mDay));
 	    
-        mAdapter = new AdapterCustomMenulist(mContext, menus, R.layout.list_menulist_item);
+        mAdapter = new AdapterCustomMenulist(mController, menus, R.layout.list_menulist_item);
     
         listview.setAdapter(mAdapter);
 

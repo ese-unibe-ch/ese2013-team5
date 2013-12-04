@@ -16,14 +16,12 @@ import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
 
 /**
- * helper class for the DatabaseManager. </br>
+ * helper class for the DatabaseManager.
  * consists methods to convert objects into storable values and vice versa
- *
  */
 public class DatabaseService {
 	
-	private final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME 
-			+ " order by _id asc";
+	private final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME + " order by _id asc";
 
 	/**
 	 * @param m: Mensa to convert into storable values
@@ -77,11 +75,13 @@ public class DatabaseService {
 		List<Mensa> list = new ArrayList<Mensa>();
 		Cursor cursor = db.rawQuery(SELECT_MENSAS, null);
 		cursor.moveToFirst();
-		while(!cursor.isAfterLast()){
+		
+		while(!cursor.isAfterLast()) {
 			list.add(getMensaFromCursor(cursor, db));
 			cursor.moveToNext();
 		}
 		addMenus(list, db);
+		
 		return new MensaList(list);
 	}
 
@@ -91,13 +91,16 @@ public class DatabaseService {
 	 * @param db database where the menus are stored
 	 */
 	private void addMenus(List<Mensa> mensalist, SQLiteDatabase db) {
-		for(Mensa mensa : mensalist){
+		for(Mensa mensa : mensalist) {
 			List<Menu> menulist = new ArrayList<Menu>();
-			final String SELECT_MENUS = "select * from " + MenuTable.TABLE_NAME
-					+ " where " + MenuTable.COLUMN_MENSA_ID + " = " + mensa.getId();
+			final String SELECT_MENUS = "select * from " 
+					+ MenuTable.TABLE_NAME 
+					+ " where " + MenuTable.COLUMN_MENSA_ID 
+					+ " = " + mensa.getId();
 			Cursor cursor = db.rawQuery(SELECT_MENUS, null);
 			cursor.moveToFirst();
-			while(!cursor.isAfterLast()){
+			
+			while(!cursor.isAfterLast()) {
 				menulist.add(getMenuFromCursor(cursor));
 				cursor.moveToNext();
 			}
@@ -124,8 +127,8 @@ public class DatabaseService {
 		String day = cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_DAY));
 		int week = cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_WEEK));
 		Double rating = cursor.getDouble(cursor.getColumnIndex(MenuTable.COLUMN_RATING));
-		return new Menu(id, mensaid, title, title_en, type, desc, desc_en, price, 
-				price_en, date, date_en, day, week, rating);
+		
+		return new Menu(id, mensaid, title, title_en, type, desc, desc_en, price, price_en, date, date_en, day, week, rating);
 	}
 
 	/**
@@ -143,16 +146,20 @@ public class DatabaseService {
 		float lat = cursor.getFloat(cursor.getColumnIndex(MensaTable.COLUMN_LAT));
 		float lon = cursor.getFloat(cursor.getColumnIndex(MensaTable.COLUMN_LON));
 		Mensa mensa = new Mensa(id, name, name_en, desc, desc_en, address, city, lat, lon, null);
-		mensa.setIsFavorite(isFavorite(mensa, db));
+		mensa.setFavorite(isFavorite(mensa, db));
+		
 		return mensa;
 	}
 
 	public boolean isFavorite(Mensa mensa, SQLiteDatabase mDB) {
-		final String SELECT_FAVORITES = "select * from " + FavoriteTable.TABLE_NAME 
-				+ " where " + FavoriteTable.COLUMN_ID + " = " + mensa.getId();
+		final String SELECT_FAVORITES = "select * from " 
+				+ FavoriteTable.TABLE_NAME 
+				+ " where " + FavoriteTable.COLUMN_ID 
+				+ " = " + mensa.getId();
 		Cursor cursor = mDB.rawQuery(SELECT_FAVORITES, null);
 		cursor.moveToFirst();
-		if(cursor.getCount() == 0){
+		
+		if (cursor.getCount() == 0) {
 			return false;
 		} else {
 			return true;

@@ -5,16 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
 import com.mensaunibe.app.controller.ActivityMain;
 import com.mensaunibe.app.model.DataHandler;
@@ -27,8 +22,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 	private static final String TAG = TaskLocation.class.getSimpleName();
 	
 	private ActivityMain mController;
-	private Context mContext;
-	private DataHandler mData;
+	private DataHandler mDataHandler;
 	private MensaList mModel;
 
 	private ArrayList<TaskListener> mListeners;
@@ -39,9 +33,8 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 	
 	public TaskLocation(ActivityMain controller) {
 		this.mController = controller;
-		this.mContext = controller.getContext();
-		this.mData = mController.getDataHandler();
-		this.mModel = mData.getModel();
+		this.mDataHandler = mController.getDataHandler();
+		this.mModel = mDataHandler.getModel();
 		
 		this.mListeners = new ArrayList<TaskListener>();
 		this.mLocationClient = mController.getLocationClient();
@@ -114,7 +107,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			}
 			
 			// and save it in the data handler
-			mData.setClosestMensa(closestMensaId);
+			mDataHandler.setClosestMensa(closestMensaId);
 			// also make this globally available for convenience and fetch the mensa object
 //			this.closestMensaId = closestMensaId;
 //			this.nearestmensa = model.getMensaById(closestMensaId);
@@ -132,7 +125,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
 //			selectItem(0);
 		} else {
-			Toast.makeText(mContext, "last location was null, did the app crash here earlier?", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mController, "last location was null, did the app crash here earlier?", Toast.LENGTH_SHORT).show();
 		}
     }
     
