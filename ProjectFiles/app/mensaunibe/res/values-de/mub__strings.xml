@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mensa UniBE</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="loading">Lade Daten&#8230;</string>
+    <string name="opening_hours">Öffnungszeiten</string>
+    
+    <!-- Side Navigation Strings -->
+    <string name="sidenav_list">Mensaliste</string>
+    <string name="sidenav_map">Mensamap</string>
+    <string name="sidenav_menus">Mensamenus</string>
+    <string name="sidenav_friends">Freunde</string>
+    <string name="sidenav_settings">Einstellungen</string>
+    
+    <string name="sidenav_open">Navigation öffnen</string>
+    <string name="sidenav_close">Navigation schliessen</string>
+    <string name="title_home">Home</string>
+    <string name="title_mensalist">Mensaliste</string>
+    <string name="title_menulist">Menuliste</string>
+    <string name="title_mensamap">Mensakarte</string>
+    <string name="title_friends">Freunde</string>
+    <string name="title_notifications">Benachrichtigungen</string>
+    <string name="title_settings">Einstellungen</string>
+    <string name="title_about">Über diese App</string>
+    
+    <!-- Day Strings -->
+    <string name="monday">Montag</string>
+    <string name="tuesday">Dienstag</string>
+    <string name="wednesday">Mittwoch</string>
+    <string name="thursday">Donnerstag</string>
+    <string name="friday">Freitag</string>
+    
+    <!-- Pull to refresh strings -->
+    <string name="ptr_pull_to_refresh">Ziehen für Update</string>
+    <string name="ptr_release_to_refresh">Loslassen für Update</string>
+    <string name="ptr_refreshing">Lade Daten…</string>
+    <string name="ptr_last_updated">Updated: %1$s</string>
+    
+    <!--  Strings for possible PreferenceActivity Back/Next buttons -->
+    <string name="back_button_label">Zurück</string>
+    <string name="next_button_label">Nächste</string>
+
+    <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
+    <string name="skip_button_label">Überspringen</string>
+    
+    <!-- Preferences Strings -->
+    <string name="title_settings">Einstellungen</string>
+    <string name="title_username">Dein Benutzername</string>
+    <string name="title_dialog_username">Benutzername eingeben</string>
+    <string name="title_homescreen">Homescreen Konfiguration</string>
+    <string name="title_dialog_homescreen">Konfiguration auswählen</string>
+    <string name="title_language">App Sprache</string>
+    <string name="title_dialog_language">Sprache auswählen</string>
+    
+    <!-- Button Description Strings (Accessibility) -->
+    <string name="button_map_desc">Zu Mensa navigieren</string>
+    <string name="button_star_desc">Lieblingsmensa setzen</string>
+    
+    <!-- Icon Description Strings (Accessibility) -->
+	<string name="icon_mensa_desc">Mensa Icon</string>
+	<string name="icon_menu_desc">Menu Icon</string>
+
+</resources>
