@@ -37,7 +37,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 		this.mModel = mDataHandler.getModel();
 		
 		this.mListeners = new ArrayList<TaskListener>();
-		this.mLocationClient = mController.getLocationClient();
+		this.mLocationClient = Controller.getLocationClient();
 	}
 	
     public void addListener(TaskListener listener) {

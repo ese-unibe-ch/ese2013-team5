@@ -126,7 +126,6 @@ public class FragmentMenuListDay extends Fragment {
 			}
 		});
 		
-        List<Menu> menus = new ArrayList<Menu>();
         if (mMensa != null) {
         	mDataHandler.setCurrentMensa(mMensa);
         } else {
@@ -134,6 +133,8 @@ public class FragmentMenuListDay extends Fragment {
         	Log.e(TAG, "mMensa was null, get from model, mMensa now = " + mMensa);
         }
         
+        // build the menu list
+        List<Menu> menus = new ArrayList<Menu>();
         menus.addAll(mMensa.getDailyMenus(mDay));
 	    
         mAdapter = new AdapterCustomMenulist(mController, menus, R.layout.list_menulist_item);

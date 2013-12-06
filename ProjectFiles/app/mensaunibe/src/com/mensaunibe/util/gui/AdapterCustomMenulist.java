@@ -1,5 +1,8 @@
 package com.mensaunibe.util.gui;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.mensaunibe.R;
@@ -63,6 +66,8 @@ public class AdapterCustomMenulist extends BaseAdapter {
         
         // the actual fields that contain text
         final Menu menu = mMenus.get(position);
+        
+        // handle the full menu list displaying of the mensa
         if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
         	TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
         	// get the mensa name for the menu overview (FragmentMenuList)
@@ -86,18 +91,23 @@ public class AdapterCustomMenulist extends BaseAdapter {
         price.setText(menu.getPrice());
         date.setText(menu.getDate());
         rating.setText(String.valueOf(menu.getRating()));
-//        count.setText(String.valueOf(menu.getVotes()));
+        count.setText(String.valueOf(menu.getVotes()));
 
         // set the click listener for the menu item
         final OnClickListener rowListener = new OnClickListener() {
             @Override
             public void onClick(View rowView) {
             	// TODO: remove dev toast
-            	Toast.makeText(mController, "Menu clicked, show rating...", Toast.LENGTH_SHORT).show();
+            	//Toast.makeText(mController, "Menu clicked, show rating...", Toast.LENGTH_SHORT).show();
+            	
             	showRating(menu.getMenuID());
             }
         };
-        grid.setOnClickListener(rowListener);
+        
+        // prevent menus that are not served today from getting rated
+        if (getCurrentDayName().equals(menu.getDay())) {
+        	grid.setOnClickListener(rowListener);
+        }
             
 		return rowView;
 	}
@@ -115,6 +125,43 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return position;
+	}
+	
+	/**
+	 * this method is used to determine TODAYS name in english
+	 * to instruct the class to set the onClickListener for rating or not
+	 * @return the english name of today, can be compared with API data!
+	 */
+	public String getCurrentDayName() {
+		Calendar calendar = new GregorianCalendar();
+		Date now = new Date();   
+		calendar.setTime(now);
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		switch(day) {
+			// sunday
+			case 1: 
+				return "Friday";
+			// monday
+			case 2:
+				return "Monday";
+			// tuesday
+			case 3:
+				return "Tuesday";
+			// wednesday
+			case 4:
+				return "Wednesday";
+			// thursday
+			case 5:
+				return "Thursday";
+			// friday
+			case 6:
+				return "Friday";
+			// saturday
+			case 7:
+				return "Friday";
+			default:
+				return "Monday";
+		}
 	}
 	
 	public void showRating(final int menuid) {

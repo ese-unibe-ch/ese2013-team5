@@ -3,6 +3,7 @@ package com.mensaunibe.app.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
  
 public class MensaList implements Serializable {
@@ -30,6 +31,25 @@ public class MensaList implements Serializable {
 			}
 		}
 		return null;
+	}
+	
+	public Mensa getMensaByLocation(LatLng location) {
+		for (Mensa mensa : mensas) {
+			if (cutTo5Digits(mensa.getLocation().latitude) == cutTo5Digits(location.latitude) && 
+					cutTo5Digits(mensa.getLocation().longitude) == cutTo5Digits(location.longitude)) {
+				return mensa;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Cut's of overly "precise" location values to 5 digits to make them comparable again
+	 * @param d double to cut
+	 * @return the rounded value
+	 */
+	public static double cutTo5Digits(double d) {
+	    return Math.floor(d * 1e5) / 1e5;
 	}
  
 }

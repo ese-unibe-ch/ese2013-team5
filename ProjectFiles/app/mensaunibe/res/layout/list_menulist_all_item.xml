@@ -56,8 +56,6 @@
 	                    android:id="@+id/rating"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_centerVertical="true"
-	                    android:layout_toRightOf="@+id/icon_star"
 	                    android:gravity="center_horizontal"
 	                    android:paddingBottom="0dp"
 	                    android:textColor="@color/unibe_black"
@@ -89,7 +87,6 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:gravity="center_horizontal"
-	                    android:text="13"
 	                    android:paddingBottom="0dp"
 	                    android:textColor="@color/unibe_black"
 	                    android:textSize="12sp" />

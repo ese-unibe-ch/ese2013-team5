@@ -77,7 +77,6 @@
 	                    android:layout_width="18dp"
 	                    android:layout_height="18dp"
 	                    android:layout_marginRight="0dp"
-	                    android:contentDescription="@string/icon_menu_desc"
 	                    android:gravity="top"
 	                    android:paddingLeft="0dp"
 	                    android:scaleType="fitXY"
@@ -89,7 +88,6 @@
 	                    android:layout_height="wrap_content"
 	                    android:gravity="center_horizontal"
 	                    android:padding="0dp"
-	                    android:text="13"
 	                    android:textColor="@color/unibe_black"
 	                    android:textSize="12sp"
 	                />

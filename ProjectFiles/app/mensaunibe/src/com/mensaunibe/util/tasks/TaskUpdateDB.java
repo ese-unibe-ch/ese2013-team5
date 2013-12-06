@@ -13,8 +13,9 @@ public class TaskUpdateDB extends AsyncTask<Void, Integer, String> {
 	// for logging and debugging purposes
 	private static final String TAG = TaskUpdateDB.class.getSimpleName();
 	
+	@SuppressWarnings("unused")
 	private Controller mController;
-	private DataHandler mData;
+	private DataHandler mDataHandler;
 	
 	private DatabaseManager mDBManager;
 	private ArrayList<TaskListener> mListeners;
@@ -22,8 +23,8 @@ public class TaskUpdateDB extends AsyncTask<Void, Integer, String> {
 	
 	public TaskUpdateDB(Controller controller) {
 		this.mController = controller;
-		this.mData = mController.getDataHandler();
-		this.mDBManager = mData.getDatabaseManager();
+		this.mDataHandler = Controller.getDataHandler();
+		this.mDBManager = mDataHandler.getDatabaseManager();
 		this.mListeners = new ArrayList<TaskListener>();
 	}
 	
@@ -63,9 +64,9 @@ public class TaskUpdateDB extends AsyncTask<Void, Integer, String> {
     protected String doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to save the model to the database");
 		
-		if (mData.hasModel()) {
+		if (mDataHandler.hasModel()) {
 			// save the model to the database
-    		mDBManager.save(mData.getModel());
+    		mDBManager.save(mDataHandler.getModel());
     		
     		//show fake progress
     		for (int i = 0; i <= 100; i++) {
