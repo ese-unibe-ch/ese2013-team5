@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,8 +97,8 @@ public class FragmentMensaList extends Fragment {
 	}
 
 	public void selectItem(int position) {
-		Mensa mMensa = mModel.getMensas().get(position);
-		Fragment fragment = FragmentMensaDetails.newInstance(mMensa);
+		Mensa mensa = mModel.getMensas().get(position);
+		Fragment fragment = FragmentMensaDetails.newInstance(mensa);
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.addToBackStack(null);

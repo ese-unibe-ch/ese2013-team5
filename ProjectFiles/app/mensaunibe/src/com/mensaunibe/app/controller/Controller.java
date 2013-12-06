@@ -25,7 +25,6 @@ import com.mensaunibe.util.tasks.TaskListener;
 
 import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -116,7 +115,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		// initialize retaining data loader fragment for data persistence
 		attachDataHandler();
 		
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.controller);
 		
 		// setting up the navigation drawer is done later onTaskComplete() as the model is not ready yet here!
 	}
@@ -183,9 +182,10 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		Log.i(TAG, "onConfigurationChanged(" + newConfig + ")");
 		super.onConfigurationChanged(newConfig);
 		if (sDrawer != null && sModelReady) {
-			// attachNavigationDrawer(si);
-			// Pass any configuration change to the drawer toggle
-			sDrawer.getDrawerToggle().onConfigurationChanged(newConfig);
+			// re-attach the navigation drawer when a config change happens (eg. rotation)
+			attachNavigationDrawer(si);
+			// Pass any configuration change to the drawer toggle, this actually doesn't work but crashes
+			//sDrawer.getDrawerToggle().onConfigurationChanged(newConfig);
 		} else {
 			//Log.e(TAG, "onConfigurationChanged(): sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
 		}
@@ -419,10 +419,12 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	}
 	
 	public void setDefaultLocale() {
+		Log.i(TAG, "getDefaultLocale()");
 		// we cannot use the DataHandler when this is called first, so we go the direct way over the system
 		sLanguage = sSettings.getString("setting_language", null);
 		
-		if (sLanguage != null) {
+		if (sLanguage != null && !sLanguage.equals("")) {
+			//Log.i(TAG, "getDefaultLocale(): sLanguage already saved in shared prefs = " + sLanguage);
 			// a user language just for the app is set
 			Locale locale = new Locale(sLanguage);
 			Locale.setDefault(locale);
@@ -436,9 +438,10 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			}
 		} else {
 			// if no language is set yet, set it to the default system language
+			//Log.i(TAG, "getDefaultLocale(): setting default lang from system " + Locale.getDefault().getLanguage());
 			sLanguage = Locale.getDefault().getLanguage();
 			Editor editor = sSettings.edit();
-			editor.putString("settings_language", sLanguage);
+			editor.putString("setting_language", sLanguage);
 			editor.commit();
 		}
 	}

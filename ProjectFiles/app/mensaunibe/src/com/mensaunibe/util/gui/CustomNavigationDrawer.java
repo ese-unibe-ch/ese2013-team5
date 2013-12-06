@@ -8,7 +8,6 @@ import com.mensaunibe.app.controller.Controller;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +24,7 @@ import android.widget.ListView;
 public class CustomNavigationDrawer extends DrawerLayout {
 	
 	// for logging and debugging purposes
+	@SuppressWarnings("unused")
 	private static final String TAG = CustomNavigationDrawer.class.getSimpleName();
 	
 	private ActionBarDrawerToggle mDrawerToggle;

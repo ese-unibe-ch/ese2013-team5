@@ -40,10 +40,12 @@ public class Menu implements Serializable {
 	private final int week;
 	@SerializedName("rating")
 	private final Double rating;
+	@SerializedName("votes")
+	private final int votes;
 	
 	private String locale;
 
-	public Menu(int id, int mensaid, String title, String title_en, String type, String desc, String desc_en, String price, String price_en, String date, String date_en, String day, int week, Double rating) {
+	public Menu(int id, int mensaid, String title, String title_en, String type, String desc, String desc_en, String price, String price_en, String date, String date_en, String day, int week, Double rating, int votes) {
 		this.id = id;
 		this.mensaid = mensaid;
 		this.title = title;
@@ -58,6 +60,7 @@ public class Menu implements Serializable {
 		this.day = day;
 		this.week = week;
 		this.rating = rating;
+		this.votes = votes;
 	}
 
 	public int getMenuID() {
@@ -148,6 +151,10 @@ public class Menu implements Serializable {
 	
 	public double getRating() {
 		return rating;
+	}
+	
+	public int getVotes() {
+		return votes;
 	}
 	
 	private String getLocale() {

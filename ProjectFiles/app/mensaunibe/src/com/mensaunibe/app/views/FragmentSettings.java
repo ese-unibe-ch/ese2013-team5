@@ -13,6 +13,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class FragmentSettings extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+	
+	// for logging and debugging purposes
+	@SuppressWarnings("unused")
+	private static final String TAG = FragmentSettings.class.getSimpleName();
 
 	private Controller mController;
 
@@ -26,8 +30,9 @@ public class FragmentSettings extends PreferenceFragment implements OnSharedPref
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.layout.fragment_settings);
         
+        // Dynamically set the value of the language setting
         CustomListPreference language = (CustomListPreference) getPreferenceScreen().findPreference("setting_language");
-        language.setSummary(Controller.getLanguage());
+        language.setValue(Controller.getLanguage());
         
         // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);

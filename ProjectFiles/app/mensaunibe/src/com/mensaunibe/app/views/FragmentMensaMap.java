@@ -7,6 +7,7 @@ import android.graphics.PorterDuff.Mode;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -41,7 +43,7 @@ import com.mensaunibe.util.tasks.TaskProgress;
 /**
  * Fragment that appears in the "content_frame", shows mensamap
  */
-public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, OnMarkerClickListener, LocationListener, RoutingListener, ControllerListener {
+public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, OnMarkerClickListener, OnInfoWindowClickListener, LocationListener, RoutingListener, ControllerListener {
 	
 	// for logging and debugging purposes
 	private static final String TAG = FragmentMensaMap.class.getSimpleName();
@@ -167,6 +169,8 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
         	
         	// enable clicks on the markers
         	mMap.setOnMarkerClickListener(this);
+        	// enable clicks on info windows
+        	mMap.setOnInfoWindowClickListener(this);
         	
         	// initialize the location updates if the location client is connected
         	// otherwise wait for the location client to connect again in the controller
@@ -227,6 +231,21 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 		}
 
 		return false;
+	}
+	
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		Mensa mensa = mModel.getMensaByLocation(marker.getPosition());
+		Log.e(TAG, "mensa = " + mensa);
+		if (mensa != null) {
+			Fragment fragment = FragmentMensaDetails.newInstance(mensa);
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+			fragmentTransaction.addToBackStack(null);
+			fragmentTransaction.replace(R.id.frame_content, fragment).commit();
+		}
+		// TODO: remove dev toast
+		//Toast.makeText(mController, "Clicked a window, open mensadetail view..." + marker.getPosition(), Toast.LENGTH_SHORT).show();
 	}
     
     // callback from the maps api when the map has loaded, this is very new

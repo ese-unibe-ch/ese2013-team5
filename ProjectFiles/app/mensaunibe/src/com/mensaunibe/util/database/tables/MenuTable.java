@@ -21,6 +21,7 @@ public class MenuTable implements Table {
 	public static final String COLUMN_PRICE = "price";
 	public static final String COLUMN_PRICE_EN = "price_en";
 	public static final String COLUMN_RATING = "rating";
+	public static final String COLUMN_VOTES = "votes";
 	
 	// Table create statement
 	public static final String TABLE_CREATE = 
@@ -40,7 +41,8 @@ public class MenuTable implements Table {
 			+ COLUMN_WEEK + " integer not null, "
 			+ COLUMN_PRICE + " text not null, "
 			+ COLUMN_PRICE_EN + " text not null, "
-			+ COLUMN_RATING + " real not null"
+			+ COLUMN_RATING + " real not null, "
+			+ COLUMN_VOTES + " integer not null"
 			+ ");";
 
 	

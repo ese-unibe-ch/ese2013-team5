@@ -78,9 +78,10 @@ public class AdapterCustomMensalist extends BaseAdapter {
         final OnClickListener mapListener = new OnClickListener() {
             @Override
             public void onClick(View mapbutton) {
-            	mController.getDataHandler().setLocationTarget(mensa.getLocation());
-            	mController.getNavigationDrawer().selectItem(2);
-            	Toast.makeText(mapbutton.getContext(), "Navigating to Mensa", Toast.LENGTH_SHORT).show();
+            	Controller.getDataHandler().setLocationTarget(mensa.getLocation());
+            	Controller.getNavigationDrawer().selectItem(2);
+            	// TODO: add status update
+            	//Toast.makeText(mapbutton.getContext(), "Navigating to Mensa", Toast.LENGTH_SHORT).show();
             }
         };
         mapbutton.setOnClickListener(mapListener);

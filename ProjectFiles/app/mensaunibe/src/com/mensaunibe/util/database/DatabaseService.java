@@ -57,6 +57,7 @@ public class DatabaseService {
 		values.put(MenuTable.COLUMN_PRICE, m.getPrice("de"));
 		values.put(MenuTable.COLUMN_PRICE_EN, m.getPrice("en"));
 		values.put(MenuTable.COLUMN_RATING, m.getRating());
+		values.put(MenuTable.COLUMN_VOTES, m.getVotes());
 		values.put(MenuTable.COLUMN_TITLE, m.getTitle("de"));
 		values.put(MenuTable.COLUMN_TITLE_EN, m.getTitle("en"));
 		values.put(MenuTable.COLUMN_TYPE, m.getType());
@@ -127,8 +128,9 @@ public class DatabaseService {
 		String day = cursor.getString(cursor.getColumnIndex(MenuTable.COLUMN_DAY));
 		int week = cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_WEEK));
 		Double rating = cursor.getDouble(cursor.getColumnIndex(MenuTable.COLUMN_RATING));
+		int votes = cursor.getInt(cursor.getColumnIndex(MenuTable.COLUMN_VOTES));
 		
-		return new Menu(id, mensaid, title, title_en, type, desc, desc_en, price, price_en, date, date_en, day, week, rating);
+		return new Menu(id, mensaid, title, title_en, type, desc, desc_en, price, price_en, date, date_en, day, week, rating, votes);
 	}
 
 	/**

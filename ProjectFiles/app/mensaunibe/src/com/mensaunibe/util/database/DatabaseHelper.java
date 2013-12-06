@@ -2,7 +2,6 @@ package com.mensaunibe.util.database;
 
 import java.util.ArrayList;
 
-import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.util.database.tables.FavoriteTable;
 import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
@@ -10,18 +9,11 @@ import com.mensaunibe.util.database.tables.Table;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * simple helper class extending SQLiteOpenHelper
- * to create a SQLiteDatabase. </br>
- * 
- * </br>code to create and get the writable database: </br>
- * <code>
- * DatabaseHelper helper = new DatabaseHelper(context);</br>
- * SQLiteDatabase db = helper.getWritableDatabase();
- * </code>
+ * to create a SQLiteDatabase.
  */
 public class DatabaseHelper extends SQLiteOpenHelper{
 
