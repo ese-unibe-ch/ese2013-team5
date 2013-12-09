@@ -48,8 +48,19 @@ public class MensaList implements Serializable {
 	 * @param d double to cut
 	 * @return the rounded value
 	 */
-	public static double cutTo5Digits(double d) {
+	private static double cutTo5Digits(double d) {
 	    return Math.floor(d * 1e5) / 1e5;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof MensaList) {
+			MensaList other = (MensaList) o;
+			return this.getMensas().equals(other.getMensas());
+		}
+		else {
+			return false;
+		}
 	}
  
 }
