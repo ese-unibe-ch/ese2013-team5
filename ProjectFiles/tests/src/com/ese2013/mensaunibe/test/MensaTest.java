@@ -44,7 +44,7 @@ public class MensaTest extends TestCase {
 	public void testMensasDifferingInNamesShouldBeUnequal() {
 		// Note that here the translated names will not be tested as the
 		// translation happens in the api and is not the responsibility of a
-		// mensa. The german fields are used for comparing and it is assumed
+		// mensa. The German fields are used for comparing and it is assumed
 		// that the translations are correct
 		Mensa otherMensa = new Mensa(0, "Ein Name2", "A Name2", "Beschriebung",
 				"Description", "Address", "City", 0, 0, null);
