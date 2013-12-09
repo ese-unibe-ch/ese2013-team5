@@ -8,7 +8,7 @@
 
     <instrumentation
         android:name="com.zutubi.android.junitreport.JUnitReportTestRunner"
-        android:targetPackage="com.ese2013.mensaunibe" />
+        android:targetPackage="com.mensaunibe" />
 
     <application
         android:icon="@drawable/ic_launcher"
