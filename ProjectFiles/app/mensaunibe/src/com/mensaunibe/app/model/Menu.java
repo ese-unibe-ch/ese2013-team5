@@ -11,7 +11,7 @@ public class Menu implements Serializable {
 	@SuppressWarnings("unused")
 	private static final String TAG = Menu.class.getSimpleName();
 	private static final long serialVersionUID = 3314650930637294888L;
-	
+
 	@SerializedName("id")
 	private final int id;
 	@SerializedName("mensaid")
@@ -42,10 +42,13 @@ public class Menu implements Serializable {
 	private final Double rating;
 	@SerializedName("votes")
 	private final int votes;
-	
+
 	private String locale;
 
-	public Menu(int id, int mensaid, String title, String title_en, String type, String desc, String desc_en, String price, String price_en, String date, String date_en, String day, int week, Double rating, int votes) {
+	public Menu(int id, int mensaid, String title, String title_en,
+			String type, String desc, String desc_en, String price,
+			String price_en, String date, String date_en, String day, int week,
+			Double rating, int votes) {
 		this.id = id;
 		this.mensaid = mensaid;
 		this.title = title;
@@ -66,7 +69,7 @@ public class Menu implements Serializable {
 	public int getMenuID() {
 		return id;
 	}
-	
+
 	public int getMensaID() {
 		return mensaid;
 	}
@@ -78,7 +81,7 @@ public class Menu implements Serializable {
 			return title_en;
 		}
 	}
-	
+
 	public String getTitle(String lang) {
 		if (lang.equals("de")) {
 			return title;
@@ -86,11 +89,11 @@ public class Menu implements Serializable {
 			return title_en;
 		}
 	}
-	
+
 	public String getType() {
 		return type;
 	}
-	
+
 	public String getDesc() {
 		if (getLocale().equals("de")) {
 			return desc;
@@ -98,17 +101,15 @@ public class Menu implements Serializable {
 			return desc_en;
 		}
 	}
-	
+
 	public String getDesc(String lang) {
 		if (lang.equals("de")) {
 			return desc;
-		} else{
+		} else {
 			return desc_en;
 		}
 	}
-	
 
-	
 	public String getPrice() {
 		if (getLocale().equals("de")) {
 			return price;
@@ -116,7 +117,7 @@ public class Menu implements Serializable {
 			return price_en;
 		}
 	}
-	
+
 	public String getPrice(String lang) {
 		if (lang.equals("de")) {
 			return price;
@@ -124,7 +125,7 @@ public class Menu implements Serializable {
 			return price_en;
 		}
 	}
-	
+
 	public String getDate() {
 		if (getLocale().equals("de")) {
 			return date;
@@ -140,23 +141,23 @@ public class Menu implements Serializable {
 			return date_en;
 		}
 	}
-	
+
 	public String getDay() {
 		return day;
 	}
-	
+
 	public int getWeek() {
 		return week;
 	}
-	
+
 	public double getRating() {
 		return rating;
 	}
-	
+
 	public int getVotes() {
 		return votes;
 	}
-	
+
 	private String getLocale() {
 		if (locale == null) {
 			return Locale.getDefault().getLanguage();
@@ -164,4 +165,23 @@ public class Menu implements Serializable {
 			return locale;
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Menu) {
+			Menu other = (Menu) o;
+			return this.getDate("de") == other.getDate("de")
+					&& this.getDay() == other.getDay()
+					&& this.getDesc("de") == other.getDesc("de")
+					&& this.getMensaID() == other.getMensaID()
+					&& this.getMenuID() == other.getMenuID()
+					&& this.getPrice("de") == other.getPrice("de")
+					&& this.getTitle("de") == other.getTitle("de")
+					&& this.getType() == other.getType()
+					&& this.getWeek() == other.getWeek();
+		} else {
+			return false;
+		}
+	}
+
 }
