@@ -10,7 +10,7 @@ public class UserFriend implements Serializable {
 	@SuppressWarnings("unused")
 	private static final String TAG = UserFriend.class.getSimpleName();
 	private static final long serialVersionUID = -7580235806457548893L;
-	
+
 	@SerializedName("id")
 	private final int id;
 	@SerializedName("mensaid")
@@ -27,7 +27,7 @@ public class UserFriend implements Serializable {
 	public int getFriendID() {
 		return id;
 	}
-	
+
 	public int getMensaID() {
 		return mensaid;
 	}
@@ -35,4 +35,16 @@ public class UserFriend implements Serializable {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof UserFriend) {
+			UserFriend other = (UserFriend) o;
+			return this.getFriendID() == other.getFriendID()
+					&& this.getName() == other.getName();
+		} else {
+			return false;
+		}
+	}
+
 }
