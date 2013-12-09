@@ -6,14 +6,23 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
 import com.mensaunibe.app.model.MenuList;
+import com.mensaunibe.app.model.User;
+import com.mensaunibe.app.model.UserFriend;
+import com.mensaunibe.app.model.UserFriendList;
+import com.mensaunibe.app.model.UserNotification;
+import com.mensaunibe.app.model.UserNotificationList;
 import com.mensaunibe.util.database.tables.FavoriteTable;
+import com.mensaunibe.util.database.tables.FriendTable;
 import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
+import com.mensaunibe.util.database.tables.NotificationTable;
+import com.mensaunibe.util.database.tables.UserTable;
 
 /**
  * helper class for the DatabaseManager.
@@ -22,7 +31,10 @@ import com.mensaunibe.util.database.tables.MenuTable;
 public class DatabaseService {
 	
 	private final String SELECT_MENSAS = "select * from " + MensaTable.TABLE_NAME + " order by _id asc";
-
+	private final String SELECT_FRIENDS = "select * from " + FriendTable.TABLE_NAME + " order by _id asc";
+	private final String SELECT_NOTIFICATIONS = "select * from " + NotificationTable.TABLE_NAME + " order by _id asc";
+	private final String SELECT_USER = "select * from " + UserTable.TABLE_NAME;
+	
 	/**
 	 * @param m: Mensa to convert into storable values
 	 * @return ContentValues which can be stored in the Database
@@ -62,6 +74,7 @@ public class DatabaseService {
 		values.put(MenuTable.COLUMN_TITLE_EN, m.getTitle("en"));
 		values.put(MenuTable.COLUMN_TYPE, m.getType());
 		values.put(MenuTable.COLUMN_WEEK, m.getWeek());
+		values.put(MenuTable.COLUMN_VOTES, m.getVotes());
 		return values;
 	}
 	
@@ -167,4 +180,86 @@ public class DatabaseService {
 			return true;
 		}
 	}
+	
+
+	public User createUser(SQLiteDatabase mDB) {
+		Cursor cursor = mDB.rawQuery(SELECT_USER, null);
+		cursor.moveToFirst();
+		if(cursor.getCount() > 1) {Log.e(DatabaseService.class.getName(), "more than one user is stored in the database");}
+		int id = cursor.getInt(cursor.getColumnIndex(UserTable.COLUMN_ID));
+		int mensaId = cursor.getInt(cursor.getColumnIndex(UserTable.COLUMN_MENSAID));
+		String deviceId = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_DEVICEID));
+		String name = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_NAME));
+		int lastUpdate = cursor.getInt(cursor.getColumnIndex(UserTable.COLUMN_LASTUPDATE));
+		UserFriendList friendlist = new UserFriendList(createFriendList(mDB));
+		UserNotificationList notifications = new UserNotificationList(createNotifications(mDB));
+		return new User(id, mensaId, deviceId, name, lastUpdate, friendlist, notifications);
+	}
+
+	private List<UserNotification> createNotifications(SQLiteDatabase mDB) {
+		List<UserNotification> notifications = new ArrayList<UserNotification>();
+		Cursor cursor = mDB.rawQuery(SELECT_NOTIFICATIONS, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			notifications.add(getNotificationFromCursor(cursor));
+			cursor.moveToNext();
+		}
+		return notifications;
+	}
+
+	private List<UserFriend> createFriendList(SQLiteDatabase mDB) {
+		List<UserFriend> friendlist = new ArrayList<UserFriend>();
+		Cursor cursor = mDB.rawQuery(SELECT_FRIENDS, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			friendlist.add(getFriendFromCursor(cursor));
+			cursor.moveToNext();
+		}
+		return friendlist;
+	}
+
+	private UserNotification getNotificationFromCursor(Cursor cursor) {
+		int id = cursor.getInt(cursor.getColumnIndex(NotificationTable.COLUMN_ID));
+		String from = cursor.getString(cursor.getColumnIndex(NotificationTable.COLUMN_FROM));
+		String date = cursor.getString(cursor.getColumnIndex(NotificationTable.COLUMN_DATE));
+		String message = cursor.getString(cursor.getColumnIndex(NotificationTable.COLUMN_MESSAGE));
+		int read = cursor.getInt(cursor.getColumnIndex(NotificationTable.COLUMN_READ));
+		return new UserNotification(id, from, date, message, read);
+	}
+
+	private UserFriend getFriendFromCursor(Cursor cursor) {
+		int id = cursor.getInt(cursor.getColumnIndex(FriendTable.COLUMN_ID));
+		int mensaId = cursor.getInt(cursor.getColumnIndex(FriendTable.COLUMN_MENSAID));
+		String name = cursor.getString(cursor.getColumnIndex(FriendTable.COLUMN_NAME));
+		return new UserFriend(id, mensaId, name);
+	}
+
+	public ContentValues toValue(User user) {
+		ContentValues values = new ContentValues();
+		values.put(UserTable.COLUMN_ID, user.getId());
+		values.put(UserTable.COLUMN_MENSAID, user.getMensaId());
+		values.put(UserTable.COLUMN_DEVICEID, user.getDeviceId());
+		values.put(UserTable.COLUMN_NAME, user.getName());
+		values.put(UserTable.COLUMN_LASTUPDATE, user.getLastUpdate());
+		return values;
+	}
+
+	public ContentValues toValue(UserNotification notif) {
+		ContentValues values = new ContentValues();
+		values.put(NotificationTable.COLUMN_ID, notif.getId());
+		values.put(NotificationTable.COLUMN_FROM, notif.getFrom());
+		values.put(NotificationTable.COLUMN_DATE, notif.getDate());
+		values.put(NotificationTable.COLUMN_MESSAGE, notif.getMessage());
+		values.put(NotificationTable.COLUMN_READ, notif.getRead());
+		return values;
+	}
+
+	public ContentValues toValue(UserFriend friend) {
+		ContentValues values = new ContentValues();
+		values.put(FriendTable.COLUMN_ID, friend.getFriendID());
+		values.put(FriendTable.COLUMN_MENSAID, friend.getMensaID());
+		values.put(FriendTable.COLUMN_NAME, friend.getName());
+		return values;
+	}
+
 }

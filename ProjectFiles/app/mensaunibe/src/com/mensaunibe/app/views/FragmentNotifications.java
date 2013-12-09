@@ -56,8 +56,8 @@ public class FragmentNotifications extends Fragment {
 		listview.setLockScrollWhileRefreshing(false);
 
 		// override the default strings
-		listview.setTextPullToRefresh("Ziehen fŸr Update");
-		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
 		listview.setTextRefreshing("Lade Daten...");
 
 		// set the onRefreshListener for the pull down listview
@@ -65,13 +65,6 @@ public class FragmentNotifications extends Fragment {
 
 			@Override
 			public void onRefresh() {
-				// code to refresh the list contents goes here
-
-				// async webrequest
-				//adapter.loadData();
-				
-				// call listView.onRefreshComplete() when the loading is done.
-
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {

@@ -66,7 +66,7 @@ public class TaskUpdateDB extends AsyncTask<Void, Integer, String> {
 		
 		if (mDataHandler.hasModel()) {
 			// save the model to the database
-    		mDBManager.save(mDataHandler.getModel());
+    		mDBManager.update(mDataHandler.getModel());
     		
     		//show fake progress
     		for (int i = 0; i <= 100; i++) {

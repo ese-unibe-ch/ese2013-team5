@@ -39,44 +39,29 @@ public class FragmentMenuListDayFull extends Fragment {
 
         args.putInt(KEY_POSITION, position);
         
+        fragment = new FragmentMenuListDayFull();
+    	fragment.setArguments(args);
+        
 	    switch (position) {
 		    case 0:
-		    	fragment = new FragmentMenuListDayFull();
-		    	fragment.setArguments(args);
 		    	fragment.setDay("Monday");
-		        return fragment;
-		    case 1:
-		    	fragment = new FragmentMenuListDayFull();
-		    	fragment.setArguments(args);
+		    case 1:;
 		    	fragment.setDay("Tuesday");
-		        return fragment;
 		    case 2:
-		    	fragment = new FragmentMenuListDayFull();
-		    	fragment.setArguments(args);
 		    	fragment.setDay("Wednesday");
-		        return fragment;
 		    case 3:
-		    	fragment = new FragmentMenuListDayFull();
-		    	fragment.setArguments(args);
 		    	fragment.setDay("Thursday");
-		        return fragment;
 		    case 4:
-		    	fragment = new FragmentMenuListDayFull();
-		    	fragment.setArguments(args);
 		    	fragment.setDay("Friday");
-		        return fragment;
-		    default:
-		        return null;
 	    }
+	    
+	    return fragment;
     }
 
 	public void setDay(String day) {
 		this.mDay = day;
 	}
-	
-//	public void setMensa(Mensa mensa) {
-//		this.mensa = mensa;
-//	}
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,8 +78,8 @@ public class FragmentMenuListDayFull extends Fragment {
 		listview.setLockScrollWhileRefreshing(false);
 
 		// override the default strings
-		listview.setTextPullToRefresh("Ziehen fŸr Update");
-		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
 		listview.setTextRefreshing("Lade Daten...");
 
 		// set the onRefreshListener for the pull down listview
@@ -102,13 +87,6 @@ public class FragmentMenuListDayFull extends Fragment {
 
 			@Override
 			public void onRefresh() {
-				// code to refresh the list contents goes here
-
-				// async webrequest
-				//adapter.loadData();
-				
-				// call listView.onRefreshComplete() when the loading is done.
-
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {
