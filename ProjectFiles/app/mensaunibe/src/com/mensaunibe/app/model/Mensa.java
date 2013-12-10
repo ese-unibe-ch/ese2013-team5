@@ -174,4 +174,21 @@ public class Mensa implements Serializable {
 	public void setDistance(float dist) {
 		distance = dist;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Mensa) {
+			Mensa other = (Mensa) o;
+			return this.getAddress() == other.getAddress() &
+			this.getCity() == other.getCity() &&
+			this.getDesc("de") == other.getDesc("de") &&
+			this.getId() == other.getId() &&
+			this.getLat() == other.getLat() &&
+			this.getLon() == other.getLon() &&
+			this.getName("de") == other.getName("de");
+		}
+		else {
+			return false;
+		}
+	}
 }

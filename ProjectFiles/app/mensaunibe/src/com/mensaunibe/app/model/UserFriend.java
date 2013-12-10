@@ -35,4 +35,16 @@ public class UserFriend implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof UserFriend) {
+			UserFriend other = (UserFriend) o;
+			return this.getFriendID() == other.getFriendID()
+					&& this.getName() == other.getName();
+		} else {
+			return false;
+		}
+	}
+	
 }

@@ -55,4 +55,15 @@ public class MenuList implements Serializable {
 		    }
 		});
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof MenuList) {
+			MenuList other = (MenuList) o;
+			return this.getAllMenus().equals(other.getAllMenus());
+		} else {
+			return false;
+		}
+	}
+	
 }
