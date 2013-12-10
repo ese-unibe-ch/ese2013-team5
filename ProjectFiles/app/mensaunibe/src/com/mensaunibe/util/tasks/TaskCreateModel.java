@@ -87,8 +87,6 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		} else {
 			Log.e(TAG, "No update necessary, trying to load from shared prefs");
 		}
-		// TODO: test the model creation from shared prefs
-		//jsonObj = null;
 		
 		if (jsonObj != null) {
 			Log.i(TAG, "JSONObject from webservice successfuly loaded");
@@ -113,9 +111,6 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	    		setFavorites(model);
 			}
 		}
-		
-		// TODO: test the model creation from db
-		//model = null;
 		
 		if (model == null) {
 			Log.e(TAG, "Model still null after loading from prefs, trying the database!");

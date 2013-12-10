@@ -33,10 +33,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 /**
  * This class is responsible for displaying various mensa detail views
- * these are 1. "normal" mensa detail views with menu pager for the whole week
- * and 2. "simple" mensa detail view with no pager and only todays menus
- * 
- * in the second case this fragments doesn't act as the pager holder but
+ * these are: </br> 1. "normal" mensa detail views with menu pager for the whole week
+ * and </br> 2. "simple" mensa detail view with no pager and only todays menus </br>
+ * if latter is the case, this fragments doesn't act as the pager holder but
  * as the pager page (for favmensadetails view)!
  */
 public class FragmentMensaDetails extends Fragment {
@@ -51,10 +50,9 @@ public class FragmentMensaDetails extends Fragment {
 	private static ProgressBar sProgressBar;
 	private boolean mHasPager;
 	
-	private Mensa mMensa; // needs to be static to avoid crashes on config change (rotation)!
+	private Mensa mMensa; 
 	
 	public static FragmentMensaDetails newInstance(Mensa mensa, boolean pager) {
-		//Log.e(TAG, "newInstance(): mensa name = " + mensa.getName());
 		FragmentMensaDetails fragment = new FragmentMensaDetails();
 		fragment.setMensa(mensa);
 		fragment.hasPager(pager);
@@ -77,10 +75,8 @@ public class FragmentMensaDetails extends Fragment {
 		sDataHandler = Controller.getDataHandler();
 		
 		if (mMensa == null) {
-			//Log.e(TAG, "mMensa was null, getting it from savedInstanceState");
 			mMensa = sDataHandler.getMensaList().getMensaById(savedInstanceState.getInt("mensaid"));
 		} else if (savedInstanceState != null) {
-			//Log.e(TAG, "saved mensaid in instance state");
 			savedInstanceState.putInt("mensaid", mMensa.getId());
 		}
 		
@@ -121,8 +117,8 @@ public class FragmentMensaDetails extends Fragment {
 
 			// override the default strings
 			// TODO: put strings in xml
-			listview.setTextPullToRefresh("Ziehen fŸr Update");
-			listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+			listview.setTextPullToRefresh("Ziehen für Update");
+			listview.setTextReleaseToRefresh("Loslassen für Update");
 			listview.setTextRefreshing("Lade Daten...");
 
 			// set the onRefreshListener for the pull down listview
@@ -130,13 +126,6 @@ public class FragmentMensaDetails extends Fragment {
 
 				@Override
 				public void onRefresh() {
-					// code to refresh the list contents goes here
-
-					// async webrequest
-					//adapter.loadData();
-					
-					// call listView.onRefreshComplete() when the loading is done.
-
 					// For demo purposes, the code will pause here to
 					// force a delay when invoking the refresh
 					listview.postDelayed(new Runnable() {
@@ -173,7 +162,6 @@ public class FragmentMensaDetails extends Fragment {
 	/**
 	 * shows the mensa detail information on top of the fragment
 	 * @param rootView
-	 * @param container
 	 */
 	private void inflateHeader(View rootView) {
 		//Log.e(TAG, "inflateHeader() mensa name = " + mMensa.getName());
@@ -200,7 +188,6 @@ public class FragmentMensaDetails extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				mMensa.setFavorite(isChecked);
-				// we have to update the closest fav mensa here
 				sDataHandler.loadLocation(true);
 			}
         };
@@ -214,7 +201,6 @@ public class FragmentMensaDetails extends Fragment {
             public void onClick(View mapbutton) {
             	sDataHandler.setLocationTarget(mMensa.getLocation());
             	Controller.getNavigationDrawer().selectItem(2);
-            	// TODO: add status update
             	Toast.makeText(sController, "Navigating to Mensa", Toast.LENGTH_SHORT).show();
             }
         };
@@ -226,7 +212,6 @@ public class FragmentMensaDetails extends Fragment {
         final OnClickListener shareListener = new OnClickListener() {
             @Override
             public void onClick(View sharebutton) {
-            	// TODO: add status update
     			Intent sendIntent = new Intent();
 				sendIntent.setAction(Intent.ACTION_SEND);
 				sendIntent.putExtra(Intent.EXTRA_TEXT, 

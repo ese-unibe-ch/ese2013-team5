@@ -58,12 +58,8 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
-		// get a reference to the parent view for the rating dialog
-//		this.parent = parent;
-
 		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = mInflater.inflate(mResource, parent, false);
-        
         LinearLayout row = (LinearLayout) rowView.findViewById(R.id.list_grid);
         
         // the actual fields that contain text
@@ -72,7 +68,6 @@ public class AdapterCustomMenulist extends BaseAdapter {
         // handle the full menu list displaying of the mensa
         if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
         	TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
-        	// get the mensa name for the menu overview in FragmentMenuListDayFull
 			Mensa mMensa = mMensaList.getMensaById(menu.getMensaID());
 			if (mMensa != null) {
 				mensa.setText(mMensa.getName());
@@ -109,11 +104,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
         OnClickListener rowListener = new OnClickListener() {
             @Override
             public void onClick(View rowView) {
-            	// TODO: remove dev toast
             	if (mMensaList != null) {
-            		// this is rather ugly, but somehow the click listeners makes a chaos with the mensa assignment of the row
-            		// the mensa has to be refechted...
-            		//Toast.makeText(mController, "Menu clicked, show mensa details for " + mMensaList.getMensaById(mMenus.get(position).getMensaID()).getName(), Toast.LENGTH_SHORT).show();
             		((FragmentMenuListPager) mFragment.getParentFragment()).selectItem( mMensaList.getMensaById(mMenus.get(position).getMensaID()));
             	} else {
             		showRating(menu.getMenuID());
@@ -151,9 +142,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	public void showRating(final int menuid) {
 		final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mController);
 		
-//		View dialogLayout = inflater.inflate(R.layout.dialog_rating, parent);
 		final RatingBar rating = new RatingBar(mController);
-//		final RatingBar rating = (RatingBar) dialogLayout.findViewById(R.id.rating_bar);
 		rating.setMax(5);
 		rating.setStepSize(1.0f);
 		rating.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -170,7 +159,6 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		// Buttons OK
 		dialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				//txtView.setText(String.valueOf(rating.getProgress()));
 				// send rating to server
 				Controller.getDataHandler().APIRegisterRating(menuid, rating.getProgress());
 				Toast.makeText(mController, "Send Vote for menu with ID = " + menuid + " to server..." + String.valueOf(rating.getProgress()), Toast.LENGTH_SHORT).show();
