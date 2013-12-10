@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 /**
  * Fragment to show the Users Friends
- * 
+ * </br>
  * !!The User model is not completed and thus it is not used in this version of
  * the application!! 
  *

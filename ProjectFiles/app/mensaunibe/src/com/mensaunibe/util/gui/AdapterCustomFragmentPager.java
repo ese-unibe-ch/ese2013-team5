@@ -12,7 +12,6 @@ import com.mensaunibe.app.views.FragmentMensaDetails;
 import com.mensaunibe.app.views.FragmentMenuListDay;
 import com.mensaunibe.app.views.FragmentMenuListDayFull;
 
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -85,14 +84,6 @@ public class AdapterCustomFragmentPager extends FragmentStatePagerAdapter {
 			        return null;
 		    }
 		}
-	}
-	
-	@Override
-	public Parcelable saveState() {
-		// TODO: maybe remove this override as it doesn't solve any issue as far as I see
-		// don't keep any states and lose sync, doesn't actually help...
-		//Log.e(TAG, "saveState()");
-		return null;
 	}
 	
 	/**

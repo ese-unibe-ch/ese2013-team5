@@ -8,7 +8,6 @@ import java.util.Map;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.LocationClient;
 import com.mensaunibe.app.controller.Controller;
@@ -21,6 +20,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 	// for logging and debugging purposes
 	private static final String TAG = TaskLocation.class.getSimpleName();
 	
+	@SuppressWarnings("unused")
 	private Controller mController;
 	private DataHandler mDataHandler;
 	private MensaList mMensaList;
@@ -81,10 +81,11 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
     	}
     }
     
+    /**
+     * loops through all the mensa coordinates to determine the closest mensa
+     */
     protected void getClosestMensa() {
     	Log.i(TAG, "getClosestMensa()");
-		// loop trough all the mansa coordinates and determine the closest mensa
-		// fist get all the mensas in a list to loop over
 		List<Mensa> mensas = mMensaList.getMensas();
 		// check if there is a last location set, possible reason for NullPointer Exception in onConnected()
 		if ( mLocation != null ) {
@@ -102,8 +103,6 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 				// set the distance to that mensa in the model for displaying purposes
 				mensa.setDistance(distance);
 			}
-			// make the distances globally available, just for convenience
-//			this.distances = distances;
 			// and now find the nearest mensa
 			int closestMensaId = 0;
 			int closestFavMensaId = 0;
@@ -136,28 +135,12 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			mDataHandler.setClosestMensa(closestMensaId);
 			mDataHandler.setClosestFavMensa(closestFavMensaId);
 			mDataHandler.setLocationTarget(mMensaList.getMensaById(closestMensaId).getLocation());
-			// also make this globally available for convenience and fetch the mensa object
-//			this.closestMensaId = closestMensaId;
-//			this.nearestmensa = model.getMensaById(closestMensaId);
-	//		Toast.makeText(this, "current location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-//			Toast.makeText(this, "closest mensa: " + closestMensa.getName(), Toast.LENGTH_SHORT).show();
-			if ( smallestDistance <= 100 ) {
-				// 100 is too big, should probably be smaller than 50 or less
-				// here we would save the mensaid to the users profile on the server
-				// then we can either show his friends that are in that mensa too
-				// or the total number people in that mensa, or both...
-//				updateUserMensa();
-//				Toast.makeText(this, "mensa " + smallestdistance + "m away, are you in there?", Toast.LENGTH_SHORT).show();
-			}
-			// a very ugly and hacky way to show the closest mensa on the home screen
-			// this should only be done when no favorite mensas are set, but the logic for that could be in the start fragment
-//			selectItem(0);
-		} else {
-			Toast.makeText(mController, "last location was null, did the app crash here earlier?", Toast.LENGTH_SHORT).show();
 		}
     }
-    
-	// this method stupidly calculates the air distance between two points, but should be enough to determine the closest mensa
+ 
+    /**
+     * method to calculated the distance (over air)
+     */
 	public static float getDistance(double startLat, double startLon, double endLat, double endLon){
 	    float[] resultArray = new float[99];
 	    Location.distanceBetween(startLat, startLon, endLat, endLon, resultArray);
@@ -175,29 +158,6 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 
 		getLocation();
 		
-    	// show fake progress
-//		while (mLocation == null) {
-//			Log.i(TAG, "Entering progress loop");
-//	    	for (int i = 0; i <= 100; i++) {
-//	    		if (mLocation != null) {
-//	    			Log.i(TAG, "Received location");
-//	    			try {
-//		                Thread.sleep(10/10);
-//		                this.publishProgress(i);
-//		            } catch (InterruptedException e) {
-//		                return null;
-//		            }
-//	    		} else {
-//		    		try {
-//		                Thread.sleep(10);
-//		                this.publishProgress(i);
-//		            } catch (InterruptedException e) {
-//		                return null;
-//		            }
-//	    		}
-//	        }
-//		}
-		
 		if (mLocation != null) {
 			getClosestMensa();
 			return mLocation;
@@ -207,7 +167,6 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 		}
     }
 
-	// async task callbacks
     @Override
     protected void onPostExecute(Location location) {
         this.notifyOnTaskComplete(location);

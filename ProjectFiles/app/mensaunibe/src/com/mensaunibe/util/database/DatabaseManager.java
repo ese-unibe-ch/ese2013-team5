@@ -35,7 +35,6 @@ public class DatabaseManager {
 	}
 	
 	public void save(MensaList mensalist) {
-		Log.i(TAG, "save()");
 		List<Mensa> list = mensalist.getMensas();
 		for(Mensa mensa : list) {
 			save(mensa);
@@ -50,30 +49,25 @@ public class DatabaseManager {
 	}
 
 	public void saveFavorite(Mensa mensa) {
-		Log.i(TAG, "saveFavorite()");
 		ContentValues values = new ContentValues();
 		values.put(FavoriteTable.COLUMN_ID, mensa.getId());
 		mDB.insertWithOnConflict(FavoriteTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public void removeFavorite(Mensa mensa) {
-		Log.i(TAG, "removeFavorite()");
 		mDB.delete(FavoriteTable.TABLE_NAME, FavoriteTable.COLUMN_ID + " = ?", new String[] { "" + mensa.getId() });
 	}
 	
 	public boolean isFavorite(Mensa mensa) {
-		//Log.i(TAG, "isFavorite()");
 		return mDBService.isFavorite(mensa, mDB);
 	}
 
 	public void save(Mensa m) {
-		//Log.i(TAG, "save(Mensa)");
 		ContentValues values = mDBService.toValue(m);
 		mDB.insertWithOnConflict(MensaTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 	
 	public void save(Menu menu) {
-		//Log.i(TAG, "save(Menu)");
 		ContentValues values = mDBService.toValue(menu);
 		mDB.insertWithOnConflict(MenuTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
