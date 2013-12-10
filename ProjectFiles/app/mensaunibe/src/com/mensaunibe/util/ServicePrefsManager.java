@@ -29,13 +29,13 @@ public class ServicePrefsManager {
 		
 		Object setting = null;
 		
-		if (type == "string") {
+		if (type.equals("string")) {
 			setting = mSettings.getString(key, null);
-		} else if (type == "boolean") {
+		} else if (type.equals("boolean")) {
 			setting = mSettings.getBoolean(key, false);
-		} else if (type == "integer") {
+		} else if (type.equals("integer")) {
 			setting = mSettings.getInt(key, 0);
-		} else if (type == "float") {
+		} else if (type.equals("float")) {
 			setting = mSettings.getFloat(key, 0);
 		} else {
 			Log.e(TAG, "getData(): Type could not be resolved");
@@ -54,12 +54,12 @@ public class ServicePrefsManager {
 		Log.i(TAG, "setData(" + type + ", " + key + ", value)");
 		if (type == "string") {
 			mSettingsEditor.putString(key, (String) value);
-		} else if (type == "boolean") {
+		} else if (type.equals("boolean")) {
 			mSettingsEditor.putBoolean(key, (Boolean) value);
-		} else if (type == "integer") {
+		} else if (type.equals("integer")) {
 			Log.i(TAG, "setData(" + type + ", " + key + ", " + value + ")");
 			mSettingsEditor.putInt(key, (Integer) value);
-		} else if (type == "float") {
+		} else if (type.equals("float")) {
 			mSettingsEditor.putFloat(key, (Float) value);
 		} else {
 			Log.e(TAG, "setData(): Type could not be resolved");

@@ -147,9 +147,14 @@ public class ServiceWebRequest {
     	ConnectivityManager cm = Controller.getConnectivityManager();
     	
     	NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    	while(activeNetwork == null) {
-    		Log.e(TAG, "hasConnection(): No active network is available, loop till its available!");
+    	int count = 2000;
+    	while(activeNetwork == null && count > 0) {
     		activeNetwork = cm.getActiveNetworkInfo();
+    		count--;
+    	}
+    	if(activeNetwork == null){
+    		Log.e(TAG, "hasConnection(): No active network is available");
+    		return false;
     	}
     	
     	NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

@@ -8,6 +8,7 @@ import com.mensaunibe.util.ServicePrefsManager;
 import com.mensaunibe.util.ServiceWebRequest;
 import com.mensaunibe.util.database.DatabaseManager;
 import com.mensaunibe.util.tasks.TaskCreateModel;
+import com.mensaunibe.util.tasks.TaskCreateUser;
 import com.mensaunibe.util.tasks.TaskListener;
 import com.mensaunibe.util.tasks.TaskLocation;
 import com.mensaunibe.util.tasks.TaskUpdateAPI;
@@ -38,6 +39,7 @@ public class DataHandler extends Fragment implements TaskListener {
 	private static ServiceWebRequest mWebService;
 
 	private MensaList mModel;
+	private User mUser;
 	
 	private Location mLocation;
 	private LatLng mLocationTarget;
@@ -111,6 +113,8 @@ public class DataHandler extends Fragment implements TaskListener {
 				mLocation = (Location) result;
 			} else if (result instanceof String) {
 				Log.i(TAG, (String) result);
+			} else if (result instanceof User) {
+				mUser = (User) result;
 			}
 		} else {
 			Log.e(TAG, "onTaskComplete(): result was null!");
@@ -156,6 +160,11 @@ public class DataHandler extends Fragment implements TaskListener {
         mTask.addListener(this);
         mTask.addListener(mController);
         mTask.execute();
+        
+        Log.i(TAG, "loadUserModel()");
+        TaskCreateUser mTaskUser = new TaskCreateUser(mController,this);
+        mTaskUser.addListener(this);
+        mTaskUser.execute();
     }
     
     public boolean hasModel() {
@@ -170,6 +179,10 @@ public class DataHandler extends Fragment implements TaskListener {
     public MensaList getModel() {
     	Log.i(TAG, "getModel()");
     	return mModel;
+    }
+    
+    public User getUser(){
+    	return mUser;
     }
     
     /**

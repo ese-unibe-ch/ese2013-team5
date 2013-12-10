@@ -3,9 +3,12 @@ package com.mensaunibe.util.database;
 import java.util.ArrayList;
 
 import com.mensaunibe.util.database.tables.FavoriteTable;
+import com.mensaunibe.util.database.tables.FriendTable;
 import com.mensaunibe.util.database.tables.MensaTable;
 import com.mensaunibe.util.database.tables.MenuTable;
+import com.mensaunibe.util.database.tables.NotificationTable;
 import com.mensaunibe.util.database.tables.Table;
+import com.mensaunibe.util.database.tables.UserTable;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,6 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		tables.add(new MensaTable());
 		tables.add(new FavoriteTable());
 		tables.add(new MenuTable());
+		tables.add(new UserTable());
+		tables.add(new FriendTable());
+		tables.add(new NotificationTable());
 		for(Table t : tables){
 			t.onCreate(db);
 		}

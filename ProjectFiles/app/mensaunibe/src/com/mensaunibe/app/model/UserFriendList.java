@@ -22,5 +22,14 @@ public class UserFriendList implements Serializable {
     public List<UserFriend> getFriends() {
         return friends;
     }
+    
+    public UserFriend getById(int id){
+    	for(UserFriend friend : friends){
+    		if(friend.getFriendID() == id){
+    			return friend;
+    		}
+    	}
+    	return null;
+    }
  
 }

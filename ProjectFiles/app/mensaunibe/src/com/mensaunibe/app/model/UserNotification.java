@@ -14,6 +14,8 @@ public class UserNotification implements Serializable {
 	private final int id;
 	@SerializedName("from")
 	private final String from;
+	@SerializedName("fromid")
+	private final int fromid;
 	@SerializedName("date")
 	private final String date;
 	@SerializedName("message")
@@ -21,9 +23,10 @@ public class UserNotification implements Serializable {
 	@SerializedName("read")
 	private final int read;
  
-	public UserNotification(int id, String from, String date, String message, int read) {
+	public UserNotification(int id, String from, int fromid, String date, String message, int read) {
 		this.id = id;
 		this.from = from;
+		this.fromid = fromid;
 		this.date = date;
 		this.message = message;
 		this.read = read;
@@ -37,6 +40,10 @@ public class UserNotification implements Serializable {
 		return from;
 	}
 	
+	public int getFromID(){
+		return fromid;
+	}
+	
 	public String getDate() {
 		return date;
 	}
@@ -45,11 +52,23 @@ public class UserNotification implements Serializable {
 		return message;
 	}
 	
+	public int getRead() {
+		return read;
+	}
+	
 	public boolean isRead() {
 		if (read == 1) {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public String getMessageShortened() {
+		if(message.length() > 40){
+			return message.substring(0, 40) + "...";
+		} else {
+			return message;
 		}
 	}
 }

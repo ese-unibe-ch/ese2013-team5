@@ -44,7 +44,6 @@
     <string name="skip_button_label">Skip</string>
     
     <!-- Preferences Strings -->
-    <string name="title_settings">Settings</string>
     <string name="title_username">Your Username</string>
     <string name="title_dialog_username">Set your username</string>
     <string name="title_homescreen">Homescreen Configuration</string>

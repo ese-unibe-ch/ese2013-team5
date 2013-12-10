@@ -14,6 +14,7 @@ import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.DataHandler;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
+import com.mensaunibe.app.model.User;
 import com.mensaunibe.util.ServicePrefsManager;
 import com.mensaunibe.util.ServiceWebRequest;
 import com.mensaunibe.util.database.DatabaseManager;
@@ -60,12 +61,12 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
     	Log.i(TAG, "removeListeners()");
     	mListeners.removeAll(mListeners);
     }
-    
+
     protected void notifyOnTaskComplete(Object result) {
     	Log.i(TAG, "notifyOnTaskComplete(" + result + ")");
-        for (TaskListener mListener : mListeners) {
-            mListener.onTaskComplete(result);
-        }
+    	for (TaskListener mListener : mListeners) {
+    		mListener.onTaskComplete(result);
+    	}
     }
 
     protected void notifyOnProgressUpdate(int percent) {
@@ -85,48 +86,20 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 			Log.i(TAG, "Update check negative, trying to load JSON from API");
 			jsonObj = mWebService.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
 		}
-		// TODO: test the model creation from shared prefs
-		//jsonObj = null;
-		
+
 		if (jsonObj != null) {
-			Log.i(TAG, "JSONObject from webservice successfuly loaded");
-    		model = gson.fromJson(jsonObj, MensaList.class);
-    		setFavorites(model);
-    		
-	    	//persist the json in shared prefs
-	    	mPersistenceService.setData("string", "model", jsonObj.toString());
-	    	
-	    	// get the lastupate timestamp and persist it too
-	    	mPersistenceService.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
+			model = createFromJSON(jsonObj, gson);
 		} else {
-			Log.e(TAG, "JSONObject from webservice was null, trying to load from shared prefs");
-			// try to get the model from the persisted shared prefs json
-			String jsonStr = (String) mPersistenceService.getData("string", "model");
-			if (jsonStr != null) {
-				jsonObj = new JsonParser().parse(jsonStr).getAsJsonObject();
-				model = gson.fromJson(jsonObj, MensaList.class);
-	    		setFavorites(model);
-			}
+			model = createFromSharedPrefs(model, gson);
 		}
 		
-		// TODO: test the model creation from db
-		//model = null;
+		setFavorites(model);
 		
+		// if the model still is null, a lot went wrong, now we try to load the data from the slower
+		// (than shared prefs, which sit in the device RAM) database
 		if (model == null) {
-			Log.e(TAG, "Model still null after loading from prefs, trying the database!");
-			// if the model still is null, a lot went wrong, now we try to load the data from the slower
-			// (than shared prefs, which sit in the device RAM) database
+			Log.e(TAG, "Model still null after loading from prefs, trying the database!");	
 			model = mDBManager.load();
-			
-    		//show fake progress
-    		for (int i = 0; i <= 100; i++) {
-            	try {
-                	Thread.sleep(10);
-                	publishProgress(i);
-            	} catch (InterruptedException e) {
-                	return null;
-            	}
-        	}
 		}
 		
 		//show fake progress
@@ -141,6 +114,30 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		
     	return model;
     }
+
+	private MensaList createFromSharedPrefs(MensaList model, final Gson gson) {
+		JsonObject jsonObj;
+		Log.e(TAG, "JSONObject from webservice was null, trying to load from shared prefs");
+		String jsonStr = (String) mPersistenceService.getData("string", "model");
+		if (jsonStr != null) {
+			jsonObj = new JsonParser().parse(jsonStr).getAsJsonObject();
+			model = gson.fromJson(jsonObj, MensaList.class);
+		}
+		return model;
+	}
+
+	private MensaList createFromJSON(JsonObject jsonObj, final Gson gson) {
+		MensaList model;
+		Log.i(TAG, "JSONObject from webservice successfully loaded");
+		model = gson.fromJson(jsonObj, MensaList.class);
+		
+		//persist the json in shared prefs
+		mPersistenceService.setData("string", "model", jsonObj.toString());
+		
+		// get the lastupate timestamp and persist it too
+		mPersistenceService.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
+		return model;
+	}
 
     private void setFavorites(MensaList model) {
     	List<Mensa> mensalist = model.getMensas();

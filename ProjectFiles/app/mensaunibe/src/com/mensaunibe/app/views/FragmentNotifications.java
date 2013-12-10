@@ -2,16 +2,20 @@ package com.mensaunibe.app.views;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.DataHandler;
+import com.mensaunibe.app.model.User;
+import com.mensaunibe.app.model.UserNotification;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
 
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +33,8 @@ public class FragmentNotifications extends Fragment {
 	private static final String TAG = FragmentNotifications.class.getSimpleName();
 	
 	private Controller mController;
-	@SuppressWarnings("unused")
 	private DataHandler mDataHandler;
+	private User mUser;
 	
 	private SimpleAdapter mAdapter;
 	private ProgressBar mProgressBar;
@@ -40,6 +44,7 @@ public class FragmentNotifications extends Fragment {
 		
 		this.mController = Controller.getController();
 		this.mDataHandler = Controller.getDataHandler();
+		this.mUser = mDataHandler.getUser();
 		
 		View rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
 		
@@ -56,8 +61,8 @@ public class FragmentNotifications extends Fragment {
 		listview.setLockScrollWhileRefreshing(false);
 
 		// override the default strings
-		listview.setTextPullToRefresh("Ziehen fŸr Update");
-		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
 		listview.setTextRefreshing("Lade Daten...");
 
 		// set the onRefreshListener for the pull down listview
@@ -65,13 +70,6 @@ public class FragmentNotifications extends Fragment {
 
 			@Override
 			public void onRefresh() {
-				// code to refresh the list contents goes here
-
-				// async webrequest
-				//adapter.loadData();
-				
-				// call listView.onRefreshComplete() when the loading is done.
-
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {
@@ -89,24 +87,17 @@ public class FragmentNotifications extends Fragment {
 		// getResources().getStringArray(R.array.notificationlist);
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
-		final String[][] notifications = {
-				{ "Message Subject", "Short ellipsis from the content" },
-				{ "Super Message Subject",
-						"Short ellipsis from the content" },
-				{ "Nice Message Subject", "Short ellipsis from the content" },
-				{ "Shitty Message Subject",
-						"Short ellipsis from the content" },
-				{ "Bla Message Subject", "Short ellipsis from the content" } };
+		List<UserNotification> notifications = mUser.getNotificationList().getNotifications();
 
 		// Creating an array adapter to store the list of countries
 		// ArrayAdapter<String> adapter = new
 		// ArrayAdapter<String>(inflater.getContext(),
 		// R.layout.list_item_1line, notifications);
 		HashMap<String, String> item;
-		for (int i = 0; i < notifications.length; i++) {
+		for (UserNotification notification : notifications) {
 			item = new HashMap<String, String>();
-			item.put("line1", notifications[i][0]);
-			item.put("line2", notifications[i][1]);
+			item.put("line1", notification.getFrom());
+			item.put("line2", notification.getMessageShortened());
 			list.add(item);
 		}
 
