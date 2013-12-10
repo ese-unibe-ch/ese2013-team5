@@ -89,5 +89,15 @@ public class MensaList implements Serializable {
 		    }
 		});
 	}
- 
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof MensaList) {
+			MensaList other = (MensaList) o;
+			return this.getMensas().equals(other.getMensas());
+		} else {
+			return false;
+		}
+	}
+
 }
