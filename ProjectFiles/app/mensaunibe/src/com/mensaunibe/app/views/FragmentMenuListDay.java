@@ -33,7 +33,7 @@ public class FragmentMenuListDay extends Fragment {
 	private String mDay;
 
     public static FragmentMenuListDay newInstance(int position, Mensa mensa) {
-    	Log.i(TAG, "newInstance(int, Mensa)");
+    	Log.i(TAG, "newInstance(" + position + ", " + mensa + ")");
     	
     	Bundle args = new Bundle();
     	FragmentMenuListDay fragment = null;

@@ -26,9 +26,15 @@ public class FragmentSettings extends PreferenceFragment implements OnSharedPref
     	super.onCreate(savedInstanceState);
     	
     	mController = Controller.getController();
+    	
+    	
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.layout.fragment_settings);
+        
+//        Log.e(TAG, "getView() = " + getView());
+//        PreferenceScreen prefScreen = getPreferenceScreen();
+//        .setBackgroundColor(mController.getResources().getColor(R.color.unibe_gray_light));
         
         // Dynamically set the value of the language setting
         CustomListPreference language = (CustomListPreference) getPreferenceScreen().findPreference("setting_language");

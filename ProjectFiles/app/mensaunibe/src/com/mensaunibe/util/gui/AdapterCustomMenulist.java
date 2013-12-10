@@ -1,8 +1,5 @@
 package com.mensaunibe.util.gui;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.mensaunibe.R;
@@ -10,6 +7,8 @@ import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
+import com.mensaunibe.app.views.FragmentMenuListDayFull;
+import com.mensaunibe.app.views.FragmentMenuListPager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -33,15 +33,17 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	private static final String TAG = AdapterCustomMenulist.class.getSimpleName();
 	
 	private Controller mController;
+	private FragmentMenuListDayFull mFragment;
 
-	private MensaList mModel;
+	private MensaList mMensaList;
 	private List<Menu> mMenus;
 	private int mResource;
 
-	public AdapterCustomMenulist(Controller controller, MensaList mensalist, List<Menu> menulist, int resource) {
+	public AdapterCustomMenulist(Controller controller, FragmentMenuListDayFull fragment, MensaList mensalist, List<Menu> menulist, int resource) {
 		super();
 		this.mController = controller;
-		this.mModel = mensalist;
+		this.mFragment = fragment;
+		this.mMensaList = mensalist;
 		this.mMenus = menulist;
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
 	}
@@ -62,7 +64,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = mInflater.inflate(mResource, parent, false);
         
-        LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
+        LinearLayout row = (LinearLayout) rowView.findViewById(R.id.list_grid);
         
         // the actual fields that contain text
         final Menu menu = mMenus.get(position);
@@ -70,12 +72,12 @@ public class AdapterCustomMenulist extends BaseAdapter {
         // handle the full menu list displaying of the mensa
         if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
         	TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
-        	// get the mensa name for the menu overview (FragmentMenuList)
-			Mensa mensaObj = mModel.getMensaById(menu.getMensaID());
-			if (mensaObj != null) {
-				mensa.setText(mensaObj.getName());
+        	// get the mensa name for the menu overview in FragmentMenuListDayFull
+			Mensa mMensa = mMensaList.getMensaById(menu.getMensaID());
+			if (mMensa != null) {
+				mensa.setText(mMensa.getName());
 			} else {
-				Log.e(TAG, "mensaObj was null!");
+				Log.e(TAG, "mMensa was null!");
 			}
         }
         
@@ -85,6 +87,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
         TextView date = (TextView) rowView.findViewById(R.id.date);
         TextView rating = (TextView) rowView.findViewById(R.id.rating);
         TextView count = (TextView) rowView.findViewById(R.id.count);
+        ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
         
         title.setText(menu.getTitle());
         desc.setText(menu.getDesc());
@@ -92,21 +95,39 @@ public class AdapterCustomMenulist extends BaseAdapter {
         date.setText(menu.getDate());
         rating.setText(String.valueOf(menu.getRating()));
         count.setText(String.valueOf(menu.getVotes()));
+        
+        // determine the type of menu and set the according icon
+        if (menu.getType().equals("meat")) {
+        	icon.setImageResource(R.drawable.ic_menu_meat);
+        } else if (menu.getType().equals("seafood")) {
+        	icon.setImageResource(R.drawable.ic_menu_seafood);
+        } else if (menu.getType().equals("vegetarian")) {
+        	icon.setImageResource(R.drawable.ic_menu_vegetarian);
+        }
 
         // set the click listener for the menu item
-        final OnClickListener rowListener = new OnClickListener() {
+        OnClickListener rowListener = new OnClickListener() {
             @Override
             public void onClick(View rowView) {
             	// TODO: remove dev toast
-            	//Toast.makeText(mController, "Menu clicked, show rating...", Toast.LENGTH_SHORT).show();
-            	
-            	showRating(menu.getMenuID());
+            	if (mMensaList != null) {
+            		// this is rather ugly, but somehow the click listeners makes a chaos with the mensa assignment of the row
+            		// the mensa has to be refechted...
+            		//Toast.makeText(mController, "Menu clicked, show mensa details for " + mMensaList.getMensaById(mMenus.get(position).getMensaID()).getName(), Toast.LENGTH_SHORT).show();
+            		((FragmentMenuListPager) mFragment.getParentFragment()).selectItem( mMensaList.getMensaById(mMenus.get(position).getMensaID()));
+            	} else {
+            		showRating(menu.getMenuID());
+            	}
             }
         };
         
         // prevent menus that are not served today from getting rated
-        if (getCurrentDayName().equals(menu.getDay())) {
-        	grid.setOnClickListener(rowListener);
+        if (mMensaList != null) {
+        	row.setOnClickListener(rowListener);
+        } else {
+	        if (Controller.getDataHandler().getCurrentDayName().equals(menu.getDay())) {
+	        	row.setOnClickListener(rowListener);
+	        }
         }
             
 		return rowView;
@@ -125,43 +146,6 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return position;
-	}
-	
-	/**
-	 * this method is used to determine TODAYS name in english
-	 * to instruct the class to set the onClickListener for rating or not
-	 * @return the english name of today, can be compared with API data!
-	 */
-	public String getCurrentDayName() {
-		Calendar calendar = new GregorianCalendar();
-		Date now = new Date();   
-		calendar.setTime(now);
-		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		switch(day) {
-			// sunday
-			case 1: 
-				return "Friday";
-			// monday
-			case 2:
-				return "Monday";
-			// tuesday
-			case 3:
-				return "Tuesday";
-			// wednesday
-			case 4:
-				return "Wednesday";
-			// thursday
-			case 5:
-				return "Thursday";
-			// friday
-			case 6:
-				return "Friday";
-			// saturday
-			case 7:
-				return "Friday";
-			default:
-				return "Monday";
-		}
 	}
 	
 	public void showRating(final int menuid) {

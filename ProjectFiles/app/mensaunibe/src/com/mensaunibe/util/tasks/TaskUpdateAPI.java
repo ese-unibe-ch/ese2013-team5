@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.mensaunibe.app.controller.Controller;
-import com.mensaunibe.util.ServiceWebRequest;
+import com.mensaunibe.util.ServiceRequestManager;
 
 public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 	
@@ -88,7 +88,7 @@ public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 	@Override
     protected String doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to save data to the remote API");
-		ServiceWebRequest mWebService = new ServiceWebRequest(mController);
+		ServiceRequestManager mWebService = new ServiceRequestManager(mController);
 		JsonObject jsonObj = mWebService.getJSON(mUrl, 5000);
 		
 		return jsonObj.get("status").getAsString();

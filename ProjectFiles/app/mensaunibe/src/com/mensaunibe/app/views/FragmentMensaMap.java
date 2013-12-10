@@ -50,8 +50,8 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 	
 	private Controller mController;
 	private DataHandler mDataHandler;
-	private MensaList mModel;
-	private List<Mensa> mMensaList;
+	private MensaList mMensaList;
+	private List<Mensa> mMensas;
 	
 	private ProgressBar mProgressBar;
 	private SupportMapFragment mMapFragment;
@@ -72,8 +72,8 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 		
 		this.mController = Controller.getController();
 		this.mDataHandler = Controller.getDataHandler();
-		this.mModel = mDataHandler.getModel();
-		this.mMensaList = mModel.getMensas(); // TODO: find the reason why mModel is sometimes null after not using the app for some time
+		this.mMensaList = mDataHandler.getMensaList();
+		this.mMensas = mMensaList.getMensas(); // TODO: find the reason why mModel is sometimes null after not using the app for some time
 		this.mLocationClient = Controller.getLocationClient();
 		this.mLocation = mDataHandler.getLocation();
 		this.mLocationTarget = mDataHandler.getLocationTarget();
@@ -90,7 +90,7 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 	    	
 	        mMapFragment = SupportMapFragment.newInstance();
 	        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-	        transaction.add(R.id.frame_map, mMapFragment).commit();
+	        transaction.replace(R.id.frame_map, mMapFragment).commit();
 	        
 	        // show fake progress while the map is rendering / loading
 	        mProgressTask = new TaskProgress(mProgressBar, 60);
@@ -152,7 +152,7 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
         	mMap.getUiSettings().setMyLocationButtonEnabled(true);
         	mMap.setMyLocationEnabled(true);
         	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // options: MAP_TYPE_HYBRID, MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN
-        	for (Mensa mensa : mMensaList) {
+        	for (Mensa mensa : mMensas) {
         		mMap.addMarker(
         				new MarkerOptions()
         				.position(new LatLng(mensa.getLat(),mensa.getLon()))
@@ -235,10 +235,10 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 	
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-		Mensa mensa = mModel.getMensaByLocation(marker.getPosition());
-		Log.e(TAG, "mensa = " + mensa);
+		Mensa mensa = mMensaList.getMensaByLocation(marker.getPosition());
+
 		if (mensa != null) {
-			Fragment fragment = FragmentMensaDetails.newInstance(mensa);
+			Fragment fragment = FragmentMensaDetails.newInstance(mensa, true);
 			FragmentManager fragmentManager = getFragmentManager();
 			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 			fragmentTransaction.addToBackStack(null);

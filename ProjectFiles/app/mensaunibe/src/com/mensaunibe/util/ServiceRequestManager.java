@@ -23,15 +23,15 @@ import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.lib.dialogs.SimpleDialogFragment;
 import com.mensaunibe.lib.dialogs.SimpleDialogFragment.SimpleDialogBuilder;
 
-public class ServiceWebRequest {
+public class ServiceRequestManager {
 	
-	private static final String TAG = ServiceWebRequest.class.getSimpleName();
+	private static final String TAG = ServiceRequestManager.class.getSimpleName();
 	
 	private static Controller mController;
 
 	private boolean mConnectionReady;
 	
-	public ServiceWebRequest(Controller controller) {
+	public ServiceRequestManager(Controller controller) {
 		mController = controller;
 	}
 	
@@ -95,8 +95,10 @@ public class ServiceWebRequest {
 			}
 		} else {
 			Log.e(TAG, "getJSON(): Internet not available, ask to turn of Wifi");
-			// TODO: Fix dialog from popping up twice
-			getDialog();
+			// Prevent dialog from popping up multiple times
+			if (!mController.hasDialog()) {
+				getDialog();
+			}
 		}
 		
 		return null;

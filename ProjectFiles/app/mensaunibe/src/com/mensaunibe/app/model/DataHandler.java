@@ -1,11 +1,14 @@
 package com.mensaunibe.app.model;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mensaunibe.app.controller.Controller;
-import com.mensaunibe.util.ServicePrefsManager;
-import com.mensaunibe.util.ServiceWebRequest;
+import com.mensaunibe.util.ServiceSettingsManager;
+import com.mensaunibe.util.ServiceRequestManager;
 import com.mensaunibe.util.database.DatabaseManager;
 import com.mensaunibe.util.tasks.TaskCreateModel;
 import com.mensaunibe.util.tasks.TaskListener;
@@ -33,15 +36,17 @@ public class DataHandler extends Fragment implements TaskListener {
 	private static final String TAG = DataHandler.class.getSimpleName();
 	
 	private static Controller mController;
-	private static ServicePrefsManager mPersistenceManager;
+	private static ServiceSettingsManager mSettingsManager;
 	private static DatabaseManager mDBManager;
-	private static ServiceWebRequest mWebService;
+	private static ServiceRequestManager mRequestManager;
 
-	private MensaList mModel;
+	private MensaList mMensaList;
 	
+	private int mDrawerPosition;
 	private Location mLocation;
 	private LatLng mLocationTarget;
 	private Mensa mClosestMensa;
+	private Mensa mClosestFavMensa;
 	private Mensa mCurrentMensa;
 
 	private static String mDeviceId;
@@ -57,9 +62,9 @@ public class DataHandler extends Fragment implements TaskListener {
 		DataHandler instance = new DataHandler();
 
 		mController = controller;
-		mPersistenceManager = new ServicePrefsManager(mController);
+		mSettingsManager = new ServiceSettingsManager(mController);
 		mDBManager = new DatabaseManager(mController);
-		mWebService = new ServiceWebRequest(mController);
+		mRequestManager = new ServiceRequestManager(mController);
 		
 		mDeviceId = getDeviceId();
 		
@@ -106,7 +111,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		Log.i(TAG, "onTaskComplete(" + result + ")");
 		if (result != null) {
 			if (result instanceof MensaList) {
-				mModel = (MensaList) result;
+				mMensaList = (MensaList) result;
 			} else if (result instanceof Location) {
 				mLocation = (Location) result;
 			} else if (result instanceof String) {
@@ -127,18 +132,36 @@ public class DataHandler extends Fragment implements TaskListener {
 		// unused
 	}
 	
+	public void setDrawerPosition(int position) {
+		mDrawerPosition = position;
+	}
+	
+	public int getDrawerPosition() {
+		return mDrawerPosition;
+	}
+	
 	public void setClosestMensa(int mensaid) {
 		Log.i(TAG, "setClosestMensa(" + mensaid + ")");
-		mClosestMensa = mModel.getMensaById(mensaid);
+		mClosestMensa = mMensaList.getMensaById(mensaid);
 	}
 	
 	public Mensa getClosestMensa() {
 		Log.i(TAG, "getClosestMensa()");
 		return mClosestMensa;
 	}
+	
+	public void setClosestFavMensa(int mensaid) {
+		Log.i(TAG, "setClosestMensa(" + mensaid + ")");
+		mClosestFavMensa = mMensaList.getMensaById(mensaid);
+	}
+	
+	public Mensa getClosestFavMensa() {
+		Log.i(TAG, "getClosestMensa()");
+		return mClosestFavMensa;
+	}
     
     public void setCurrentMensa(Mensa mensa) {
-    	Log.i(TAG, "setCurrentMensa()");
+    	Log.i(TAG, "setCurrentMensa(" + mensa + ")");
     	mCurrentMensa = mensa;
     }
     
@@ -160,26 +183,28 @@ public class DataHandler extends Fragment implements TaskListener {
     
     public boolean hasModel() {
     	Log.i(TAG, "hasModel()");
-    	if (mModel != null) {
+    	if (mMensaList != null) {
     		return true;
     	} else {
     		return false;
     	}
     }
     
-    public MensaList getModel() {
-    	Log.i(TAG, "getModel()");
-    	return mModel;
+    public MensaList getMensaList() {
+    	Log.i(TAG, "getMensaList()");
+    	return mMensaList;
     }
     
     /**
      * Gets the JSON from REST API and builds the data model from it
      */
-    public void loadLocation() {
+    public void loadLocation(boolean silent) {
     	Log.i(TAG, "loadLocation()");
     	TaskLocation mTask = new TaskLocation(mController);
-        mTask.addListener(this);
-        mTask.addListener(mController);
+    	if (!silent) {
+	        mTask.addListener(this);
+	        mTask.addListener(mController);
+    	}
         mTask.execute();
     }
     
@@ -212,14 +237,14 @@ public class DataHandler extends Fragment implements TaskListener {
     	mLocationTarget = location;
     }
     
-    public ServiceWebRequest getWebService() {
-    	Log.i(TAG, "getWebService()");
-    	return mWebService;
+    public ServiceRequestManager getRequestManager() {
+    	Log.i(TAG, "getRequestManager()");
+    	return mRequestManager;
     }
     
-    public ServicePrefsManager getPersistenceManager() {
+    public ServiceSettingsManager getSettingsManager() {
     	Log.i(TAG, "getPersistenceManager()");
-    	return mPersistenceManager;
+    	return mSettingsManager;
     }
     
     public DatabaseManager getDatabaseManager() {
@@ -232,7 +257,6 @@ public class DataHandler extends Fragment implements TaskListener {
     	TaskUpdateDB mTask = new TaskUpdateDB(mController);
         mTask.addListener(this);
         mTask.execute();
-		//mDBManager.save(mModel);
 	}
 
 	public void DBUpdateFavorite(Mensa mensa) {
@@ -250,7 +274,7 @@ public class DataHandler extends Fragment implements TaskListener {
 	 */
 	public static String getDeviceId() {
 		Log.i(TAG, "getDeviceId()");
-		String deviceid = (String) mPersistenceManager.getData("string", "deviceid");
+		String deviceid = (String) mSettingsManager.getData("string", "deviceid");
 		
 		if (deviceid == null) {
 			Log.i(TAG, "getDeviceId(): Creating and saving new device ID");
@@ -274,10 +298,46 @@ public class DataHandler extends Fragment implements TaskListener {
 		    // Finally, combine the values we have found by using the UUID class to create a unique identifier
 		    deviceid = new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
 		    // save the id to shared prefs for later usage
-		    mPersistenceManager.setData("string", "deviceid", deviceid);
+		    mSettingsManager.setData("string", "deviceid", deviceid);
 		}
 		
 	    return deviceid;
+	}
+	
+	/**
+	 * this method is used to determine TODAYS name in english
+	 * @return the english name of today, can be compared with API data!
+	 */
+	public String getCurrentDayName() {
+		Calendar calendar = new GregorianCalendar();
+		Date now = new Date();   
+		calendar.setTime(now);
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		switch(day) {
+			// sunday
+			case 1: 
+				return "Friday";
+			// monday
+			case 2:
+				return "Monday";
+			// tuesday
+			case 3:
+				return "Tuesday";
+			// wednesday
+			case 4:
+				return "Wednesday";
+			// thursday
+			case 5:
+				return "Thursday";
+			// friday
+			case 6:
+				return "Friday";
+			// saturday
+			case 7:
+				return "Friday";
+			default:
+				return "Monday";
+		}
 	}
 	
 	public void APIRegisterUser() {

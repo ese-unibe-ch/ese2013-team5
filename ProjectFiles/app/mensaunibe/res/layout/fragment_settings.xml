@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <PreferenceCategory
-        android:title="@string/title_settings">
+        android:title="@string/settings_title">
 
         <com.mensaunibe.util.gui.CustomEditTextPreference
             android:key="setting_username"
-            android:title="@string/title_username"
-            android:dialogTitle="@string/title_dialog_username"
+            android:title="@string/setting_username_title"
+            android:dialogTitle="@string/setting_username_dialog_title"
             android:defaultValue="Mensa UniBE User"
         />
 
         <com.mensaunibe.util.gui.CustomListPreference
             android:key="setting_homescreen"
-            android:title="@string/title_homescreen"
-            android:dialogTitle="@string/title_dialog_homescreen"
-            android:entries="@array/settings_homescreen_titles"
-            android:entryValues="@array/settings_homescreen_values"
-            android:defaultValue="nearestmensa"
+            android:title="@string/setting_homescreen_title"
+            android:dialogTitle="@string/setting_homescreen_dialog_title"
+            android:entries="@array/setting_homescreen_titles"
+            android:entryValues="@array/setting_homescreen_values"
+            android:defaultValue="closestmensa"
         />
         
-       <com.mensaunibe.util.gui.CustomListPreference
-            android:key="setting_language"
-            android:title="@string/title_language"
-            android:dialogTitle="@string/title_dialog_language"
-            android:entries="@array/settings_language_titles"
-            android:entryValues="@array/settings_language_values"
-            android:defaultValue=""
+        <com.mensaunibe.util.gui.CustomEditTextPreference
+            android:key="setting_sharetext"
+            android:title="@string/setting_sharetext_title"
+            android:dialogTitle="@string/setting_sharetext_dialog_title"
+            android:defaultValue="@string/setting_sharetext_default"
         />
+        
+        <com.mensaunibe.util.gui.CustomListPreference
+             android:key="setting_language"
+             android:title="@string/setting_language_title"
+             android:dialogTitle="@string/setting_language_dialog_title"
+             android:entries="@array/setting_language_titles"
+             android:entryValues="@array/setting_language_values"
+             android:defaultValue=""
+         />
 
     </PreferenceCategory>
     

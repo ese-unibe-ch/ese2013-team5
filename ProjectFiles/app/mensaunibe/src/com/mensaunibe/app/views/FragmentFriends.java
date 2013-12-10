@@ -32,7 +32,7 @@ public class FragmentFriends extends Fragment {
 	private Controller mController;
 	private DataHandler mDataHandler;
 	@SuppressWarnings("unused")
-	private MensaList mModel;
+	private MensaList mMensaList;
 	
 	private SimpleAdapter mAdapter;
 	private ProgressBar mProgressBar;
@@ -42,7 +42,7 @@ public class FragmentFriends extends Fragment {
 		
 		this.mController = Controller.getController();
 		this.mDataHandler = Controller.getDataHandler();
-		this.mModel = mDataHandler.getModel();
+		this.mMensaList = mDataHandler.getMensaList();
 		
 		View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 		

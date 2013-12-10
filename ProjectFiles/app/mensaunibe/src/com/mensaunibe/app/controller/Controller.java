@@ -1,6 +1,7 @@
 package com.mensaunibe.app.controller;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -11,11 +12,9 @@ import com.google.android.gms.location.LocationClient;
 import com.mensaunibe.R;
 import com.mensaunibe.app.model.DataHandler;
 import com.mensaunibe.app.model.MensaList;
-import com.mensaunibe.app.views.FragmentFriends;
 import com.mensaunibe.app.views.FragmentMensaList;
 import com.mensaunibe.app.views.FragmentMensaMap;
-import com.mensaunibe.app.views.FragmentMenuList;
-import com.mensaunibe.app.views.FragmentNotifications;
+import com.mensaunibe.app.views.FragmentMenuListPager;
 import com.mensaunibe.app.views.FragmentSettings;
 import com.mensaunibe.app.views.FragmentSplashScreen;
 import com.mensaunibe.app.views.FragmentStart;
@@ -28,6 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -63,7 +63,10 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	private static SharedPreferences sSettings;
 	private static String sLanguage;
 	private static boolean sModelReady;
+	private static boolean sModelUpdated;
+	private static boolean sLocationReady;
 	private static boolean sWait;
+	private static boolean sHasDialog;
 
 	/**
 	 * Overrides
@@ -74,7 +77,13 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		super.onCreate(savedInstanceState);
 		
 		// handle action bar hiding on app start for the splash screen (prevents flickering)
-		attachActionBar(true);
+		if (!sModelReady && !sLocationReady) {
+			attachActionBar(true);
+		} else {
+			attachActionBar(false);
+	    	// set the background back to default
+	    	getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
+		}
 		
 		// set a global reference to the shared prefs, needs to be the first thing to do because of the language
 		sSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -99,6 +108,14 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		
 		// set a global reference to the fragment manager as we use it a lot
 		fm = getSupportFragmentManager();
+		
+//		fm.addOnBackStackChangedListener(new OnBackStackChangedListener() {
+//	        @Override
+//	        public void onBackStackChanged() {
+//	        	Log.e(TAG, "onBackStackChaged(): Backstack entry count = " + fm.getBackStackEntryCount());
+////	            if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+//	        }
+//	    });
     	
     	// initialize the ConnectivityManager
     	cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -109,15 +126,25 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		// initialize the LocationClient		
     	lc = new LocationClient(this, this, this);
 		
-		// until the data loader fragment has done it's job, show the splash screen with a progress bar
-		attachSplashScreen();
+    	if (!sModelReady && !sLocationReady) {
+    		// until the data loader fragment has done it's job, show the splash screen with a progress bar
+    		attachSplashScreen();
+    		// initialize retaining data loader fragment for data persistence
+    		attachDataHandler();
+    	}
 
-		// initialize retaining data loader fragment for data persistence
-		attachDataHandler();
-		
 		setContentView(R.layout.controller);
 		
 		// setting up the navigation drawer is done later onTaskComplete() as the model is not ready yet here!
+    	if (sDrawer == null) {
+    		attachNavigationDrawer(si);
+    	} else if (sModelReady && sLocationReady) {
+    		attachNavigationDrawer(si);
+    		if (sDataHandler.getDrawerPosition() < sDrawer.getDrawerListCount()) {
+    			Log.e(TAG, "drawer child count = " + sDrawer.getDrawerListCount());
+    			sDrawer.selectItem(sDataHandler.getDrawerPosition());
+    		}
+    	}
 	}
 
 	@Override
@@ -128,7 +155,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		if (sDrawer != null ) {
 			sDrawer.getDrawerToggle().syncState();
 		} else {
-			Log.e(TAG, "onPostCreate(): mDrawer is null");
+//			Log.e(TAG, "onPostCreate(): mDrawer is null");
 		}
 	}
 	
@@ -137,9 +164,36 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		Log.i(TAG, "onStart()");
         super.onStart();
         if (sDataHandler != null) {
+            //attachDataHandler();
             getLoadStatus();
         }
     }
+	
+	@Override
+	protected void onRestart() {
+		Log.i(TAG, "onRestart()");
+		super.onRestart();
+	}
+	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "onResume(), sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
+		super.onResume();
+		
+		// if the activity was terminated, make sure it gets reattached to the persisting data handler
+//        if (sDataHandler != null) {
+//            attachDataHandler();
+//        }
+		
+		if (sDrawer != null && sModelReady && sLocationReady) {
+			Log.i(TAG, "onResume(): Would Re-attach navigation drawer");
+			//attachNavigationDrawer(si);
+		}
+		
+		if (!lc.isConnected()) {
+			lc.connect();
+		}
+	}
 	
 	@Override
 	protected void onPause() {
@@ -150,61 +204,59 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			lc.disconnect();
 		}
 	}
-	
-	@Override
-	protected void onResume() {
-		Log.i(TAG, "onResume(), sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
-		super.onResume();
-		
-//		setDefaultLocale();
-		
-		if (sDrawer == null && sModelReady) {
-			attachNavigationDrawer(si);
-		}
-		
-		if (!lc.isConnected()) {
-			lc.connect();
-		}
-	}
 
     @Override
     protected void onStop() {
     	Log.i(TAG, "onStop()");
         super.onStop();
-        if (sDataHandler != null) {
-//            mDataHandler.removeProgressListener();
-        }
+//        if (sDataHandler != null) {
+//            sDataHandler.removeProgressListener();
+//        }
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(TAG, "onDestroy()");
+    	super.onDestroy();
+    }
+    
+    @Override
+    public void onBackPressed() {
+    	Log.i(TAG, "onBackPressed()");
+    	cleanUpFragments();
+    	super.onBackPressed();
     }
 
-	// reqired for proper setup of ActionBarDrawerToggle
+	// required for proper setup of ActionBarDrawerToggle
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		Log.i(TAG, "onConfigurationChanged(" + newConfig + ")");
 		super.onConfigurationChanged(newConfig);
-		if (sDrawer != null && sModelReady) {
+		if (sDrawer != null && sModelReady && sLocationReady) {
 			// re-attach the navigation drawer when a config change happens (eg. rotation)
-			attachNavigationDrawer(si);
+			//attachNavigationDrawer(si);
 			// Pass any configuration change to the drawer toggle, this actually doesn't work but crashes
 			//sDrawer.getDrawerToggle().onConfigurationChanged(newConfig);
 		} else {
-			//Log.e(TAG, "onConfigurationChanged(): sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
+			Log.e(TAG, "onConfigurationChanged(): sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
 		}
 	}
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		//Log.i(TAG, "onPrepareOptionsMenu(" + menu + ")");
 		// If the nav drawer is open, hide action items related to the content
-		if (sDrawer != null) {
-			if (sDrawer.isDrawerOpen()) {
-				// menu.findItem(R.id.test).setVisible(false);
-			}
-		}
+//		if (sDrawer != null) {
+//			if (sDrawer.isDrawerOpen()) {
+//				menu.findItem(R.id.test).setVisible(false);
+//			}
+//		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.i(TAG, "onCreateOptionsMenu(" + menu + ")");
+		//Log.i(TAG, "onCreateOptionsMenu(" + menu + ")");
 		// this would set up the top right dropdown menu, but we don't need it anymore at this time
 		//getMenuInflater().inflate(R.menu.activity_main, menu);
 		return super.onCreateOptionsMenu(menu);
@@ -246,19 +298,32 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 
     	if (result != null) {
 			if (result instanceof MensaList) {
-				// call method again to remove the splashscreen and check the model availability
+		    	// load the current location + closest mensa as fast as possible as soon as the model is available
+				sDataHandler.loadLocation(false);
+				// call load status
 		    	getLoadStatus();
-		    	// set up and attach the navigation drawer
-		    	attachNavigationDrawer(si);
-		    	// load the current location + closest mensa
-				sDataHandler.loadLocation();
-				// write the model to the db
-				sDataHandler.DBUpdate();
+				// write the model to the db, but only if it was changed
+		    	if (sModelUpdated) {
+		    		sDataHandler.DBUpdate();
+		    	} else {
+		    		Log.i(TAG, "OnTaskComplete(): No DB update necessary");
+		    	}
+			} else if (result instanceof Location) {
+				// set up and attach the navigation drawer
+				if (sDrawer != null && si == null) {
+					sDrawer.selectItem(0);
+				} 
+				
+		    	// call load status again to remove the splashscreen if all data is fine (model + location)
+		    	getLoadStatus();
 			}
     	} else {
-    		Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
-    		if (sWait == false) {
+    		if (sWait == false && sModelReady != true) {
+    			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
     			sDataHandler.loadModel();
+    		} else if (sWait == false && sLocationReady != true) {
+    			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
+    			sDataHandler.loadLocation(false);
     		} else {
     			Log.i(TAG, "Waiting for user input on dialog");
     		}
@@ -312,12 +377,6 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			return sDataHandler;
 		}
 	}
-	
-	// check if the model is already instantiated
-	public static boolean isModelReady() {
-		Log.i(TAG, "isModelReady()");
-		return sModelReady;
-	}
     
     // create loading fragment / splash screen if not present
     private void attachSplashScreen() {
@@ -357,12 +416,13 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			sDrawer.addNavItem(getString(R.string.title_home), FragmentStart.class);
 			sDrawer.addNavItem(getString(R.string.title_mensalist), FragmentMensaList.class);
 			sDrawer.addNavItem(getString(R.string.title_mensamap), FragmentMensaMap.class);
-			sDrawer.addNavItem(getString(R.string.title_menulist), FragmentMenuList.class);
-			sDrawer.addNavItem(getString(R.string.title_friends), FragmentFriends.class);
-			sDrawer.addNavItem(getString(R.string.title_notifications), FragmentNotifications.class);
+			sDrawer.addNavItem(getString(R.string.title_menulist), FragmentMenuListPager.class);
+//			sDrawer.addNavItem(getString(R.string.title_friends), FragmentFriends.class);
+//			sDrawer.addNavItem(getString(R.string.title_notifications), FragmentNotifications.class);
 			sDrawer.addNavItem(getString(R.string.title_settings), FragmentSettings.class);
 			// Select default
 			if (savedInstanceState == null) {
+				//Log.e(TAG, "attachNavigationDrawer(): savedInstanceState was null");
 				sDrawer.selectItem(0);	
 			}
 		} else {
@@ -418,20 +478,36 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		return wm;
 	}
 	
+	// check if the model is already instantiated
+	public static boolean isModelReady() {
+		Log.i(TAG, "isModelReady()");
+		return sModelReady;
+	}
+	
+	public static void setModelUpdated(boolean updated) {
+		Log.i(TAG, "setModelUpdated(" + updated + ")");
+		sModelUpdated = updated;
+	}
+	
+	public boolean hasDialog() {
+		return sHasDialog;
+	}
+	
 	public void setDefaultLocale() {
-		Log.i(TAG, "getDefaultLocale()");
+		Log.i(TAG, "setDefaultLocale()");
 		// we cannot use the DataHandler when this is called first, so we go the direct way over the system
 		sLanguage = sSettings.getString("setting_language", null);
 		
 		if (sLanguage != null && !sLanguage.equals("")) {
-			//Log.i(TAG, "getDefaultLocale(): sLanguage already saved in shared prefs = " + sLanguage);
+			//Log.e(TAG, "setDefaultLocale(): sLanguage already saved in shared prefs = " + sLanguage);
 			// a user language just for the app is set
 			Locale locale = new Locale(sLanguage);
 			Locale.setDefault(locale);
 			Configuration appConfig = getBaseContext().getResources().getConfiguration();
 			
 			// only take action when the language that is currently used and the user language are not the same
-			if (!appConfig.locale.equals(locale)) { 
+			if (!appConfig.locale.getLanguage().equals(locale.getLanguage())) { 
+				//Log.i(TAG, "setDefaultLocale(): app locale and saved locale are not the same: " + appConfig.locale.getLanguage() + " != " + locale.getLanguage());
 				appConfig.locale = locale;
 				getBaseContext().getResources().updateConfiguration(appConfig, null);
 				onConfigurationChanged(appConfig);
@@ -455,16 +531,44 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
     	Log.i(TAG, "getLoadStatus()");
     	
     	sModelReady = false;
+    	sLocationReady = false;
     	
-        if (sDataHandler.hasModel()) {
-        	Log.i(TAG, "sDataHandler has the model ready");
+        if (sDataHandler.hasModel() && sDataHandler.hasLocation()) {
+        	Log.i(TAG, "sDataHandler has the model ready and obtained a location");
         	
         	sModelReady = true;
-            detachSplashScreen();
+        	sLocationReady = true;
+        	
+        	if (sSplashScreen != null) {
+        		detachSplashScreen();
+        	}
+        	
             return true;
         }
         
         return false;
+    }
+    
+	// TODO: Find a more natural way to handle nested fragments and the back stack
+    // Related to overlapping fragments bug
+    // this is a very hacky method to remove all "non"-desirable fragments
+    // necessary because the support library has bugs with nested fragments
+    public void cleanUpFragments() {
+    	Log.i(TAG, "cleanUpFragments()");
+    	
+        List<Fragment> allFragments = fm.getFragments();
+
+        if (allFragments != null && !allFragments.isEmpty()) {
+	        for (Fragment fragment : allFragments) {
+	        	Log.e(TAG, "fragment = " + fragment);
+	        	if (fragment != null) {
+		            if (fragment.isVisible()) {
+		            	fm.beginTransaction().remove(fragment).commit();
+		            	Log.e(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
+		            }
+	        	}
+	        }
+        }
     }
 	
 	/**
@@ -504,6 +608,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	@Override
 	public void onDialogCreated() {
 		Log.i(TAG, "onDialogCreated()");
+		sHasDialog = true;
 		sWait = true;
 	}
 	
@@ -515,20 +620,21 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			wm.setWifiEnabled(false);
 			try {
 				Thread.sleep(1000);
+				sHasDialog = false;
+				sWait = false;
+				if (!sDataHandler.hasModel()) {
+					sDataHandler.loadModel();
+				}
 			} catch (InterruptedException ex) {
 
 			}
-		}
-		
-		sWait = false;
-		if (!sDataHandler.hasModel()) {
-			sDataHandler.loadModel();
 		}
 	}
 
 	@Override
 	public void onNegativeButtonClicked(int requestCode) {
 		Log.i(TAG, "onNegativeButtonClicked(" + requestCode+ ")");
+		sHasDialog = false;
 		sWait = false;
 		if (!sDataHandler.hasModel()) {
 			sDataHandler.loadModel();

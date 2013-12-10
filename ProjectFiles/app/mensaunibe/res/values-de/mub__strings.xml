@@ -6,13 +6,7 @@
     <string name="loading">Lade Daten&#8230;</string>
     <string name="opening_hours">Öffnungszeiten</string>
     
-    <!-- Side Navigation Strings -->
-    <string name="sidenav_list">Mensaliste</string>
-    <string name="sidenav_map">Mensamap</string>
-    <string name="sidenav_menus">Mensamenus</string>
-    <string name="sidenav_friends">Freunde</string>
-    <string name="sidenav_settings">Einstellungen</string>
-    
+    <!-- Side Navigation Strings -->    
     <string name="sidenav_open">Navigation öffnen</string>
     <string name="sidenav_close">Navigation schliessen</string>
     <string name="title_home">Home</string>
@@ -45,15 +39,20 @@
     <string name="skip_button_label">Überspringen</string>
     
     <!-- Preferences Strings -->
-    <string name="title_username">Dein Benutzername</string>
-    <string name="title_dialog_username">Benutzername eingeben</string>
-    <string name="title_homescreen">Homescreen Konfiguration</string>
-    <string name="title_dialog_homescreen">Konfiguration auswählen</string>
-    <string name="title_language">App Sprache</string>
-    <string name="title_dialog_language">Sprache auswählen</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="setting_username_title">Dein Benutzername</string>
+    <string name="setting_username_dialog_title">Benutzername eingeben</string>
+    <string name="setting_homescreen_title">Homescreen Konfiguration</string>
+    <string name="setting_homescreen_dialog_title">Konfiguration auswählen</string>
+    <string name="setting_sharetext_title">Dein Teilen-Text</string>
+    <string name="setting_sharetext_dialog_title">Text eingeben</string>
+    <string name="setting_sharetext_default">Hey! Ich gehe nachher in der folgenden Mensa essen, kommst du auch?</string>
+    <string name="setting_language_title">App Sprache</string>
+    <string name="setting_language_dialog_title">Sprache auswählen</string>
     
     <!-- Button Description Strings (Accessibility) -->
     <string name="button_map_desc">Zu Mensa navigieren</string>
+        <string name="button_share_desc">Mit Freunden teilen</string>
     <string name="button_star_desc">Lieblingsmensa setzen</string>
     
     <!-- Icon Description Strings (Accessibility) -->
