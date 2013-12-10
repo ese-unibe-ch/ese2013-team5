@@ -21,9 +21,6 @@ import android.widget.Toast;
 
 /**
  * Fragment that appears in the "content_frame", shows notifications
- * </br>
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
  */
 public class FragmentNotifications extends Fragment {
 	
@@ -68,6 +65,13 @@ public class FragmentNotifications extends Fragment {
 
 			@Override
 			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
+				// call listView.onRefreshComplete() when the loading is done.
+
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {
@@ -80,10 +84,11 @@ public class FragmentNotifications extends Fragment {
 			}
 		});
 
-
+		// Fetch the string array from resouce arrays.xml > mensalist
+		// String[] notifications =
+		// getResources().getStringArray(R.array.notificationlist);
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		
-		//TODO: remove dummy data and get data from the user model, as soon as it is implemented.
+
 		final String[][] notifications = {
 				{ "Message Subject", "Short ellipsis from the content" },
 				{ "Super Message Subject",
@@ -93,6 +98,10 @@ public class FragmentNotifications extends Fragment {
 						"Short ellipsis from the content" },
 				{ "Bla Message Subject", "Short ellipsis from the content" } };
 
+		// Creating an array adapter to store the list of countries
+		// ArrayAdapter<String> adapter = new
+		// ArrayAdapter<String>(inflater.getContext(),
+		// R.layout.list_item_1line, notifications);
 		HashMap<String, String> item;
 		for (int i = 0; i < notifications.length; i++) {
 			item = new HashMap<String, String>();

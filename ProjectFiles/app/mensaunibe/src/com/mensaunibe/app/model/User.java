@@ -3,13 +3,7 @@ package com.mensaunibe.app.model;
 import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
-
-/**
- * 
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
- *
- */
+ 
 public class User implements Serializable {
 
 	// for logging and debugging purposes

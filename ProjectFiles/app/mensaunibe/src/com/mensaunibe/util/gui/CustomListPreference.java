@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 
 public class CustomListPreference extends ListPreference {
 
+//    private final static String TAG = CustomListPreference.class.getName();
+
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();

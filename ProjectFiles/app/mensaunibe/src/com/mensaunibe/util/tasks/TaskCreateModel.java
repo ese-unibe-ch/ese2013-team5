@@ -81,12 +81,14 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		JsonObject jsonObj = null;
 		final Gson gson = new Gson();
 		
-		if (mRequestManager.getLastUpdate() != (Integer) mSettingsManager.getData("integer", "lastupdate")) {
+		if (mRequestManager.getLastUpdate() != (Integer) mSettingsManager.getData("integer", "lastupdate") || mSettingsManager.getData("string", "model") == null) {
 			Log.i(TAG, "Update necessary, trying to load JSON from API");
 			jsonObj = mRequestManager.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
 		} else {
 			Log.e(TAG, "No update necessary, trying to load from shared prefs");
 		}
+		// TODO: test the model creation from shared prefs
+		//jsonObj = null;
 		
 		if (jsonObj != null) {
 			Log.i(TAG, "JSONObject from webservice successfuly loaded");
@@ -111,6 +113,9 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	    		setFavorites(model);
 			}
 		}
+		
+		// TODO: test the model creation from db
+		//model = null;
 		
 		if (model == null) {
 			Log.e(TAG, "Model still null after loading from prefs, trying the database!");

@@ -21,13 +21,8 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 /**
- * Fragment to show the Users Friends
- * </br>
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
- *
+ * Fragment that appears in the "content_frame", shows friends
  */
- 
 public class FragmentFriends extends Fragment {
 	
 	// for logging and debugging purposes
@@ -64,8 +59,8 @@ public class FragmentFriends extends Fragment {
 		listview.setLockScrollWhileRefreshing(false);
 
 		// override the default strings
-		listview.setTextPullToRefresh("Ziehen für Update");
-		listview.setTextReleaseToRefresh("Loslassen für Update");
+		listview.setTextPullToRefresh("Ziehen fŸr Update");
+		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
 		listview.setTextRefreshing("Lade Daten...");
 
 		// set the onRefreshListener for the pull down listview
@@ -73,6 +68,11 @@ public class FragmentFriends extends Fragment {
 
 			@Override
 			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
 				// call listView.onRefreshComplete() when the loading is done.
 
 				// For demo purposes, the code will pause here to
@@ -87,9 +87,11 @@ public class FragmentFriends extends Fragment {
 			}
 		});
 
+		// Fetch the string array from resouce arrays.xml > mensalist
+		// String[] friendslist =
+		// getResources().getStringArray(R.array.friendlist);
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
-		//TODO: remove dummy data and get data from the user model, as soon as it is implemented.
 		final String[][] friends = {
 				{ "Friend Name", "Some information, maybe location?" },
 				{ "Friend Name Blub", "Some information, maybe location?" },
@@ -97,6 +99,10 @@ public class FragmentFriends extends Fragment {
 				{ "Friend Name Ga", "Some information, maybe location?" },
 				{ "Friend Name Da", "Some information, maybe location?" } };
 
+		// Creating an array adapter to store the list of countries
+		// ArrayAdapter<String> adapter = new
+		// ArrayAdapter<String>(inflater.getContext(),
+		// R.layout.list_item_1line, friendslist);
 		HashMap<String, String> item;
 		for (int i = 0; i < friends.length; i++) {
 			item = new HashMap<String, String>();

@@ -36,10 +36,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class Controller extends FragmentActivity implements TaskListener, SimpleDialogListener, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -67,7 +68,9 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	private static boolean sWait;
 	private static boolean sHasDialog;
 
-
+	/**
+	 * Overrides
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate()");
@@ -106,6 +109,14 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		// set a global reference to the fragment manager as we use it a lot
 		fm = getSupportFragmentManager();
 		
+//		fm.addOnBackStackChangedListener(new OnBackStackChangedListener() {
+//	        @Override
+//	        public void onBackStackChanged() {
+//	        	Log.e(TAG, "onBackStackChaged(): Backstack entry count = " + fm.getBackStackEntryCount());
+////	            if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+//	        }
+//	    });
+    	
     	// initialize the ConnectivityManager
     	cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
     	
@@ -138,26 +149,47 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
+		Log.i(TAG, "onPostCreate(Bundle)");
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		if (sDrawer != null ) {
 			sDrawer.getDrawerToggle().syncState();
 		} else {
-			Log.e(TAG, "onPostCreate(): mDrawer is null");
+//			Log.e(TAG, "onPostCreate(): mDrawer is null");
 		}
 	}
 	
 	@Override
     protected void onStart() {
+		Log.i(TAG, "onStart()");
         super.onStart();
         if (sDataHandler != null) {
+            //attachDataHandler();
             getLoadStatus();
         }
     }
 	
 	@Override
+	protected void onRestart() {
+		Log.i(TAG, "onRestart()");
+		super.onRestart();
+	}
+	
+	@Override
 	protected void onResume() {
+		Log.i(TAG, "onResume(), sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
 		super.onResume();
+		
+		// if the activity was terminated, make sure it gets reattached to the persisting data handler
+//        if (sDataHandler != null) {
+//            attachDataHandler();
+//        }
+		
+		if (sDrawer != null && sModelReady && sLocationReady) {
+			Log.i(TAG, "onResume(): Would Re-attach navigation drawer");
+			//attachNavigationDrawer(si);
+		}
+		
 		if (!lc.isConnected()) {
 			lc.connect();
 		}
@@ -165,17 +197,70 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	
 	@Override
 	protected void onPause() {
+		Log.i(TAG, "onPause()");
 		super.onPause();
+		
 		if (lc.isConnected()) {
 			lc.disconnect();
 		}
 	}
 
     @Override
+    protected void onStop() {
+    	Log.i(TAG, "onStop()");
+        super.onStop();
+//        if (sDataHandler != null) {
+//            sDataHandler.removeProgressListener();
+//        }
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(TAG, "onDestroy()");
+    	super.onDestroy();
+    }
+    
+    @Override
     public void onBackPressed() {
+    	Log.i(TAG, "onBackPressed()");
     	cleanUpFragments();
     	super.onBackPressed();
     }
+
+	// required for proper setup of ActionBarDrawerToggle
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Log.i(TAG, "onConfigurationChanged(" + newConfig + ")");
+		super.onConfigurationChanged(newConfig);
+		if (sDrawer != null && sModelReady && sLocationReady) {
+			// re-attach the navigation drawer when a config change happens (eg. rotation)
+			//attachNavigationDrawer(si);
+			// Pass any configuration change to the drawer toggle, this actually doesn't work but crashes
+			//sDrawer.getDrawerToggle().onConfigurationChanged(newConfig);
+		} else {
+			Log.e(TAG, "onConfigurationChanged(): sDrawer = " + sDrawer + ", sModelReady = " + sModelReady);
+		}
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		//Log.i(TAG, "onPrepareOptionsMenu(" + menu + ")");
+		// If the nav drawer is open, hide action items related to the content
+//		if (sDrawer != null) {
+//			if (sDrawer.isDrawerOpen()) {
+//				menu.findItem(R.id.test).setVisible(false);
+//			}
+//		}
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		//Log.i(TAG, "onCreateOptionsMenu(" + menu + ")");
+		// this would set up the top right dropdown menu, but we don't need it anymore at this time
+		//getMenuInflater().inflate(R.menu.activity_main, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -188,6 +273,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		return super.onOptionsItemSelected(item);
 	}
 	
+    // location client callbacks
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		Log.e(TAG, "onConnectionFailed(): " + result.getErrorCode());
@@ -205,6 +291,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		Log.i(TAG, "onDisconnected()");
 	}
     
+    // task listener callbacks
     @Override
     public void onTaskComplete(Object result) {
     	Log.i(TAG, "onTaskComplete(" + result + ")");
@@ -213,6 +300,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			if (result instanceof MensaList) {
 		    	// load the current location + closest mensa as fast as possible as soon as the model is available
 				sDataHandler.loadLocation(false);
+				// call load status
 		    	getLoadStatus();
 				// write the model to the db, but only if it was changed
 		    	if (sModelUpdated) {
@@ -230,12 +318,18 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		    	getLoadStatus();
 			}
     	} else {
-    		if (!sWait && !sModelReady) {
+    		if (sWait == false && sDataHandler.hasModel() != true) {
     			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
     			sDataHandler.loadModel();
-    		} else if (!sWait && !sLocationReady) {
+    		} else if (sWait == false && sDataHandler.hasLocation() != true) {
     			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
-    			sDataHandler.loadLocation(false);
+    			int count = 0;
+    			if (count < 3) {
+    				sDataHandler.loadLocation(false);
+    				count++;
+    			} else {
+    				sLocationReady = true;
+    			}
     		} else {
     			Log.i(TAG, "Waiting for user input on dialog");
     		}
@@ -252,15 +346,20 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
     	}
     }
     
-
-
-    /**
-     *  creates the Datahandler if not yet created
-     */
+	@Override
+	public void onRendered() {
+		// unused		
+	}
+	
+	/**
+	 * Custom Methods
+	 */
+    // create the data loader fragment if not present
     private static void attachDataHandler() {
     	Log.i(TAG, "attachDataHandler()");
 		sDataHandler = (DataHandler) fm.findFragmentByTag("data");
 		
+		// if not instantiated yet, create a new FragmentData
 		if (sDataHandler == null) {
 			sDataHandler = DataHandler.newInstance(sController);
             sDataHandler.loadModel();
@@ -272,26 +371,25 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
         }
     }
     
-	/**
-	 *  returns an instance of the DataHandler fragment
-	 * @return DataHandler
-	 */
+	// returns an instance of the data fragment
 	public static DataHandler getDataHandler() {
+		Log.i(TAG, "getDataHandler()");
 		if (sDataHandler != null) {
 			return sDataHandler;
 		} else {
+			Log.e(TAG, "getDataHandler(): sDataHandler was null, probably lost sync!");
+			Toast.makeText(sController, "sDataHandler was null, probably lost sync!", Toast.LENGTH_LONG).show();
 			attachDataHandler();
 			return sDataHandler;
 		}
 	}
     
-    /**
-     *  create loading fragment / splash screen if not yet created
-     */
+    // create loading fragment / splash screen if not present
     private void attachSplashScreen() {
     	Log.i(TAG, "attachSplashScreenFragment()");
         sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
 
+		// if not instantiated yet, create a new FragmentData
         if (sSplashScreen == null) {
             sSplashScreen = new FragmentSplashScreen();
             fm.beginTransaction().add(android.R.id.content, sSplashScreen, "splashscreen").commit();
@@ -303,9 +401,6 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
     	getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
     }
     
-    /**
-     * removes the loading fragment/splash screen
-     */
     private static void detachSplashScreen() {
     	Log.i(TAG, "detachSplashScreenFragment()");
     	sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
@@ -314,15 +409,14 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
         }
     }
     
-    /**
-     * create the Navigation Drawer if not yet created
-     * @param savedInstanceState
-     */
     private void attachNavigationDrawer(Bundle savedInstanceState) {
     	Log.i(TAG, "attachNavigationDrawer()");
+    	// Find the drawer view
 		sDrawer = (CustomNavigationDrawer) findViewById(R.id.drawer_layout);
 		if (sDrawer != null) {
+			// Setup drawer view
 			sDrawer.setupDrawer((ListView) findViewById(R.id.sidenav), R.layout.sidenav_item, R.id.frame_content);
+			// Make 3 line icon show instaead of up arrow
 			sDrawer.getDrawerToggle().syncState();
 			// Add nav items
 			sDrawer.addNavItem(getString(R.string.title_home), FragmentStart.class);
@@ -334,6 +428,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			sDrawer.addNavItem(getString(R.string.title_settings), FragmentSettings.class);
 			// Select default
 			if (savedInstanceState == null) {
+				//Log.e(TAG, "attachNavigationDrawer(): savedInstanceState was null");
 				sDrawer.selectItem(0);	
 			}
 		} else {
@@ -349,14 +444,15 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
     	getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
     	ActionBar actionBar = getActionBar();
 	    if (hide) { actionBar.hide(); }
-	    actionBar.setCustomView(R.layout.actionbar_status);
+	    //actionBar.setCustomView(R.layout.actionbar_status);
 	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 	
+	// returns a reference to this class
 	public static Controller getController() {
 		return sController;
 	}
-	
+	// returns a reference to the context
 	public static Context getContext() {
 		return sContext;
 	}
@@ -373,27 +469,29 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		return sLanguage;
 	}
 	
+	// returns a reference to the location client
 	public static LocationClient getLocationClient() {
 		return lc;
 	}
 	
+	// returns a reference to the connectivity manager
 	public static ConnectivityManager getConnectivityManager() {
 		return cm;
 	}
 	
+	// returns a reference to the wifi manager
 	public static WifiManager getWifiManager() {
 		return wm;
 	}
 	
-	/**
-	 * @return true if the model is already instantiated, false otherwise
-	 */
+	// check if the model is already instantiated
 	public static boolean isModelReady() {
 		Log.i(TAG, "isModelReady()");
 		return sModelReady;
 	}
 	
 	public static void setModelUpdated(boolean updated) {
+		Log.i(TAG, "setModelUpdated(" + updated + ")");
 		sModelUpdated = updated;
 	}
 	
@@ -407,6 +505,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		sLanguage = sSettings.getString("setting_language", null);
 		
 		if (sLanguage != null && !sLanguage.equals("")) {
+			//Log.e(TAG, "setDefaultLocale(): sLanguage already saved in shared prefs = " + sLanguage);
 			// a user language just for the app is set
 			Locale locale = new Locale(sLanguage);
 			Locale.setDefault(locale);
@@ -414,12 +513,14 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			
 			// only take action when the language that is currently used and the user language are not the same
 			if (!appConfig.locale.getLanguage().equals(locale.getLanguage())) { 
+				//Log.i(TAG, "setDefaultLocale(): app locale and saved locale are not the same: " + appConfig.locale.getLanguage() + " != " + locale.getLanguage());
 				appConfig.locale = locale;
 				getBaseContext().getResources().updateConfiguration(appConfig, null);
 				onConfigurationChanged(appConfig);
 			}
 		} else {
 			// if no language is set yet, set it to the default system language
+			//Log.i(TAG, "getDefaultLocale(): setting default lang from system " + Locale.getDefault().getLanguage());
 			sLanguage = Locale.getDefault().getLanguage();
 			Editor editor = sSettings.edit();
 			editor.putString("setting_language", sLanguage);
@@ -477,7 +578,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
     }
 	
 	/**
-	 * This is the event interface to notify Fragments when the model has changed
+	 * This is a the event interface to notify Fragments when the model has changed
 	 * or some central things like location client connections have changed state
 	 */
 	public interface ControllerListener {
@@ -488,18 +589,17 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	// initialize the listener set
 	private Set<ControllerListener> mListeners = new HashSet<ControllerListener>();
 
+	// add a listerner
 	public void addListener(ControllerListener listener) {
 		mListeners.add(listener);
 	}
 	
+	// remove a listener
 	public void removeListener(ControllerListener listener) {
 		mListeners.remove(listener);
 	}
 
-	/**
-	 *  method to notify the listeners if the model has changed
-	 * @param event: either "onModelChanged" or "onLocationClientConnected"
-	 */
+	// notify the listeners when the model has changed
 	private void notifyListeners(String event) {
 		for (ControllerListener listener : mListeners) {
 			if (event.equals("onModelChanged")) {
@@ -509,24 +609,8 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			}
 		}
 	}
-	
-	/**
-	 * 
-	 * @param text: shows this text in the right top corner of the Activity
-	 */
-	public void setStatus(String text){
-		TextView status = (TextView) findViewById(R.id.status);
-		status.setText(text);
-	}
-	
-	/**
-	 * removes the status in the right top corner of the Activity
-	 */
-	public void removeStatus(){
-		TextView status = (TextView) findViewById(R.id.status);
-		status.setText("");
-	}
-	
+
+    // dialog listener callbacks
 	@Override
 	public void onDialogCreated() {
 		Log.i(TAG, "onDialogCreated()");
@@ -561,10 +645,5 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		if (!sDataHandler.hasModel()) {
 			sDataHandler.loadModel();
 		}
-	}
-
-	@Override
-	public void onRendered() {
-		//unused
 	}
 }

@@ -10,10 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-/**
- * Fragment, shows the loading screen appearing when the app gets started and the data is loading
- * 
- */
 public class FragmentSplashScreen extends Fragment {
 	
 	// for logging and debugging purposes

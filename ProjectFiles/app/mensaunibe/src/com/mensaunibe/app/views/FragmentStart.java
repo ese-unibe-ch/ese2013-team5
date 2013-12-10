@@ -18,10 +18,6 @@ import com.mensaunibe.app.model.DataHandler;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 
-/**
- * The "Home"-fragment. Shows one or multiple mensas, depending on the settings and 
- * favorite mensas.
- */
 public class FragmentStart extends Fragment {
 	
 	// for logging and debugging purposes
@@ -43,6 +39,7 @@ public class FragmentStart extends Fragment {
 		
 		if (mMensaList != null) {
 			String homeconfig = (String) Controller.getSettings().getString("setting_homescreen", "closestmensa");
+			//Log.e(TAG, "homeconfig = " + homeconfig + ", closestmensa " + mDataHandler.getClosestMensa() + ", closestfavmensa " + mDataHandler.getClosestFavMensa());
 			
 			if (homeconfig.equals("favmensalist") && mDataHandler.getMensaList().getFavMensas() != null) {
 				List<Mensa> mFavMensas = mMensaList.getFavMensas();

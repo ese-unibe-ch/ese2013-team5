@@ -24,6 +24,7 @@ public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 	public TaskUpdateAPI(Controller controller, String deviceid) {
 		this.mController = controller;
 		this.mListeners = new ArrayList<TaskListener>();
+		
 		this.mUrl = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid;
 	}
 	
@@ -41,12 +42,14 @@ public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 	public TaskUpdateAPI(Controller controller, String deviceid, int mensaid) {
 		this.mController = controller;
 		this.mListeners = new ArrayList<TaskListener>();
+		
 		this.mUrl = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&mensaid=" + mensaid;
 	}
 	
 	public TaskUpdateAPI(Controller controller, String deviceid, int menuid, int rating) {
 		this.mController = controller;
 		this.mListeners = new ArrayList<TaskListener>();
+		
 		this.mUrl = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&menuid=" + menuid + "&rating=" + rating;
 	}
 	
@@ -87,6 +90,7 @@ public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 		Log.i(TAG, "Starting background task to save data to the remote API");
 		ServiceRequestManager mWebService = new ServiceRequestManager(mController);
 		JsonObject jsonObj = mWebService.getJSON(mUrl, 5000);
+		
 		return jsonObj.get("status").getAsString();
     }
 

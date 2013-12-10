@@ -37,7 +37,7 @@ import com.mensaunibe.R;
  */
 public class CustomListViewPullToRefresh extends ListView {
 
-    private static final float PULL_RESISTANCE                 = 2.5f;
+    private static final float PULL_RESISTANCE                 = 1.7f;
     private static final int   BOUNCE_ANIMATION_DURATION       = 700;
     private static final int   BOUNCE_ANIMATION_DELAY          = 100;
     private static final float BOUNCE_OVERSHOOT_TENSION        = 1.4f;
