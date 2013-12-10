@@ -140,17 +140,12 @@ public class Mensa implements Serializable {
 	}
 	
 	public List<Menu> getDailyMenus(String day) {
-//		Log.i(TAG, "getDailyMenus(String), day = " + day);
 		List<Menu> dailymenus = new ArrayList<Menu>();
-//		Log.i(TAG, "getDailyMenus(String), amount of menus = " + menus.size());
 		if (menulistObj != null) {
 			for (Menu menu : menulistObj.getAllMenus()) {
-//				Log.i(TAG, "menu mensaid" + menu.getMensaID());
 				if (menu.getDay().equals(day)) {
 					dailymenus.add(menu);
-				} else {
-//					Log.i(TAG, "menu day (" + menu.getDay() + ") != " + day);
-				}
+				} 
 			}
 			return dailymenus;
 		} else {

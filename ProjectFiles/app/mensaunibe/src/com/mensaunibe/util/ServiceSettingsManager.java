@@ -42,7 +42,7 @@ public class ServiceSettingsManager {
 		} else {
 			Log.e(TAG, "getData(): Type could not be resolved");
 		}
-		//Log.i(TAG, "getData(): setting = " + setting);
+		
 		return setting;
 	}
 	

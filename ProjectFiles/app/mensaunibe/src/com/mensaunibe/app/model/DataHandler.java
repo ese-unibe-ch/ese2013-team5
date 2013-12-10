@@ -73,39 +73,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		
 		return instance;
 	}
-	
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-	    Log.i(TAG, "onActivityCreated(Bundle)");
-	    super.onActivityCreated(savedInstanceState);
-	}
-
-	@Override
-	public void onStart() {
-	    Log.i(TAG, "onStart()");
-	    super.onStart();
-	}
-
-	@Override
-	public void onResume() {
-	    Log.i(TAG, "onResume()");
-	    super.onResume();
-	}
-
-	@Override
-	public void onPause() {
-	    Log.i(TAG, "onPause()");
-	    super.onPause();
-	}
-
-	@Override
-	public void onStop() {
-	    Log.i(TAG, "onStop()");
-	    super.onStop();
-	}
-	
-    // implementations of the TaskListener methods
 	@Override
 	public void onTaskComplete(Object result) {
 		Log.i(TAG, "onTaskComplete(" + result + ")");
@@ -195,9 +163,10 @@ public class DataHandler extends Fragment implements TaskListener {
     	return mMensaList;
     }
     
-    /**
-     * Gets the JSON from REST API and builds the data model from it
-     */
+/**
+ * starts a task to load the current location
+ * @param silent
+ */
     public void loadLocation(boolean silent) {
     	Log.i(TAG, "loadLocation()");
     	TaskLocation mTask = new TaskLocation(mController);
@@ -269,7 +238,8 @@ public class DataHandler extends Fragment implements TaskListener {
 	}
     
 	/**
-	 * Returns a Pseudo Unique ID to identify the user, will be sent to the server and doesn't contain anything private
+	 * Returns a Pseudo Unique ID to identify the user, will be sent to 
+	 * the server and doesn't contain anything private
 	 * @return deviceId 
 	 */
 	public static String getDeviceId() {
@@ -279,8 +249,8 @@ public class DataHandler extends Fragment implements TaskListener {
 		if (deviceid == null) {
 			Log.i(TAG, "getDeviceId(): Creating and saving new device ID");
 		    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
-		    // returns 'null', then simply the ID returned will be soley based
-		    // off their Android device information.
+		    // returns 'null', then simply the ID returned will be solely based
+		    // on their Android device information.
 		    String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
 	
 		    // Only devices with API >= 9 have android.os.Build.SERIAL
@@ -288,7 +258,7 @@ public class DataHandler extends Fragment implements TaskListener {
 		    String serial = null; 
 		    try {
 		        serial = android.os.Build.class.getField("SERIAL").toString();
-		        // go ahead and return the serial for api => 9
+		        // go ahead and return the serial for api >= 9
 		        return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
 		    } catch (Exception e) { 
 		        // String needs to be initialized

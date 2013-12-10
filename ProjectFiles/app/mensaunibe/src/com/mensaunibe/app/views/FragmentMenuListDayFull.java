@@ -22,6 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * fragment which shows a list of all menus of all mensas for a given day
+ */
 public class FragmentMenuListDayFull extends Fragment {
 	
 	// for logging and debugging purposes
@@ -94,8 +97,8 @@ public class FragmentMenuListDayFull extends Fragment {
 
 		// override the default strings
 		// TODO: move strings to xml
-		listview.setTextPullToRefresh("Ziehen fŸr Update");
-		listview.setTextReleaseToRefresh("Loslassen fŸr Update");
+		listview.setTextPullToRefresh("Ziehen für Update");
+		listview.setTextReleaseToRefresh("Loslassen für Update");
 		listview.setTextRefreshing("Lade Daten...");
 
 		// set the onRefreshListener for the pull down listview
@@ -103,13 +106,6 @@ public class FragmentMenuListDayFull extends Fragment {
 
 			@Override
 			public void onRefresh() {
-				// code to refresh the list contents goes here
-
-				// async webrequest
-				//adapter.loadData();
-				
-				// call listView.onRefreshComplete() when the loading is done.
-
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {
