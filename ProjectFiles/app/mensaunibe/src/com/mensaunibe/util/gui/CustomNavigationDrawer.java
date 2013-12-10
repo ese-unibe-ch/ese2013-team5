@@ -1,8 +1,6 @@
 package com.mensaunibe.util.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
@@ -18,18 +16,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class CustomNavigationDrawer extends DrawerLayout {
-	
-	// for logging and debugging purposes
-	@SuppressWarnings("unused")
-	private static final String TAG = CustomNavigationDrawer.class.getSimpleName();
-	
+		
 	private ActionBarDrawerToggle mDrawerToggle;
 	private ListView mDrawerListView;
 	private ArrayAdapter<String> mDrawerAdapter;
@@ -48,7 +41,6 @@ public class CustomNavigationDrawer extends DrawerLayout {
 		super(context);
 	}
     
-	// setupDrawerConfiguration((ListView) findViewById(R.id.lvDrawer), R.layout.drawer_list_item, R.id.flContent);
 	@SuppressLint("NewApi")
 	public void setupDrawer(ListView drawerListView, int drawerItemRes, int drawerContainerRes) {
 		// Setup navigation items array
@@ -56,13 +48,11 @@ public class CustomNavigationDrawer extends DrawerLayout {
 		// Set the adapter for the list view
 		mDrawerAdapter = new ArrayAdapter<String>(getActivity(), drawerItemRes, new ArrayList<String>());
 		mDrawerContainerRes = drawerContainerRes; 
-		// Setup drawer list view and related adapter
 		mDrawerListView = drawerListView;
 
 		drawerListView.setAdapter(mDrawerAdapter);
-		// Setup item listener
 		drawerListView.setOnItemClickListener(new FragmentDrawerItemListener());
-		// ActionBarDrawerToggle ties together the the proper interactions
+		// ActionBarDrawerToggle ties together the proper interactions
 		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = setupDrawerToggle();
 		setDrawerListener(mDrawerToggle);
@@ -71,15 +61,9 @@ public class CustomNavigationDrawer extends DrawerLayout {
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		// the method setHomeButtonEnabled is only available since API 14
-		// the linter throws an error we have to supress, but we'll try to handle
-		// possible errors anyway with the following if check
-//		if ( Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= 14 ) {
-//			getActionBar().setHomeButtonEnabled(true);
-//		}
+
 	}
 
-	// addNavItem("First", "First Fragment", FirstFragment.class)
 	public void addNavItem(String navTitle, Class<? extends Fragment> fragmentClass) {
 		mDrawerAdapter.add(navTitle);
 		mDrawerNavItems.add(new FragmentNavItem(navTitle, fragmentClass));

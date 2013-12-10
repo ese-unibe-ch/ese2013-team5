@@ -41,7 +41,8 @@ import com.mensaunibe.lib.routing.RoutingListener;
 import com.mensaunibe.util.tasks.TaskProgress;
 
 /**
- * Fragment that appears in the "content_frame", shows mensamap
+ * Fragment that appears in the "content_frame", shows google maps fragment with
+ * a mark on each mensa
  */
 public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, OnMarkerClickListener, OnInfoWindowClickListener, LocationListener, RoutingListener, ControllerListener {
 	

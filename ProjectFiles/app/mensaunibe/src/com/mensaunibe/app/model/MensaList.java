@@ -64,7 +64,7 @@ public class MensaList implements Serializable {
 	}
 	
 	/**
-	 * Cut's of overly "precise" location values to 5 digits to make them comparable again
+	 * Cuts off overly "precise" location values to 5 digits to make them comparable again
 	 * @param d double to cut
 	 * @return the rounded value
 	 */
@@ -89,15 +89,5 @@ public class MensaList implements Serializable {
 		    }
 		});
 	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof MensaList) {
-			MensaList other = (MensaList) o;
-			return this.getMensas().equals(other.getMensas());
-		} else {
-			return false;
-		}
-	}
-
+ 
 }

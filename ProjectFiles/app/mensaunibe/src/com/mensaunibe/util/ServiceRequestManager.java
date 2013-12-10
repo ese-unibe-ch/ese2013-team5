@@ -49,9 +49,6 @@ public class ServiceRequestManager {
 	
 	public JsonObject getJSON(String url, int timeout) {
 		Log.i(TAG, "getJSON(" + url + ", " + timeout + ")");
-		
-		// TODO: possible test: remove all shared prefs (or just the key "model") and kill the database
-		// to see if everything works on a new installation
 		Log.e(TAG, "getJSON(): mConnectionReady = " + mConnectionReady);
 		if (mConnectionReady || hasConnection(2000)) {	  
 			
@@ -147,11 +144,15 @@ public class ServiceRequestManager {
     public boolean hasConnection(int timeout) {
     	Log.i(TAG, "hasConnection(" + timeout +")");
     	ConnectivityManager cm = Controller.getConnectivityManager();
-    	
     	NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    	while(activeNetwork == null) {
-    		Log.e(TAG, "hasConnection(): No active network is available, loop till its available!");
+    	
+    	int count = 2000;
+    	while(activeNetwork == null && count > 0) {
     		activeNetwork = cm.getActiveNetworkInfo();
+    		count--;
+    	}
+    	if(activeNetwork == null){
+    		Log.e(TAG, "no active network available");
     	}
     	
     	NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -274,7 +275,6 @@ public class ServiceRequestManager {
      * @return an instance of SimpleDialogBuilder
      */
     private static void getDialog() {
-    	// TODO: Put the strings into the xml file and translate them!
     	Log.i(TAG, "getDialog()");
 		// ask to turn of wifi and fall trough to mobile network check
     	SimpleDialogBuilder dialog = SimpleDialogFragment.createBuilder(mController, mController.getSupportFragmentManager());
