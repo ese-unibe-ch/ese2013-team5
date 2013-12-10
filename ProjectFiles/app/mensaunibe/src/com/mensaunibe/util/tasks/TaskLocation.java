@@ -77,7 +77,10 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
     	if (mLocationClient != null && mLocationClient.isConnected()) {
     		mLocation = mLocationClient.getLastLocation();
     	} else {
-    		Log.e(TAG, "getLocation(): mLocationClient was null or not connected!");
+    		Log.e(TAG, "getLocation(): mLocationClient was null or not connected! Setting default Location");
+    		mLocation = new Location("default");
+    		mLocation.setLatitude(46.9510);
+    		mLocation.setLongitude(7.43820);
     	}
     }
     
@@ -162,8 +165,12 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			getClosestMensa();
 			return mLocation;
 		} else {
-			Log.e(TAG, "mLocation was null!");
-			return null;
+    		Log.e(TAG, "getLocation(): mLocation was null! Setting default Location");
+    		mLocation = new Location("default");
+    		mLocation.setLatitude(46.9510);
+    		mLocation.setLongitude(7.43820);
+    		getClosestMensa();
+			return mLocation;
 		}
     }
 

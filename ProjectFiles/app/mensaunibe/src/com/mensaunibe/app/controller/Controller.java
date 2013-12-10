@@ -124,13 +124,12 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 
 		setContentView(R.layout.controller);
 		
-		// setting up the navigation drawer is done later onTaskComplete() as the model is not ready yet here!
+		// setting up the navigation drawer
     	if (sDrawer == null) {
     		attachNavigationDrawer(si);
     	} else if (sModelReady && sLocationReady) {
     		attachNavigationDrawer(si);
     		if (sDataHandler.getDrawerPosition() < sDrawer.getDrawerListCount()) {
-    			Log.e(TAG, "drawer child count = " + sDrawer.getDrawerListCount());
     			sDrawer.selectItem(sDataHandler.getDrawerPosition());
     		}
     	}
@@ -230,10 +229,10 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		    	getLoadStatus();
 			}
     	} else {
-    		if (!sWait && !sModelReady) {
+    		if (!sWait && !sDataHandler.hasModel()) {
     			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
     			sDataHandler.loadModel();
-    		} else if (!sWait && !sLocationReady) {
+    		} else if (!sWait && !sDataHandler.hasLocation()) {
     			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
     			sDataHandler.loadLocation(false);
     		} else {
