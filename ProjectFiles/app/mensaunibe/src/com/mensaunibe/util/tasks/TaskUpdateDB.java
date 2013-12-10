@@ -65,6 +65,7 @@ public class TaskUpdateDB extends AsyncTask<Void, Integer, String> {
 		Log.i(TAG, "Starting background task to save the model to the database");
 		
 		if (mDataHandler.hasModel()) {
+			// save the model to the database
     		mDBManager.save(mDataHandler.getMensaList());
     		
     		//show fake progress

@@ -22,10 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 /**
- * Fragment that appears in the "content_frame", shows a list of all mensas, sorted
- * by the distance from the devices current position. Each item shows only a few details, has
- * a button to open the map and show the way to the mensa, has a checkbox to choose as favorite
- * and is clickable to get to the mensadetails.
+ * Fragment that appears in the "content_frame", shows mensalist
  */
 public class FragmentMensaList extends Fragment {
 	
@@ -86,6 +83,13 @@ public class FragmentMensaList extends Fragment {
 
 			@Override
 			public void onRefresh() {
+				// code to refresh the list contents goes here
+
+				// async webrequest
+				//adapter.loadData();
+				
+				// call listView.onRefreshComplete() when the loading is done.
+
 				// For demo purposes, the code will pause here to
 				// force a delay when invoking the refresh
 				listview.postDelayed(new Runnable() {

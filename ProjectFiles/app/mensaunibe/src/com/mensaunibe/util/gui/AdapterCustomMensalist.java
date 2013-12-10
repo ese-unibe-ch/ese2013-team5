@@ -68,13 +68,16 @@ public class AdapterCustomMensalist extends BaseAdapter {
         city.setText(mensa.getCity());
 
         // set the click listener for the list item
-        // opens mensa details
+        // should open mensa details
         final OnClickListener rowListener = new OnClickListener() {
             @Override
             public void onClick(View rowView) {
+            	// show the mensadetails for the clicked mensa
             	mFragment.selectItem(position);
             	// save the current selected item to the DataHandler for eventual config changes
         		Controller.getDataHandler().setDrawerPosition(Controller.getNavigationDrawer().getDrawerListCount() + 1);
+            	// delete after developement, just to show that it works
+            	//Toast.makeText(rowView.getContext(), "Mensa clicked, show details", Toast.LENGTH_SHORT).show();
             }
         };
         grid.setOnClickListener(rowListener);
@@ -87,6 +90,7 @@ public class AdapterCustomMensalist extends BaseAdapter {
             	Controller.getDataHandler().setLocationTarget(mensa.getLocation());
             	Controller.getNavigationDrawer().selectItem(2);
             	// TODO: add status update
+            	//Toast.makeText(mapbutton.getContext(), "Navigating to Mensa", Toast.LENGTH_SHORT).show();
             }
         };
         mapbutton.setOnClickListener(mapListener);

@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-
 public class FragmentMenuListPager extends Fragment {
 	
 	// for logging and debugging purposes

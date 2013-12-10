@@ -24,7 +24,7 @@ public class TaskProgress implements TaskListener {
         new Thread(
             new Runnable() {
                 public void run() {
-                    while (!mCheck) {
+                    while (mCheck == false) {
 
                         // show fake progress
                         for (int i = 0; i <= 100; i++) {

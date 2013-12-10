@@ -64,7 +64,7 @@ public class MensaList implements Serializable {
 	}
 	
 	/**
-	 * Cuts off overly "precise" location values to 5 digits to make them comparable again
+	 * Cut's of overly "precise" location values to 5 digits to make them comparable again
 	 * @param d double to cut
 	 * @return the rounded value
 	 */

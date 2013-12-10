@@ -29,6 +29,7 @@ public class CustomDialogFragment extends DialogFragment {
         of whether it's being displayed as a dialog or an embedded fragment. */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout to use as dialog or embedded fragment
         return inflater.inflate(mResource, container, false);
     }
 

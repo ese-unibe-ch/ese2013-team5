@@ -24,6 +24,7 @@ public class MenuList implements Serializable {
     }
  
     public List<Menu> getAllMenus() {
+//    	Log.i(TAG, "getAllMenus(), mMenus = " + mMenus);
     	if (mMenus == null) {
     		Log.e(TAG, "mMenus is null");
     		return new ArrayList<Menu>();
@@ -45,12 +46,10 @@ public class MenuList implements Serializable {
 		return menus;
 	}
 	
-	/**
-	 * sorts the list that menu with the best ratings are displayed first
-	 */
 	public void sortList() {
 		Collections.sort(mMenus, new Comparator<Menu>(){
 		    public int compare(Menu m1, Menu m2) {
+		    	// sorts the list that menu with the best ratings are displayed first
 		    	int result = m2.getRating().compareTo(m1.getRating());
 		        return result;
 		    }
