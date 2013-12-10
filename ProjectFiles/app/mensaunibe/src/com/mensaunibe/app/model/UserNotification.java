@@ -2,15 +2,13 @@ package com.mensaunibe.app.model;
 
 import java.io.Serializable;
 import com.google.gson.annotations.SerializedName;
- 
+
 /**
- * 
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
- *
+ * The User functionality is not completed and thus it is not active
+ * in this version of the app 
  */
 public class UserNotification implements Serializable {
- 
+
 	// for logging and debugging purposes
 	@SuppressWarnings("unused")
 	private static final String TAG = UserNotification.class.getSimpleName();
@@ -26,7 +24,7 @@ public class UserNotification implements Serializable {
 	private final String message;
 	@SerializedName("read")
 	private final int read;
- 
+
 	public UserNotification(int id, String from, String date, String message, int read) {
 		this.id = id;
 		this.from = from;

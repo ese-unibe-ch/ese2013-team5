@@ -42,40 +42,40 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		this.mListeners = new ArrayList<TaskListener>();
 	}
 	
-    public void addListener(TaskListener listener) {
-    	Log.i(TAG, "addListener(" + listener + ")");
-    	if (listener != null) {
-    		mListeners.add(listener);
-    	} else {
-    		Log.e(TAG, "Listener was null!");
-    	}
+	public void addListener(TaskListener listener) {
+		Log.i(TAG, "addListener(" + listener + ")");
+		if (listener != null) {
+			mListeners.add(listener);
+		} else {
+			Log.e(TAG, "Listener was null!");
+		}
 	}
-    
-    public void removeListener(TaskListener listener) {
-    	Log.i(TAG, "removeListener(" + listener + ")");
-    	mListeners.remove(listener);
-    }
-    
-    public void removeListeners() {
-    	Log.i(TAG, "removeListeners()");
-    	mListeners.removeAll(mListeners);
-    }
-    
-    protected void notifyOnTaskComplete(Object result) {
-    	Log.i(TAG, "notifyOnTaskComplete(" + result + ")");
-        for (TaskListener mListener : mListeners) {
-            mListener.onTaskComplete(result);
-        }
-    }
+	
+	public void removeListener(TaskListener listener) {
+		Log.i(TAG, "removeListener(" + listener + ")");
+		mListeners.remove(listener);
+	}
+	
+	public void removeListeners() {
+		Log.i(TAG, "removeListeners()");
+		mListeners.removeAll(mListeners);
+	}
+	
+	protected void notifyOnTaskComplete(Object result) {
+		Log.i(TAG, "notifyOnTaskComplete(" + result + ")");
+		for (TaskListener mListener : mListeners) {
+			mListener.onTaskComplete(result);
+		}
+	}
 
-    protected void notifyOnProgressUpdate(int percent) {
-        for (TaskListener mListener : mListeners) {
-            mListener.onProgressUpdate(percent);
-        }
-    }
+	protected void notifyOnProgressUpdate(int percent) {
+		for (TaskListener mListener : mListeners) {
+			mListener.onProgressUpdate(percent);
+		}
+	}
 	
 	@Override
-    protected MensaList doInBackground(Void... params) {
+	protected MensaList doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to create the model");
 		MensaList model = null;
 		JsonObject jsonObj = null;
@@ -90,17 +90,17 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		
 		if (jsonObj != null) {
 			Log.i(TAG, "JSONObject from webservice successfuly loaded");
-    		model = gson.fromJson(jsonObj, MensaList.class);
-    		setFavorites(model);
-    		
-	    	//persist the json in shared prefs
-	    	mSettingsManager.setData("string", "model", jsonObj.toString());
-	    	
-	    	// get the lastupate timestamp and persist it too
-	    	mSettingsManager.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
-	    	
-	    	// inform the controller that a new model with updated data was fetched (to re-save the db)
-	    	Controller.setModelUpdated(true);
+			model = gson.fromJson(jsonObj, MensaList.class);
+			setFavorites(model);
+			
+			//persist the json in shared prefs
+			mSettingsManager.setData("string", "model", jsonObj.toString());
+			
+			// get the lastupate timestamp and persist it too
+			mSettingsManager.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
+			
+			// inform the controller that a new model with updated data was fetched (to re-save the db)
+			Controller.setModelUpdated(true);
 		} else {
 			Log.e(TAG, "JSONObject is null until now, either because of no connection or because no update is necessary, trying to load from shared prefs");
 			// try to get the model from the persisted shared prefs json
@@ -108,7 +108,7 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 			if (jsonStr != null) {
 				jsonObj = new JsonParser().parse(jsonStr).getAsJsonObject();
 				model = gson.fromJson(jsonObj, MensaList.class);
-	    		setFavorites(model);
+				setFavorites(model);
 			}
 		}
 		
@@ -118,45 +118,45 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 			// (than shared prefs, which sit in the device RAM) database
 			model = mDBManager.load();
 			
-    		//show fake progress
-    		for (int i = 0; i <= 100; i++) {
-            	try {
-                	Thread.sleep(10);
-                	publishProgress(i);
-            	} catch (InterruptedException e) {
-                	return null;
-            	}
-        	}
+			//show fake progress
+			for (int i = 0; i <= 100; i++) {
+				try {
+					Thread.sleep(10);
+					publishProgress(i);
+				} catch (InterruptedException e) {
+					return null;
+				}
+			}
 		}
 		
 		//show fake progress
 		for (int i = 0; i <= 100; i++) {
-        	try {
-            	Thread.sleep(10);
-            	publishProgress(i);
-        	} catch (InterruptedException e) {
-            	return null;
-        	}
-    	}
+			try {
+				Thread.sleep(10);
+				publishProgress(i);
+			} catch (InterruptedException e) {
+				return null;
+			}
+		}
 		
-    	return model;
-    }
+		return model;
+	}
 
-    private void setFavorites(MensaList model) {
-    	List<Mensa> mensalist = model.getMensas();
-    	for (Mensa mensa : mensalist) {
-    		mensa.setFavorite(mDBManager.isFavorite(mensa));
-    	}
+	private void setFavorites(MensaList model) {
+		List<Mensa> mensalist = model.getMensas();
+		for (Mensa mensa : mensalist) {
+			mensa.setFavorite(mDBManager.isFavorite(mensa));
+		}
 	}
 
 	@Override
-    protected void onPostExecute(MensaList model) {
-        notifyOnTaskComplete(model);
-        removeListeners();
-    }
+	protected void onPostExecute(MensaList model) {
+		notifyOnTaskComplete(model);
+		removeListeners();
+	}
 
-    @Override
-    protected void onProgressUpdate(Integer... percent) {
-        notifyOnProgressUpdate(percent[0]);
-    }
+	@Override
+	protected void onProgressUpdate(Integer... percent) {
+		notifyOnProgressUpdate(percent[0]);
+	}
 }

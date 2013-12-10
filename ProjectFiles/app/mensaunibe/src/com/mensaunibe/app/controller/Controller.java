@@ -78,8 +78,8 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			attachActionBar(true);
 		} else {
 			attachActionBar(false);
-	    	// set the background back to default
-	    	getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
+			// set the background back to default
+			getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
 		}
 		
 		// set a global reference to the shared prefs, needs to be the first thing to do because of the language
@@ -87,8 +87,8 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		
 		// set up the user specified language
 		setDefaultLocale();
-	    
-	    // set the waiting variable to false initially
+
+		// set the waiting variable to false initially
 		sWait = false;
 		
 		// put the savedInstanceState in a variable for other methods to use
@@ -106,33 +106,33 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		// set a global reference to the fragment manager as we use it a lot
 		fm = getSupportFragmentManager();
 		
-    	// initialize the ConnectivityManager
-    	cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-    	
-    	// initialize the WifiManager
-    	wm = (WifiManager) getSystemService(WIFI_SERVICE);
-    	
+		// initialize the ConnectivityManager
+		cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+		// initialize the WifiManager
+		wm = (WifiManager) getSystemService(WIFI_SERVICE);
+
 		// initialize the LocationClient		
-    	lc = new LocationClient(this, this, this);
+		lc = new LocationClient(this, this, this);
 		
-    	if (!sModelReady && !sLocationReady) {
-    		// until the data loader fragment has done it's job, show the splash screen with a progress bar
-    		attachSplashScreen();
-    		// initialize retaining data loader fragment for data persistence
-    		attachDataHandler();
-    	}
+		if (!sModelReady && !sLocationReady) {
+			// until the data loader fragment has done it's job, show the splash screen with a progress bar
+			attachSplashScreen();
+			// initialize retaining data loader fragment for data persistence
+			attachDataHandler();
+		}
 
 		setContentView(R.layout.controller);
 		
 		// setting up the navigation drawer
-    	if (sDrawer == null) {
-    		attachNavigationDrawer(si);
-    	} else if (sModelReady && sLocationReady) {
-    		attachNavigationDrawer(si);
-    		if (sDataHandler.getDrawerPosition() < sDrawer.getDrawerListCount()) {
-    			sDrawer.selectItem(sDataHandler.getDrawerPosition());
-    		}
-    	}
+		if (sDrawer == null) {
+			attachNavigationDrawer(si);
+		} else if (sModelReady && sLocationReady) {
+			attachNavigationDrawer(si);
+			if (sDataHandler.getDrawerPosition() < sDrawer.getDrawerListCount()) {
+				sDrawer.selectItem(sDataHandler.getDrawerPosition());
+			}
+		}
 	}
 
 	@Override
@@ -147,12 +147,12 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	}
 	
 	@Override
-    protected void onStart() {
-        super.onStart();
-        if (sDataHandler != null) {
-            getLoadStatus();
-        }
-    }
+	protected void onStart() {
+		super.onStart();
+		if (sDataHandler != null) {
+			getLoadStatus();
+		}
+	}
 	
 	@Override
 	protected void onResume() {
@@ -170,11 +170,11 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		}
 	}
 
-    @Override
-    public void onBackPressed() {
-    	cleanUpFragments();
-    	super.onBackPressed();
-    }
+	@Override
+	public void onBackPressed() {
+		cleanUpFragments();
+		super.onBackPressed();
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -203,74 +203,74 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	public void onDisconnected() {
 		Log.i(TAG, "onDisconnected()");
 	}
-    
-    @Override
-    public void onTaskComplete(Object result) {
-    	Log.i(TAG, "onTaskComplete(" + result + ")");
 
-    	if (result != null) {
+	@Override
+	public void onTaskComplete(Object result) {
+		Log.i(TAG, "onTaskComplete(" + result + ")");
+
+		if (result != null) {
 			if (result instanceof MensaList) {
-		    	// load the current location + closest mensa as fast as possible as soon as the model is available
+				// load the current location + closest mensa as fast as possible as soon as the model is available
 				sDataHandler.loadLocation(false);
-		    	getLoadStatus();
+				getLoadStatus();
 				// write the model to the db, but only if it was changed
-		    	if (sModelUpdated) {
-		    		sDataHandler.DBUpdate();
-		    	} else {
-		    		Log.i(TAG, "OnTaskComplete(): No DB update necessary");
-		    	}
+				if (sModelUpdated) {
+					sDataHandler.DBUpdate();
+				} else {
+					Log.i(TAG, "OnTaskComplete(): No DB update necessary");
+				}
 			} else if (result instanceof Location) {
 				// set up and attach the navigation drawer
 				if (sDrawer != null && si == null) {
 					sDrawer.selectItem(0);
 				} 
 				
-		    	// call load status again to remove the splashscreen if all data is fine (model + location)
-		    	getLoadStatus();
+				// call load status again to remove the splashscreen if all data is fine (model + location)
+				getLoadStatus();
 			}
-    	} else {
-    		if (!sWait && !sDataHandler.hasModel()) {
-    			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
-    			sDataHandler.loadModel();
-    		} else if (!sWait && !sDataHandler.hasLocation()) {
-    			Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
-    			sDataHandler.loadLocation(false);
-    		} else {
-    			Log.i(TAG, "Waiting for user input on dialog");
-    		}
-    	}
-    }
+		} else {
+			if (!sWait && !sDataHandler.hasModel()) {
+				Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
+				sDataHandler.loadModel();
+			} else if (!sWait && !sDataHandler.hasLocation()) {
+				Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
+				sDataHandler.loadLocation(false);
+			} else {
+				Log.i(TAG, "Waiting for user input on dialog");
+			}
+		}
+	}
 
-    @Override
-    public void onProgressUpdate(int percent) {
-    	Fragment mFragment = fm.findFragmentById(R.id.frame_content);
+	@Override
+	public void onProgressUpdate(int percent) {
+		Fragment mFragment = fm.findFragmentById(R.id.frame_content);
 		if (sSplashScreen != null) {
-    		sSplashScreen.setProgress(percent);
-    	} else if (mFragment != null && mFragment instanceof FragmentStart) {
-    		((FragmentStart) mFragment).getProgressBar().setProgress(percent);
-    	}
-    }
-    
+			sSplashScreen.setProgress(percent);
+		} else if (mFragment != null && mFragment instanceof FragmentStart) {
+			((FragmentStart) mFragment).getProgressBar().setProgress(percent);
+		}
+	}
 
 
-    /**
-     *  creates the Datahandler if not yet created
-     */
-    private static void attachDataHandler() {
-    	Log.i(TAG, "attachDataHandler()");
+
+	/**
+	 *  creates the Datahandler if not yet created
+	 */
+	private static void attachDataHandler() {
+		Log.i(TAG, "attachDataHandler()");
 		sDataHandler = (DataHandler) fm.findFragmentByTag("data");
-		
+
 		if (sDataHandler == null) {
 			sDataHandler = DataHandler.newInstance(sController);
-            sDataHandler.loadModel();
+			sDataHandler.loadModel();
 			fm.beginTransaction().add(sDataHandler, "data").commit();
 		} else {
-            if (getLoadStatus()) {
-                return;
-            }
-        }
-    }
-    
+			if (getLoadStatus()) {
+				return;
+			}
+		}
+	}
+	
 	/**
 	 *  returns an instance of the DataHandler fragment
 	 * @return DataHandler
@@ -283,42 +283,42 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 			return sDataHandler;
 		}
 	}
-    
-    /**
-     *  create loading fragment / splash screen if not yet created
-     */
-    private void attachSplashScreen() {
-    	Log.i(TAG, "attachSplashScreenFragment()");
-        sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
 
-        if (sSplashScreen == null) {
-            sSplashScreen = new FragmentSplashScreen();
-            fm.beginTransaction().add(android.R.id.content, sSplashScreen, "splashscreen").commit();
-        }
-        
-        // show the initially hidden action bar
-    	getActionBar().show();
-    	// set the background back to default
-    	getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
-    }
-    
-    /**
-     * removes the loading fragment/splash screen
-     */
-    private static void detachSplashScreen() {
-    	Log.i(TAG, "detachSplashScreenFragment()");
-    	sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
-        if (sSplashScreen != null) {
-            fm.beginTransaction().remove(sSplashScreen).commit();
-        }
-    }
-    
-    /**
-     * create the Navigation Drawer if not yet created
-     * @param savedInstanceState
-     */
-    private void attachNavigationDrawer(Bundle savedInstanceState) {
-    	Log.i(TAG, "attachNavigationDrawer()");
+	/**
+	 *  create loading fragment / splash screen if not yet created
+	 */
+	private void attachSplashScreen() {
+		Log.i(TAG, "attachSplashScreenFragment()");
+		sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
+
+		if (sSplashScreen == null) {
+			sSplashScreen = new FragmentSplashScreen();
+			fm.beginTransaction().add(android.R.id.content, sSplashScreen, "splashscreen").commit();
+		}
+
+		// show the initially hidden action bar
+		getActionBar().show();
+		// set the background back to default
+		getWindow().setBackgroundDrawableResource(R.drawable.unibe_window_bg);
+	}
+	
+	/**
+	 * removes the loading fragment/splash screen
+	 */
+	private static void detachSplashScreen() {
+		Log.i(TAG, "detachSplashScreenFragment()");
+		sSplashScreen = (FragmentSplashScreen) fm.findFragmentByTag("splashscreen");
+		if (sSplashScreen != null) {
+			fm.beginTransaction().remove(sSplashScreen).commit();
+		}
+	}
+	
+	/**
+	 * create the Navigation Drawer if not yet created
+	 * @param savedInstanceState
+	 */
+	private void attachNavigationDrawer(Bundle savedInstanceState) {
+		Log.i(TAG, "attachNavigationDrawer()");
 		sDrawer = (CustomNavigationDrawer) findViewById(R.id.drawer_layout);
 		if (sDrawer != null) {
 			sDrawer.setupDrawer((ListView) findViewById(R.id.sidenav), R.layout.sidenav_item, R.id.frame_content);
@@ -331,6 +331,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 //			sDrawer.addNavItem(getString(R.string.title_friends), FragmentFriends.class);
 //			sDrawer.addNavItem(getString(R.string.title_notifications), FragmentNotifications.class);
 			sDrawer.addNavItem(getString(R.string.title_settings), FragmentSettings.class);
+			
 			// Select default
 			if (savedInstanceState == null) {
 				sDrawer.selectItem(0);	
@@ -338,52 +339,52 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		} else {
 			Log.e(TAG, "attachNavigationDrawer(): sDrawer was null!");
 		}
-    }
-    
-    public static CustomNavigationDrawer getNavigationDrawer() {
-    	return sDrawer;
-    }
-    
-    public void attachActionBar(boolean hide) {
-    	getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-    	ActionBar actionBar = getActionBar();
-	    if (hide) { actionBar.hide(); }
-	    actionBar.setCustomView(R.layout.actionbar_status);
-	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-    }
+	}
 	
+	public static CustomNavigationDrawer getNavigationDrawer() {
+		return sDrawer;
+	}
+	
+	public void attachActionBar(boolean hide) {
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		ActionBar actionBar = getActionBar();
+		if (hide) { actionBar.hide(); }
+		//actionBar.setCustomView(R.layout.actionbar_status); // custom status textview, unfortunately not ready
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+	}
+
 	public static Controller getController() {
 		return sController;
 	}
-	
+
 	public static Context getContext() {
 		return sContext;
 	}
-	
+
 	public static String getApplicationName() {
-	    return sAppName;
+		return sAppName;
 	}
-	
+
 	public static SharedPreferences getSettings() {
 		return sSettings;
 	}
-	
+
 	public static String getLanguage() {
 		return sLanguage;
 	}
-	
+
 	public static LocationClient getLocationClient() {
 		return lc;
 	}
-	
+
 	public static ConnectivityManager getConnectivityManager() {
 		return cm;
 	}
-	
+
 	public static WifiManager getWifiManager() {
 		return wm;
 	}
-	
+
 	/**
 	 * @return true if the model is already instantiated, false otherwise
 	 */
@@ -426,55 +427,55 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		}
 	}
 	
-    /**
-     * Checks if data is done loading, if it is, the result is handled
-     *
-     * @return true if data is done loading
-     */
-    private static boolean getLoadStatus() {
-    	Log.i(TAG, "getLoadStatus()");
-    	
-    	sModelReady = false;
-    	sLocationReady = false;
-    	
-        if (sDataHandler.hasModel() && sDataHandler.hasLocation()) {
-        	Log.i(TAG, "sDataHandler has the model ready and obtained a location");
-        	
-        	sModelReady = true;
-        	sLocationReady = true;
-        	
-        	if (sSplashScreen != null) {
-        		detachSplashScreen();
-        	}
-        	
-            return true;
-        }
-        
-        return false;
-    }
-    
-	// TODO: Find a more natural way to handle nested fragments and the back stack
-    // Related to overlapping fragments bug
-    // this is a very hacky method to remove all "non"-desirable fragments
-    // necessary because the support library has bugs with nested fragments
-    public void cleanUpFragments() {
-    	Log.i(TAG, "cleanUpFragments()");
-    	
-        List<Fragment> allFragments = fm.getFragments();
+	/**
+	 * Checks if data is done loading, if it is, the result is handled
+	 *
+	 * @return true if data is done loading
+	 */
+	private static boolean getLoadStatus() {
+		Log.i(TAG, "getLoadStatus()");
+		
+		sModelReady = false;
+		sLocationReady = false;
+		
+		if (sDataHandler.hasModel() && sDataHandler.hasLocation()) {
+			Log.i(TAG, "sDataHandler has the model ready and obtained a location");
 
-        if (allFragments != null && !allFragments.isEmpty()) {
-	        for (Fragment fragment : allFragments) {
-	        	Log.e(TAG, "fragment = " + fragment);
-	        	if (fragment != null) {
-		            if (fragment.isVisible()) {
-		            	fm.beginTransaction().remove(fragment).commit();
-		            	Log.e(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
-		            }
-	        	}
-	        }
-        }
-    }
+			sModelReady = true;
+			sLocationReady = true;
+
+			if (sSplashScreen != null) {
+				detachSplashScreen();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
 	
+	// TODO: Find a more natural way to handle nested fragments and the back stack
+	// Related to overlapping fragments bug
+	// this is a very hacky method to remove all "non"-desirable fragments
+	// necessary because the support library has bugs with nested fragments
+	public void cleanUpFragments() {
+		Log.i(TAG, "cleanUpFragments()");
+		
+		List<Fragment> allFragments = fm.getFragments();
+
+		if (allFragments != null && !allFragments.isEmpty()) {
+			for (Fragment fragment : allFragments) {
+				Log.e(TAG, "fragment = " + fragment);
+				if (fragment != null) {
+					if (fragment.isVisible()) {
+						fm.beginTransaction().remove(fragment).commit();
+						Log.e(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * This is the event interface to notify Fragments when the model has changed
 	 * or some central things like location client connections have changed state
@@ -510,7 +511,6 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	}
 	
 	/**
-	 * 
 	 * @param text: shows this text in the right top corner of the Activity
 	 */
 	public void setStatus(String text){

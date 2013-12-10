@@ -23,52 +23,52 @@ public class FragmentSettings extends PreferenceFragment implements OnSharedPref
 	private Controller mController;
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        
-    	super.onCreate(savedInstanceState);
-    	
-    	mController = Controller.getController();
-    	
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.layout.fragment_settings);
-       
-        // Dynamically set the value of the language setting
-        CustomListPreference language = (CustomListPreference) getPreferenceScreen().findPreference("setting_language");
-        language.setValue(Controller.getLanguage());
-        
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
+	public void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		
+		mController = Controller.getController();
+		
+		// Load the preferences from an XML resource
+		addPreferencesFromResource(R.layout.fragment_settings);
+	   
+		// Dynamically set the value of the language setting
+		CustomListPreference language = (CustomListPreference) getPreferenceScreen().findPreference("setting_language");
+		language.setValue(Controller.getLanguage());
+		
+		// Set up a listener whenever a key changes
+		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+	}
 
-    @Override
+	@Override
 	public void onResume() {
-        super.onResume();
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
+		super.onResume();
+		// Set up a listener whenever a key changes
+		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+	}
 
-    @Override
+	@Override
 	public void onPause() {
-        super.onPause();
-        // Unregister the listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-    }
+		super.onPause();
+		// Unregister the listener whenever a key changes
+		getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+	}
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    	if ( key.equals("setting_username") ) {
-    		// TODO: update status
-    	}
-    	
-    	if (key.equals("setting_language")) {
-    		// save the language and update the app configuration
-    		mController.setDefaultLocale();    		
-    		// unfortunately it's necessary to restart the controller
-    		// couldn't find a better way to re-instantiate the already inflated fragments
-    		// as it would need much more code and complexity in all the different fragments
-    		// and a quick reboot is acceptable, I think
-    	    Intent intent = new Intent(mController, Controller.class);
-    	    startActivity(intent);
-    	}
-    }
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if ( key.equals("setting_username") ) {
+			// TODO: update status
+		}
+		
+		if (key.equals("setting_language")) {
+			// save the language and update the app configuration
+			mController.setDefaultLocale();
+			// unfortunately it's necessary to restart the controller
+			// couldn't find a better way to re-instantiate the already inflated fragments
+			// as it would need much more code and complexity in all the different fragments
+			// and a quick reboot is acceptable, I think
+			Intent intent = new Intent(mController, Controller.class);
+			startActivity(intent);
+		}
+	}
 }

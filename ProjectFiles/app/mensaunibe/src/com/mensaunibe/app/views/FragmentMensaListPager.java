@@ -33,7 +33,7 @@ public class FragmentMensaListPager extends Fragment {
 	private AdapterCustomFragmentPager mAdapter;
 	private ProgressBar mProgressBar;
 	
-    @Override
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		this.mController = Controller.getController();
@@ -41,23 +41,23 @@ public class FragmentMensaListPager extends Fragment {
 		this.mMensaList = mDataHandler.getMensaList();
 		this.mMensas = mMensaList.getFavMensas();
 		
-	    
+		
 		View rootView = inflater.inflate(R.layout.fragment_mensalist_pager, container, false);
 		
 		// set up the progress bar
-        mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 		
 		mAdapter = new AdapterCustomFragmentPager(mMensas, mController, getChildFragmentManager());
-	    
+		
 		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
 	
 		pager.setAdapter(mAdapter);
 		pager.setCurrentItem(0);
 		
 		TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
-        indicator.setViewPager(pager);
+		indicator.setViewPager(pager);
 	
 		return rootView;
 	}

@@ -28,7 +28,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 /**
@@ -83,14 +82,14 @@ public class FragmentMensaDetails extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_mensadetails, container, false);
 		
 		// set up the progress bar
-        sProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        sProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
-        
-        if (!mHasPager) {
-        	// hide the progressbar because it's already there from the frame
-        	sProgressBar.setVisibility(View.GONE);
-        }
+		sProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		sProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		
+		if (!mHasPager) {
+			// hide the progressbar because it's already there from the frame
+			sProgressBar.setVisibility(View.GONE);
+		}
 		
 		inflateHeader(rootView);
 		
@@ -107,11 +106,11 @@ public class FragmentMensaDetails extends Fragment {
 			pager.setCurrentItem(mAdapter.getCurrentDay());
 			
 			TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
-	        indicator.setViewPager(pager);
+			indicator.setViewPager(pager);
 		} else {
 			// get the normal no pager listview
-	        final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
-	        
+			final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
+			
 			// disable scrolling when list is refreshing
 			listview.setLockScrollWhileRefreshing(false);
 
@@ -131,20 +130,20 @@ public class FragmentMensaDetails extends Fragment {
 					listview.postDelayed(new Runnable() {
 						@Override
 						public void run() {
-							
+							// TODO: put string in xml
 							listview.onRefreshComplete("Daten neu geladen");
 						}
 					}, 2000);
 				}
 			});
 			
-	        // build the menu list
-	        List<Menu> menus = new ArrayList<Menu>();
-	        menus.addAll(mMensa.getDailyMenus(sDataHandler.getCurrentDayName()));
-		    
-	        AdapterCustomMenulist mAdapter = new AdapterCustomMenulist(sController, menus, R.layout.list_menulist_item);
-	    
-	        listview.setAdapter(mAdapter);
+			// build the menu list
+			List<Menu> menus = new ArrayList<Menu>();
+			menus.addAll(mMensa.getDailyMenus(sDataHandler.getCurrentDayName()));
+			
+			AdapterCustomMenulist mAdapter = new AdapterCustomMenulist(sController, menus, R.layout.list_menulist_item);
+		
+			listview.setAdapter(mAdapter);
 		}
 	
 		return rootView;
@@ -158,7 +157,7 @@ public class FragmentMensaDetails extends Fragment {
 			savedInstanceState.putInt("mensaid", mMensa.getId());
 		}
 	}
-  
+
 	/**
 	 * shows the mensa detail information on top of the fragment
 	 * @param rootView
@@ -174,45 +173,44 @@ public class FragmentMensaDetails extends Fragment {
 		TextView mensaPlz = (TextView) rootView.findViewById(R.id.city);
 		mensaPlz.setText(mMensa.getCity());
 		
-        TextView mensaDistance = (TextView) rootView.findViewById(R.id.distance);
+		TextView mensaDistance = (TextView) rootView.findViewById(R.id.distance);
 		mensaDistance.setText(String.valueOf(Math.round(mMensa.getDistance())) + "m");
 		
 		TextView mensaDesc = (TextView) rootView.findViewById(R.id.desc);
 		mensaDesc.setText(mMensa.getDesc());
 		
 		CheckBox starCheckbox = (CheckBox) rootView.findViewById(R.id.checkbox_star);
-        starCheckbox.setChecked(mMensa.isFavorite());
+		starCheckbox.setChecked(mMensa.isFavorite());
 
-        // set the click listener for the favorite checkbox
-        final OnCheckedChangeListener starListener = new OnCheckedChangeListener() {
+		// set the click listener for the favorite checkbox
+		final OnCheckedChangeListener starListener = new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				mMensa.setFavorite(isChecked);
 				sDataHandler.loadLocation(true);
 			}
-        };
-        starCheckbox.setOnCheckedChangeListener(starListener);
+		};
+		starCheckbox.setOnCheckedChangeListener(starListener);
 		
-        ImageButton mensaMapButton = (ImageButton) rootView.findViewById(R.id.button_map);
-        // set the click listener for the navigation button
-        // redirect to map fragment and show route
-        final OnClickListener mapListener = new OnClickListener() {
-            @Override
-            public void onClick(View mapbutton) {
-            	sDataHandler.setLocationTarget(mMensa.getLocation());
-            	Controller.getNavigationDrawer().selectItem(2);
-            	Toast.makeText(sController, "Navigating to Mensa", Toast.LENGTH_SHORT).show();
-            }
-        };
-        mensaMapButton.setOnClickListener(mapListener);
-        
-        ImageButton mensaShareButton = (ImageButton) rootView.findViewById(R.id.button_share);
-        // set the click listener for the share button
-        // open share dialog
-        final OnClickListener shareListener = new OnClickListener() {
-            @Override
-            public void onClick(View sharebutton) {
-    			Intent sendIntent = new Intent();
+		ImageButton mensaMapButton = (ImageButton) rootView.findViewById(R.id.button_map);
+		// set the click listener for the navigation button
+		// redirect to map fragment and show route
+		final OnClickListener mapListener = new OnClickListener() {
+			@Override
+			public void onClick(View mapbutton) {
+				sDataHandler.setLocationTarget(mMensa.getLocation());
+				Controller.getNavigationDrawer().selectItem(2);
+			}
+		};
+		mensaMapButton.setOnClickListener(mapListener);
+		
+		ImageButton mensaShareButton = (ImageButton) rootView.findViewById(R.id.button_share);
+		// set the click listener for the share button
+		// open share dialog
+		final OnClickListener shareListener = new OnClickListener() {
+			@Override
+			public void onClick(View sharebutton) {
+				Intent sendIntent = new Intent();
 				sendIntent.setAction(Intent.ACTION_SEND);
 				sendIntent.putExtra(Intent.EXTRA_TEXT, 
 						sDataHandler.getSettingsManager().getData("string", "setting_sharetext") + "\n\n" +
@@ -221,9 +219,8 @@ public class FragmentMensaDetails extends Fragment {
 						.toString().replace("[", "").replace("]", "").replace("\n,", ""));
 				sendIntent.setType("text/plain");
 				startActivity(sendIntent);
-            	Toast.makeText(sController, "Share todays menus from this mensa", Toast.LENGTH_SHORT).show();
-            }
-        };
-        mensaShareButton.setOnClickListener(shareListener);
+			}
+		};
+		mensaShareButton.setOnClickListener(shareListener);
 	}
 }

@@ -8,27 +8,27 @@ import java.util.List;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
- 
+
 public class MensaList implements Serializable {
 	 
 	// for logging and debugging purposes
 	@SuppressWarnings("unused")
 	private static final String TAG = MensaList.class.getSimpleName();
 	private static final long serialVersionUID = 4863765091459252275L;
- 
-    @SerializedName( "mensas" )
-    private final List<Mensa> mMensas;
- 
-    public MensaList(final List<Mensa> mensas) {
-        this.mMensas = mensas;
-    }
- 
-    public List<Mensa> getMensas() {
-    	sortList();
-        return mMensas;
-    }
-    
-    public List<Mensa> getFavMensas() {
+
+	@SerializedName( "mensas" )
+	private final List<Mensa> mMensas;
+
+	public MensaList(final List<Mensa> mensas) {
+		this.mMensas = mensas;
+	}
+
+	public List<Mensa> getMensas() {
+		sortList();
+		return mMensas;
+	}
+	
+	public List<Mensa> getFavMensas() {
 		List<Mensa> favmensas = new ArrayList<Mensa>();
 		sortList();
 		for (Mensa mensa : mMensas) {
@@ -42,8 +42,8 @@ public class MensaList implements Serializable {
 		} else {
 			return favmensas;
 		}
-    }
-    
+	}
+	
 	public Mensa getMensaById(int id) {
 		for (Mensa mensa : mMensas) {
 			if (mensa.getId() == id) {
@@ -69,25 +69,24 @@ public class MensaList implements Serializable {
 	 * @return the rounded value
 	 */
 	public static double cutTo5Digits(double d) {
-	    return Math.floor(d * 1e5) / 1e5;
+		return Math.floor(d * 1e5) / 1e5;
 	}
 	
 	public void sortList() {
 		Collections.sort(mMensas, new Comparator<Mensa>(){
-		    public int compare(Mensa m1, Mensa m2) {
-		    	// sorts the list that closer mensas are displayed first
-		    	int result = m1.getDistance().compareTo(m2.getDistance());
-		        return result;
-		    }
+			public int compare(Mensa m1, Mensa m2) {
+				// sorts the list that closer mensas are displayed first
+				int result = m1.getDistance().compareTo(m2.getDistance());
+				return result;
+			}
 		});
 		
 		Collections.sort(mMensas, new Comparator<Mensa>(){
-		    public int compare(Mensa m1, Mensa m2) {
-		    	// sorts the list that favorite mensas are displayed first
-		    	int result = m2.isFavorite().compareTo(m1.isFavorite());
-		        return result;
-		    }
+			public int compare(Mensa m1, Mensa m2) {
+				// sorts the list that favorite mensas are displayed first
+				int result = m2.isFavorite().compareTo(m1.isFavorite());
+				return result;
+			}
 		});
 	}
- 
 }

@@ -40,55 +40,55 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 		this.mLocationClient = Controller.getLocationClient();
 	}
 	
-    public void addListener(TaskListener listener) {
-    	Log.i(TAG, "addListener(" + listener + ")");
-    	if (listener != null) {
-    		mListeners.add(listener);
-    	} else {
-    		Log.e(TAG, "Listener was null!");
-    	}
+	public void addListener(TaskListener listener) {
+		Log.i(TAG, "addListener(" + listener + ")");
+		if (listener != null) {
+			mListeners.add(listener);
+		} else {
+			Log.e(TAG, "Listener was null!");
+		}
 	}
-    
-    public void removeListener(TaskListener listener) {
-    	Log.i(TAG, "removeListener(" + listener + ")");
-    	mListeners.remove(listener);
-    }
-    
-    public void removeListeners() {
-    	Log.i(TAG, "removeListeners()");
-    	mListeners.removeAll(mListeners);
-    }
-    
-    protected void notifyOnTaskComplete(Object result) {
-    	Log.i(TAG, "notifyOnTaskComplete()");
-        for (TaskListener mListener : mListeners) {
-            mListener.onTaskComplete(result);
-        }
-    }
+	
+	public void removeListener(TaskListener listener) {
+		Log.i(TAG, "removeListener(" + listener + ")");
+		mListeners.remove(listener);
+	}
+	
+	public void removeListeners() {
+		Log.i(TAG, "removeListeners()");
+		mListeners.removeAll(mListeners);
+	}
+	
+	protected void notifyOnTaskComplete(Object result) {
+		Log.i(TAG, "notifyOnTaskComplete()");
+		for (TaskListener mListener : mListeners) {
+			mListener.onTaskComplete(result);
+		}
+	}
 
-    protected void notifyOnProgressUpdate(int percent) {
-        for (TaskListener mListener : mListeners) {
-            mListener.onProgressUpdate(percent);
-        }
-    }
-    
-    protected void getLocation() {
-    	Log.i(TAG, "getLocation()");
-    	if (mLocationClient != null && mLocationClient.isConnected()) {
-    		mLocation = mLocationClient.getLastLocation();
-    	} else {
-    		Log.e(TAG, "getLocation(): mLocationClient was null or not connected! Setting default Location");
-    		mLocation = new Location("default");
-    		mLocation.setLatitude(46.9510);
-    		mLocation.setLongitude(7.43820);
-    	}
-    }
-    
-    /**
-     * loops through all the mensa coordinates to determine the closest mensa
-     */
-    protected void getClosestMensa() {
-    	Log.i(TAG, "getClosestMensa()");
+	protected void notifyOnProgressUpdate(int percent) {
+		for (TaskListener mListener : mListeners) {
+			mListener.onProgressUpdate(percent);
+		}
+	}
+	
+	protected void getLocation() {
+		Log.i(TAG, "getLocation()");
+		if (mLocationClient != null && mLocationClient.isConnected()) {
+			mLocation = mLocationClient.getLastLocation();
+		} else {
+			Log.e(TAG, "getLocation(): mLocationClient was null or not connected! Setting default Location");
+			mLocation = new Location("default");
+			mLocation.setLatitude(46.9510);
+			mLocation.setLongitude(7.43820);
+		}
+	}
+	
+	/**
+	 * loops through all the mensa coordinates to determine the closest mensa
+	 */
+	protected void getClosestMensa() {
+		Log.i(TAG, "getClosestMensa()");
 		List<Mensa> mensas = mMensaList.getMensas();
 		// check if there is a last location set, possible reason for NullPointer Exception in onConnected()
 		if ( mLocation != null ) {
@@ -113,19 +113,19 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			float smallestFavDistance = Float.MAX_VALUE;
 			
 			for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
-			    Float value = entry.getValue();
-			    if (value < smallestDistance) {
-			        closestMensaId = entry.getKey();
-			        smallestDistance = value;
-			    }
+				Float value = entry.getValue();
+				if (value < smallestDistance) {
+					closestMensaId = entry.getKey();
+					smallestDistance = value;
+				}
 			}
 			
 			for (Map.Entry<Integer, Float> entry : favdistances.entrySet()) {
-			    Float value = entry.getValue();
-			    if (value < smallestFavDistance) {
-			        closestFavMensaId = entry.getKey();
-			        smallestFavDistance = value;
-			    }
+				Float value = entry.getValue();
+				if (value < smallestFavDistance) {
+					closestFavMensaId = entry.getKey();
+					smallestFavDistance = value;
+				}
 			}
 			
 			// and save it in the data handler
@@ -139,24 +139,24 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			mDataHandler.setClosestFavMensa(closestFavMensaId);
 			mDataHandler.setLocationTarget(mMensaList.getMensaById(closestMensaId).getLocation());
 		}
-    }
+	}
  
-    /**
-     * method to calculated the distance (over air)
-     */
+	/**
+	 * method to calculated the distance (over air)
+	 */
 	public static float getDistance(double startLat, double startLon, double endLat, double endLon){
-	    float[] resultArray = new float[99];
-	    Location.distanceBetween(startLat, startLon, endLat, endLon, resultArray);
-	    return resultArray[0];
+		float[] resultArray = new float[99];
+		Location.distanceBetween(startLat, startLon, endLat, endLon, resultArray);
+		return resultArray[0];
 	}
 	
 	@Override
-    protected void onPreExecute() {
+	protected void onPreExecute() {
 		Log.i(TAG, "onPreExecute()");
 	}
 	
 	@Override
-    protected Location doInBackground(Void... params) {
+	protected Location doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to get the latest location");
 
 		getLocation();
@@ -165,23 +165,23 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			getClosestMensa();
 			return mLocation;
 		} else {
-    		Log.e(TAG, "getLocation(): mLocation was null! Setting default Location");
-    		mLocation = new Location("default");
-    		mLocation.setLatitude(46.9510);
-    		mLocation.setLongitude(7.43820);
-    		getClosestMensa();
+			Log.e(TAG, "getLocation(): mLocation was null! Setting default Location");
+			mLocation = new Location("default");
+			mLocation.setLatitude(46.9510);
+			mLocation.setLongitude(7.43820);
+			getClosestMensa();
 			return mLocation;
 		}
-    }
+	}
 
-    @Override
-    protected void onPostExecute(Location location) {
-        this.notifyOnTaskComplete(location);
-        this.removeListeners();
-    }
+	@Override
+	protected void onPostExecute(Location location) {
+		this.notifyOnTaskComplete(location);
+		this.removeListeners();
+	}
 
-    @Override
-    protected void onProgressUpdate(Integer... percent) {
-        this.notifyOnProgressUpdate(percent[0]);
-    }
+	@Override
+	protected void onProgressUpdate(Integer... percent) {
+		this.notifyOnProgressUpdate(percent[0]);
+	}
 }

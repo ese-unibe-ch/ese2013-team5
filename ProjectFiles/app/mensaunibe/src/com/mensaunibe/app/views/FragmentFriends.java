@@ -22,10 +22,9 @@ import android.widget.Toast;
 
 /**
  * Fragment to show the Users Friends
- * </br>
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
- *
+ * 
+ * The User functionality is not completed and thus it is not active
+ * in this version of the app 
  */
  
 public class FragmentFriends extends Fragment {
@@ -52,9 +51,9 @@ public class FragmentFriends extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 		
 		// set up the progress bar
-        mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 
 		// get the list view from the layout into a variable, it's important
 		// to fetch it from the rootView

@@ -20,24 +20,24 @@ public class FragmentSplashScreen extends Fragment {
 	@SuppressWarnings("unused")
 	private static final String TAG = FragmentSplashScreen.class.getSimpleName();
 
-    private ProgressBar mProgressBar;
+	private ProgressBar mProgressBar;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_splashscreen, container, false);
-        // set up the progress bar
-        mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
-        return rootView;
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		final View rootView = inflater.inflate(R.layout.fragment_splashscreen, container, false);
+		// set up the progress bar
+		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		return rootView;
+	}
 
-    /**
-     * Sets the progress of the ProgressBar
-     *
-     * @param percent int the new progress between 0 and 100
-     */
-    public void setProgress(int percent) {
-        mProgressBar.setProgress(percent);
-    }
+	/**
+	 * Sets the progress of the ProgressBar
+	 *
+	 * @param percent int the new progress between 0 and 100
+	 */
+	public void setProgress(int percent) {
+		mProgressBar.setProgress(percent);
+	}
 }
