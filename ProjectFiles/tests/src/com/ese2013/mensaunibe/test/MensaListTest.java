@@ -82,5 +82,15 @@ public class MensaListTest extends TestCase {
 		LatLng pos = new LatLng(10, 10);
 		assertNull(mensaList.getMensaByLocation(pos));
 	}
+	
+	public void testSortingOfTheList() {
+		mensa1.setDistance(3);
+		mensa2.setDistance(4);
+		mensa2.setFavorite(true);
+		mensaList.sortList();
+		assertEquals(mensa2, mensaList.getMensas().get(0));
+		mensa1.setFavorite(true);
+		assertEquals(mensa1, mensaList.getMensas().get(0));
+	}
 
 }
