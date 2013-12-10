@@ -40,6 +40,7 @@ public class Mensa implements Serializable {
 	private boolean isFavorite;
 	
 	private String locale;
+	private float distance;
  
 	public Mensa(int id, String name, String name_en, String desc, String desc_en, String address, String city, float lat, float lon, MenuList menulistObj) {
 		this.id = id;
@@ -158,29 +159,19 @@ public class Mensa implements Serializable {
 		}
 	}
 
-	public boolean isFavorite() {
+	public Boolean isFavorite() {
 		return isFavorite;
 	}
 	
 	public void setFavorite(boolean b){
 		isFavorite = b;
 	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Mensa) {
-			Mensa other = (Mensa) o;
-			return this.getAddress() == other.getAddress() &&
-					this.getCity() == other.getCity() &&
-					this.getDesc("de") == other.getDesc("de") &&
-					this.getId() == other.getId() &&
-					this.getLat() == other.getLat() &&
-					this.getLon() == other.getLon() &&
-					this.getName("de") == other.getName("de");
-		}
-		else {
-			return false;
-		}
+	
+	public Float getDistance() {
+		return distance;
 	}
 	
+	public void setDistance(float dist) {
+		distance = dist;
+	}
 }

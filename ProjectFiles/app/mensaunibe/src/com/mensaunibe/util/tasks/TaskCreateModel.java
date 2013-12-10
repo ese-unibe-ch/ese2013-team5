@@ -14,8 +14,8 @@ import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.DataHandler;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
-import com.mensaunibe.util.ServicePrefsManager;
-import com.mensaunibe.util.ServiceWebRequest;
+import com.mensaunibe.util.ServiceSettingsManager;
+import com.mensaunibe.util.ServiceRequestManager;
 import com.mensaunibe.util.database.DatabaseManager;
 
 public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
@@ -28,16 +28,16 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 	private DataHandler mDataHandler;
 	
 	private ArrayList<TaskListener> mListeners;
-	private ServiceWebRequest mWebService;
-	private ServicePrefsManager mPersistenceService;
+	private ServiceRequestManager mRequestManager;
+	private ServiceSettingsManager mSettingsManager;
 	private DatabaseManager mDBManager;
 
 	
 	public TaskCreateModel(Controller controller, Fragment fragment) {
 		this.mController = controller;
 		this.mDataHandler = Controller.getDataHandler();
-		this.mWebService = mDataHandler.getWebService();
-		this.mPersistenceService = mDataHandler.getPersistenceManager();
+		this.mRequestManager = mDataHandler.getRequestManager();
+		this.mSettingsManager = mDataHandler.getSettingsManager();
 		this.mDBManager = mDataHandler.getDatabaseManager();
 		this.mListeners = new ArrayList<TaskListener>();
 	}
@@ -81,9 +81,11 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 		JsonObject jsonObj = null;
 		final Gson gson = new Gson();
 		
-		if (mWebService.getLastUpdate() != (Integer) mPersistenceService.getData("integer", "lastupdate")) {
-			Log.i(TAG, "Update check negative, trying to load JSON from API");
-			jsonObj = mWebService.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
+		if (mRequestManager.getLastUpdate() != (Integer) mSettingsManager.getData("integer", "lastupdate")) {
+			Log.i(TAG, "Update necessary, trying to load JSON from API");
+			jsonObj = mRequestManager.getJSON("http://api.031.be/mensaunibe/v1/?type=mensafull", 5000);
+		} else {
+			Log.e(TAG, "No update necessary, trying to load from shared prefs");
 		}
 		// TODO: test the model creation from shared prefs
 		//jsonObj = null;
@@ -94,14 +96,17 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
     		setFavorites(model);
     		
 	    	//persist the json in shared prefs
-	    	mPersistenceService.setData("string", "model", jsonObj.toString());
+	    	mSettingsManager.setData("string", "model", jsonObj.toString());
 	    	
 	    	// get the lastupate timestamp and persist it too
-	    	mPersistenceService.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
+	    	mSettingsManager.setData("integer", "lastupdate", jsonObj.get("lastupdatetimestamp").getAsInt());
+	    	
+	    	// inform the controller that a new model with updated data was fetched (to re-save the db)
+	    	Controller.setModelUpdated(true);
 		} else {
-			Log.e(TAG, "JSONObject from webservice was null, trying to load from shared prefs");
+			Log.e(TAG, "JSONObject is null until now, either because of no connection or because no update is necessary, trying to load from shared prefs");
 			// try to get the model from the persisted shared prefs json
-			String jsonStr = (String) mPersistenceService.getData("string", "model");
+			String jsonStr = (String) mSettingsManager.getData("string", "model");
 			if (jsonStr != null) {
 				jsonObj = new JsonParser().parse(jsonStr).getAsJsonObject();
 				model = gson.fromJson(jsonObj, MensaList.class);
@@ -144,7 +149,7 @@ public class TaskCreateModel extends AsyncTask<Void, Integer, MensaList> {
 
     private void setFavorites(MensaList model) {
     	List<Mensa> mensalist = model.getMensas();
-    	for(Mensa mensa : mensalist){
+    	for (Mensa mensa : mensalist) {
     		mensa.setFavorite(mDBManager.isFavorite(mensa));
     	}
 	}
