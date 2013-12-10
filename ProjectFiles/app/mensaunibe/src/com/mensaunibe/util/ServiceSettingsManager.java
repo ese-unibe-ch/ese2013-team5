@@ -5,21 +5,23 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
 
-public class ServicePrefsManager {
+public class ServiceSettingsManager {
 	
-	private static final String TAG = ServicePrefsManager.class.getSimpleName();
+	private static final String TAG = ServiceSettingsManager.class.getSimpleName();
 	
 	private static Controller mController;
 
 	private SharedPreferences mSettings;
 	private Editor mSettingsEditor;
 	
-	public ServicePrefsManager(Controller controller) {
+	public ServiceSettingsManager(Controller controller) {
 		mController = controller;
 		
 		// set up the shared prefs, just use the default ones
+		PreferenceManager.setDefaultValues(mController, R.layout.fragment_settings, false);
 		mSettings = PreferenceManager.getDefaultSharedPreferences(mController);
 		mSettingsEditor = mSettings.edit();
 	}

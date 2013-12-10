@@ -1,6 +1,8 @@
 package com.mensaunibe.util.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
@@ -16,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,9 +55,10 @@ public class CustomNavigationDrawer extends DrawerLayout {
 		mDrawerNavItems = new ArrayList<CustomNavigationDrawer.FragmentNavItem>();
 		// Set the adapter for the list view
 		mDrawerAdapter = new ArrayAdapter<String>(getActivity(), drawerItemRes, new ArrayList<String>());
-		this.mDrawerContainerRes = drawerContainerRes; 
+		mDrawerContainerRes = drawerContainerRes; 
 		// Setup drawer list view and related adapter
-		this.mDrawerListView = drawerListView;
+		mDrawerListView = drawerListView;
+
 		drawerListView.setAdapter(mDrawerAdapter);
 		// Setup item listener
 		drawerListView.setOnItemClickListener(new FragmentDrawerItemListener());
@@ -99,8 +103,10 @@ public class CustomNavigationDrawer extends DrawerLayout {
 
 		// Insert the fragment by replacing any existing fragment
 		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-		fragmentManager.beginTransaction().replace(mDrawerContainerRes, fragment).commit();
+		fragmentManager.beginTransaction().addToBackStack(null).replace(mDrawerContainerRes, fragment).commit();
 
+		// save the current selected item to the DataHandler for eventual config changes
+		Controller.getDataHandler().setDrawerPosition(position);
 		// Highlight the selected item, update the title, and close the drawer
 		mDrawerListView.setItemChecked(position, true);
 		setTitle(navItem.getTitle());
@@ -110,6 +116,10 @@ public class CustomNavigationDrawer extends DrawerLayout {
 
 	public ActionBarDrawerToggle getDrawerToggle() {
 		return mDrawerToggle;
+	}
+	
+	public int getDrawerListCount() {
+		return mDrawerNavItems.size();
 	}
 
 	

@@ -23,7 +23,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 	
 	private Controller mController;
 	private DataHandler mDataHandler;
-	private MensaList mModel;
+	private MensaList mMensaList;
 
 	private ArrayList<TaskListener> mListeners;
 	private LocationClient mLocationClient;
@@ -34,7 +34,7 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 	public TaskLocation(Controller controller) {
 		this.mController = controller;
 		this.mDataHandler = Controller.getDataHandler();
-		this.mModel = mDataHandler.getModel();
+		this.mMensaList = mDataHandler.getMensaList();
 		
 		this.mListeners = new ArrayList<TaskListener>();
 		this.mLocationClient = Controller.getLocationClient();
@@ -85,19 +85,31 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
     	Log.i(TAG, "getClosestMensa()");
 		// loop trough all the mansa coordinates and determine the closest mensa
 		// fist get all the mensas in a list to loop over
-		List<Mensa> mensas = mModel.getMensas();
+		List<Mensa> mensas = mMensaList.getMensas();
 		// check if there is a last location set, possible reason for NullPointer Exception in onConnected()
 		if ( mLocation != null ) {
 			// initialize the distances array to save all distances in
 			Map<Integer, Float> distances = new HashMap<Integer, Float>();
+			Map<Integer, Float> favdistances = new HashMap<Integer, Float>();
 			for (Mensa mensa : mensas) {
-				distances.put(mensa.getId(), getDistance(mLocation.getLatitude(), mLocation.getLongitude(), mensa.getLat(), mensa.getLon()));
+				float distance = getDistance(mLocation.getLatitude(), mLocation.getLongitude(), mensa.getLat(), mensa.getLon());
+				// put all distances into the HashMap to calculate the closest mensa later
+				distances.put(mensa.getId(), distance);
+				// put distances of favorite mensas in a separate hashmap to determine the closest favorite mensa
+				if (mensa.isFavorite()) {
+					favdistances.put(mensa.getId(), distance);
+				}
+				// set the distance to that mensa in the model for displaying purposes
+				mensa.setDistance(distance);
 			}
 			// make the distances globally available, just for convenience
 //			this.distances = distances;
 			// and now find the nearest mensa
 			int closestMensaId = 0;
+			int closestFavMensaId = 0;
 			float smallestDistance = Float.MAX_VALUE;
+			float smallestFavDistance = Float.MAX_VALUE;
+			
 			for (Map.Entry<Integer, Float> entry : distances.entrySet()) {
 			    Float value = entry.getValue();
 			    if (value < smallestDistance) {
@@ -106,14 +118,24 @@ public class TaskLocation extends AsyncTask<Void, Integer, Location> {
 			    }
 			}
 			
+			for (Map.Entry<Integer, Float> entry : favdistances.entrySet()) {
+			    Float value = entry.getValue();
+			    if (value < smallestFavDistance) {
+			        closestFavMensaId = entry.getKey();
+			        smallestFavDistance = value;
+			    }
+			}
+			
 			// and save it in the data handler
 			if (mDataHandler == null) {
-				Log.e(TAG, "mDataHandler was null!");
+				Log.e(TAG, "getClosestMensa(): mDataHandler was null!");
 				// seems to be null somtimes...dont know why
 				mDataHandler = Controller.getDataHandler();
 			}
+			
 			mDataHandler.setClosestMensa(closestMensaId);
-			mDataHandler.setLocationTarget(mModel.getMensaById(closestMensaId).getLocation());
+			mDataHandler.setClosestFavMensa(closestFavMensaId);
+			mDataHandler.setLocationTarget(mMensaList.getMensaById(closestMensaId).getLocation());
 			// also make this globally available for convenience and fetch the mensa object
 //			this.closestMensaId = closestMensaId;
 //			this.nearestmensa = model.getMensaById(closestMensaId);

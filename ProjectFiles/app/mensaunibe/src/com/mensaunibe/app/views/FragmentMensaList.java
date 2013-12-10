@@ -32,19 +32,32 @@ public class FragmentMensaList extends Fragment {
 	
 	private Controller mController;
 	private DataHandler mDataHandler;
-	private MensaList mModel;
+	private MensaList mMensaList;
+	private List<Mensa> mMensas;
 	
 	private AdapterCustomMensalist mAdapter;
 	private ProgressBar mProgressBar;
+	
+	public static FragmentMensaList newInstance(List<Mensa> mensalist) {
+		FragmentMensaList fragment = new FragmentMensaList();
+		fragment.setMensas(mensalist);
+		return fragment;
+	}
+	
+	private void setMensas(List<Mensa> mensalist) {
+		mMensas = mensalist;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		this.mController = Controller.getController();
 		this.mDataHandler = Controller.getDataHandler();
-		this.mModel = mDataHandler.getModel();
-	
-		List<Mensa> mensalist = mModel.getMensas();
+		this.mMensaList = mDataHandler.getMensaList();
+		
+		if (mMensas == null) {
+			this.mMensas = mMensaList.getMensas();
+		}
 		
 		View rootView = inflater.inflate(R.layout.fragment_mensalist, container, false);
 		
@@ -89,7 +102,7 @@ public class FragmentMensaList extends Fragment {
 			}
 		});
 
-		mAdapter = new AdapterCustomMensalist(mController, this, mensalist, R.layout.list_mensalist_item);
+		mAdapter = new AdapterCustomMensalist(mController, this, mMensas, R.layout.list_mensalist_item);
 
 		listview.setAdapter(mAdapter);
 		
@@ -97,8 +110,8 @@ public class FragmentMensaList extends Fragment {
 	}
 
 	public void selectItem(int position) {
-		Mensa mensa = mModel.getMensas().get(position);
-		Fragment fragment = FragmentMensaDetails.newInstance(mensa);
+		Mensa mensa = mMensas.get(position);
+		Fragment fragment = FragmentMensaDetails.newInstance(mensa, true);
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.addToBackStack(null);
@@ -107,6 +120,7 @@ public class FragmentMensaList extends Fragment {
 
 	public void updateFavorite(Mensa mensa) {
 		mDataHandler.DBUpdateFavorite(mensa);
+		mAdapter.notifyDataSetChanged();
 	}
 
 

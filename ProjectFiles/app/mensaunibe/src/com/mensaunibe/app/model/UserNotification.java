@@ -45,10 +45,6 @@ public class UserNotification implements Serializable {
 		return message;
 	}
 	
-	public int getRead() {
-		return read;
-	}
-	
 	public boolean isRead() {
 		if (read == 1) {
 			return true;

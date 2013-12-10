@@ -1,37 +1,32 @@
 package com.mensaunibe.app.views;
 
+import java.util.List;
+
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.DataHandler;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
-import com.mensaunibe.lib.viewpagerindicator.TitlePageIndicator;
-import com.mensaunibe.util.gui.AdapterCustomFragmentPager;
 
 public class FragmentStart extends Fragment {
 	
 	// for logging and debugging purposes
 	private static final String TAG = FragmentStart.class.getSimpleName();
 	
+	@SuppressWarnings("unused")
 	private Controller mController;
 	private DataHandler mDataHandler;
-	private MensaList mModel;
-
-	private AdapterCustomFragmentPager mAdapter;
+	private MensaList mMensaList;
     private ProgressBar mProgressBar;
 	private Mensa mMensa;
 
@@ -40,19 +35,32 @@ public class FragmentStart extends Fragment {
 		
 		this.mController = Controller.getController();
 		this.mDataHandler = Controller.getDataHandler();
-		this.mModel = mDataHandler.getModel();
+		this.mMensaList = mDataHandler.getMensaList();
 		
-//		if ( main.nearestmensa != null) {
-//		this.mensa = main.nearestmensa;
-//	} else {
-////		Toast.makeText(context, "Nearest mensa null", Toast.LENGTH_LONG).show();
-//		// this should actually be the favourite mensa
-//		this.mensa = model.getMensaById(1);
-//	}
-		if (mModel != null) {
-			this.mMensa = mModel.getMensaById(2);
+		if (mMensaList != null) {
+			String homeconfig = (String) Controller.getSettings().getString("setting_homescreen", "closestmensa");
+			//Log.e(TAG, "homeconfig = " + homeconfig + ", closestmensa " + mDataHandler.getClosestMensa() + ", closestfavmensa " + mDataHandler.getClosestFavMensa());
+			
+			if (homeconfig.equals("favmensalist") && mDataHandler.getMensaList().getFavMensas() != null) {
+				List<Mensa> mFavMensas = mMensaList.getFavMensas();
+				loadView(FragmentMensaList.newInstance(mFavMensas));
+			} else if (homeconfig.equals("favmensadetails") && mDataHandler.getMensaList().getFavMensas() != null) {
+				mMensa = mMensaList.getMensaById(1);
+				loadView(new FragmentMensaListPager());
+			} else if (homeconfig.equals("closestfavmensa") && mDataHandler.getClosestFavMensa() != null) {
+				mMensa = mDataHandler.getClosestFavMensa();
+				loadView(FragmentMensaDetails.newInstance(mMensa, true));
+			} else {
+				// default is the closest mensa, no need to specifically catch this, even if manually set
+				if (mDataHandler.getClosestMensa() != null) {
+					mMensa = mDataHandler.getClosestMensa();
+				} else {
+					mMensa = mMensaList.getMensaById(1);
+				}
+				loadView(FragmentMensaDetails.newInstance(mMensa, true));
+			}
 		} else {
-			Log.e(TAG, "mModel was null");
+			Log.e(TAG, "onCreateView(): mMensaList was null");
 		}
 	    
 		View rootView = inflater.inflate(R.layout.fragment_start, container, false);
@@ -61,57 +69,19 @@ public class FragmentStart extends Fragment {
         mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
         // add nice color to the progress bar
         mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
-		
-		inflateHeader(rootView, container);
-		
-		mAdapter = new AdapterCustomFragmentPager(mMensa, mController, getChildFragmentManager());
-		
-		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
-	
-		pager.setAdapter(mAdapter);
-		pager.setCurrentItem(mAdapter.getCurrentDay());
-		
-		TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
-        indicator.setViewPager(pager);
 	
 		return rootView;
-	}
-  
-	/** private method to show the mensa-name and -address in the
-	*  view on top of the fragment
-	* 
-	* @param inflater
-	* @param container
-	*/
-	private void inflateHeader(View rootView, ViewGroup container) {
-		TextView mensaName = (TextView) rootView.findViewById(R.id.name);
-		mensaName.setText(mMensa.getName());
-
-		TextView mensaAddress = (TextView) rootView.findViewById(R.id.address);
-		mensaAddress.setText(mMensa.getAddress());
-
-		TextView mensaPlz = (TextView) rootView.findViewById(R.id.city);
-		mensaPlz.setText(mMensa.getCity());
-		
-        ImageButton mensaMapButton = (ImageButton) rootView.findViewById(R.id.button_map);
-        // set the click listener for the navigation button
-        // redirect to map fragment and show route
-        final OnClickListener mapListener = new OnClickListener() {
-            @Override
-            public void onClick(View mapbutton) {
-            	Controller.getDataHandler().setLocationTarget(mMensa.getLocation());
-            	Controller.getNavigationDrawer().selectItem(2);
-            	// TODO: add status update
-            	Toast.makeText(mController, "Navigating to Mensa", Toast.LENGTH_SHORT).show();
-            }
-        };
-        mensaMapButton.setOnClickListener(mapListener);
-		
-		TextView mensaDesc = (TextView) rootView.findViewById(R.id.desc);
-		mensaDesc.setText(mMensa.getDesc());
 	}
 	
 	public ProgressBar getProgressBar() {
 		return mProgressBar;
+	}
+	
+	public void loadView(Fragment frag) {
+		Fragment fragment = frag;
+		FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.addToBackStack(null);
+		fragmentTransaction.replace(R.id.frame_content, fragment).commit();
 	}
 }
