@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dip"
+        android:max="100"
+        android:progress="100"
+    />
+
+    <!-- <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/unibe_divider"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+
+	        <LinearLayout
+	            android:id="@+id/linearLayout1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_alignParentTop="true"
+	            android:orientation="vertical">
+
+	            <TextView
+	                android:id="@+id/name"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:ellipsize="marquee"
+	                android:singleLine="true"
+	                android:text="Mensa"
+	                android:textSize="24sp"
+	                android:textStyle="bold"
+	            />
+
+	            <TextView
+	                android:id="@+id/city"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:singleLine="true"
+	                android:text="3012 Bern"
+	                android:textSize="14sp"
+	            />
+
+	            <TextView
+	                android:id="@+id/address"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:singleLine="true"
+	                android:text="Adresse"
+	                android:textSize="14sp"
+	            />
+	        </LinearLayout>
+
+	        <ImageButton
+	            android:id="@+id/button_map"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
+	            android:layout_alignBottom="@+id/linearLayout1"
+	            android:layout_alignParentRight="true"
+	            android:background="?android:attr/selectableItemBackground"
+	            android:contentDescription="@string/button_map_desc"
+	            android:scaleType="fitCenter"
+	            android:src="@drawable/ic_navigationicon"
+	        />
+	    </RelativeLayout>
+
+	    <TextView
+	        android:id="@+id/openinghours"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:singleLine="false"
+	        android:text="@string/opening_hours"
+	        android:textSize="14sp"
+	        android:textStyle="bold"
+	        android:paddingTop="3dp"
+	    />
+	    <TextView
+	        android:id="@+id/desc"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:singleLine="false"
+	        android:text="keine Angabe"
+	        android:textSize="14sp"
+	    />
+	</LinearLayout>
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/pager"
+		android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+    />
+
+   	<com.mensaunibe.lib.viewpagerindicator.TitlePageIndicator
+	    android:id="@+id/indicator"
+	    android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+		android:layout_gravity="center"
+        android:padding="6dip"
+        android:background="@drawable/unibe_actionbar_bg_reverse"
+        android:textColor="@color/unibe_white"
+        android:textSize="14sp"
+        app:footerColor="@color/unibe_red"
+        app:footerLineHeight="2dp"
+        app:footerIndicatorHeight="4dp"
+        app:footerIndicatorStyle="triangle"
+        app:selectedColor="@color/unibe_white"
+        app:selectedBold="true"
+        app:linePosition="top"
+    />-->
+
+</LinearLayout>

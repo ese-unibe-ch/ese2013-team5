@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dip"
+        android:max="100"
+        android:progress="100"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/unibe_divider"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp" >
+
+        <LinearLayout
+            android:id="@+id/name_wrap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/checkbox_star"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="6dp"
+                android:background="@null"
+                android:button="@drawable/unibe_checkbox_favorite"
+                android:contentDescription="@string/button_star_desc"
+            />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Langer Mensa Name"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+	    <RelativeLayout
+	        android:id="@+id/address_wrap"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+
+	        <TextView
+	            android:id="@+id/address"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:singleLine="true"
+	            android:text="Adresse"
+	            android:textSize="14sp" />
+	        
+	        <TextView
+	            android:id="@+id/city"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_below="@+id/address"
+	            android:singleLine="true"
+	            android:text="3012 Bern"
+	            android:textSize="14sp" />
+
+	        <LinearLayout
+	            android:id="@+id/nav_wrap"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:layout_alignParentTop="true"
+	            android:orientation="vertical" >
+
+	            <ImageButton
+	                android:id="@+id/button_map"
+	                android:layout_width="36dp"
+	                android:layout_height="36dp"
+	                android:layout_gravity="center_horizontal"
+	                android:padding="6dp"
+	                android:background="?android:attr/selectableItemBackground"
+	                android:contentDescription="@string/button_map_desc"
+	                android:src="@drawable/ic_navigation" />
+
+	            <TextView
+	                android:id="@+id/distance"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="-6dp"
+	                android:gravity="center_horizontal"
+	                android:text="1000m"
+	                android:textColor="@color/unibe_black"
+	                android:textSize="12sp" />
+	        </LinearLayout>
+
+	    </RelativeLayout>
+	    
+	    <RelativeLayout
+	        android:id="@+id/desc_wrap"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+
+		    <TextView
+		        android:id="@+id/openinghours"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:singleLine="false"
+		        android:text="@string/opening_hours"
+		        android:textSize="14sp"
+		        android:textStyle="bold"
+		        android:paddingTop="3dp"
+		    />
+		    <TextView
+		        android:id="@+id/desc"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+	            android:layout_below="@+id/openinghours"
+		        android:singleLine="false"
+		        android:text="keine Angabe"
+		        android:textSize="14sp"
+		    />
+
+	        <LinearLayout
+	            android:id="@+id/share_wrap"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+	            android:orientation="vertical" >
+
+	            <ImageButton
+	                android:id="@+id/button_share"
+	                android:layout_width="36dp"
+	                android:layout_height="36dp"
+	                android:layout_gravity="center_horizontal"
+	                android:padding="6dp"
+	                android:background="?android:attr/selectableItemBackground"
+	                android:contentDescription="@string/button_share_desc"
+	                android:src="@drawable/ic_share" />
+
+	            <TextView
+	                android:id="@+id/button_share_title"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="-6dp"
+	                android:gravity="center_horizontal"
+	                android:text="Share"
+	                android:textAlignment="center"
+	                android:textColor="@color/unibe_black"
+	                android:textSize="12sp" />
+
+	        </LinearLayout>
+	    </RelativeLayout>
+	</LinearLayout>
+	
+    <com.mensaunibe.util.gui.CustomListViewPullToRefresh
+	    android:id="@+id/menulist"
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+	    android:background="@color/unibe_gray_light"
+	/>
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/pager"
+		android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/unibe_gray_light"
+    />
+
+   	<com.mensaunibe.lib.viewpagerindicator.TitlePageIndicator
+	    android:id="@+id/indicator"
+	    android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+		android:layout_gravity="center"
+        android:padding="6dip"
+        android:background="@drawable/unibe_actionbar_bg_reverse"
+        android:textColor="@color/unibe_white"
+        android:textSize="14sp"
+        app:footerColor="@color/unibe_red"
+        app:footerLineHeight="2dp"
+        app:footerIndicatorHeight="4dp"
+        app:footerIndicatorStyle="triangle"
+        app:selectedColor="@color/unibe_white"
+        app:selectedBold="true"
+        app:linePosition="top"
+    />
+
+</LinearLayout>
