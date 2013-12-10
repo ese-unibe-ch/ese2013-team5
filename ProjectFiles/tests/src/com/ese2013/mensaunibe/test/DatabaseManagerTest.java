@@ -89,11 +89,5 @@ public class DatabaseManagerTest extends AndroidTestCase {
 		dbManager.removeFavorite(mensa1);
 		assertFalse(dbManager.isFavorite(mensa1));
 	}
-	
-	public void testStoringAndLoadingMensaList() {
-		dbManager.save(mensaList);
-		MensaList loadedList = dbManager.load();
-		assertEquals(mensaList, loadedList);
-	}
 
 }
