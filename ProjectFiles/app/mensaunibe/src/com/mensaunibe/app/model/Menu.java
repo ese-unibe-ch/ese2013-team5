@@ -168,23 +168,4 @@ public class Menu implements Serializable {
 	public String toString() {
 		return "\n\n" + title + " (" + date + ")\n" + desc + "\n" + price + "\n";
 	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Menu) {
-			Menu other = (Menu) o;
-			return this.getDate("de") == other.getDate("de")
-					&& this.getDay() == other.getDay()
-					&& this.getDesc("de") == other.getDesc("de")
-					&& this.getMensaID() == other.getMensaID()
-					&& this.getMenuID() == other.getMenuID()
-					&& this.getPrice("de") == other.getPrice("de")
-					&& this.getTitle("de") == other.getTitle("de")
-					&& this.getType() == other.getType()
-					&& this.getWeek() == other.getWeek();
-		} else {
-			return false;
-		}
-	}
-	
 }

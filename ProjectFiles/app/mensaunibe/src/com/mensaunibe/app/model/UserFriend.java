@@ -4,6 +4,12 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * 
+ * !!The User model is not completed and thus it is not used in this version of
+ * the application!! 
+ *
+ */
 public class UserFriend implements Serializable {
 
 	// for logging and debugging purposes
@@ -35,16 +41,4 @@ public class UserFriend implements Serializable {
 	public String getName() {
 		return name;
 	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof UserFriend) {
-			UserFriend other = (UserFriend) o;
-			return this.getFriendID() == other.getFriendID()
-					&& this.getName() == other.getName();
-		} else {
-			return false;
-		}
-	}
-	
 }
