@@ -66,8 +66,8 @@ public class FragmentMensaList extends Fragment {
 		
 		// set up the progress bar
 		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 		
 		// get the list view from the layout into a variable, 
 		// it's important to fetch it from the rootView

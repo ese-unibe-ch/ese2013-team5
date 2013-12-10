@@ -48,51 +48,51 @@ public class AdapterCustomMensalist extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
 		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = mInflater.inflate(mResource, parent, false);
-        
-        final Mensa mensa = mMensas.get(position);
-        
-        LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
-        ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
-        CheckBox starCheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
-        starCheckbox.setChecked(mensa.isFavorite());       
-        // the actual fields that contain text
-        TextView distance = (TextView) rowView.findViewById(R.id.distance);
-        TextView name = (TextView) rowView.findViewById(R.id.name);
-        TextView address = (TextView) rowView.findViewById(R.id.address);
-        TextView city = (TextView) rowView.findViewById(R.id.city);
-        
-        distance.setText(String.valueOf(Math.round(mensa.getDistance())) + "m");
-        name.setText(mensa.getName());
-        address.setText(mensa.getAddress());
-        city.setText(mensa.getCity());
+		View rowView = mInflater.inflate(mResource, parent, false);
+		
+		final Mensa mensa = mMensas.get(position);
+		
+		LinearLayout grid = (LinearLayout) rowView.findViewById(R.id.list_grid);
+		ImageButton mapbutton = (ImageButton) rowView.findViewById(R.id.button_map);
+		CheckBox starCheckbox = (CheckBox) rowView.findViewById(R.id.checkbox_star);
+		starCheckbox.setChecked(mensa.isFavorite());	   
+		// the actual fields that contain text
+		TextView distance = (TextView) rowView.findViewById(R.id.distance);
+		TextView name = (TextView) rowView.findViewById(R.id.name);
+		TextView address = (TextView) rowView.findViewById(R.id.address);
+		TextView city = (TextView) rowView.findViewById(R.id.city);
+		
+		distance.setText(String.valueOf(Math.round(mensa.getDistance())) + "m");
+		name.setText(mensa.getName());
+		address.setText(mensa.getAddress());
+		city.setText(mensa.getCity());
 
-        // set the click listener for the list item
-        // opens mensa details
-        final OnClickListener rowListener = new OnClickListener() {
-            @Override
-            public void onClick(View rowView) {
-            	mFragment.selectItem(position);
-            	// save the current selected item to the DataHandler for eventual config changes
-        		Controller.getDataHandler().setDrawerPosition(Controller.getNavigationDrawer().getDrawerListCount() + 1);
-            }
-        };
-        grid.setOnClickListener(rowListener);
-        
-        // set the click listener for the navigation button
-        // redirect to map fragment and show route
-        final OnClickListener mapListener = new OnClickListener() {
-            @Override
-            public void onClick(View mapbutton) {
-            	Controller.getDataHandler().setLocationTarget(mensa.getLocation());
-            	Controller.getNavigationDrawer().selectItem(2);
-            	// TODO: add status update
-            }
-        };
-        mapbutton.setOnClickListener(mapListener);
-        
-        // set the click listener for the favorite button
-        final OnCheckedChangeListener starListener = new OnCheckedChangeListener() {
+		// set the click listener for the list item
+		// opens mensa details
+		final OnClickListener rowListener = new OnClickListener() {
+			@Override
+			public void onClick(View rowView) {
+				mFragment.selectItem(position);
+				// save the current selected item to the DataHandler for eventual config changes
+				Controller.getDataHandler().setDrawerPosition(Controller.getNavigationDrawer().getDrawerListCount() + 1);
+			}
+		};
+		grid.setOnClickListener(rowListener);
+		
+		// set the click listener for the navigation button
+		// redirect to map fragment and show route
+		final OnClickListener mapListener = new OnClickListener() {
+			@Override
+			public void onClick(View mapbutton) {
+				Controller.getDataHandler().setLocationTarget(mensa.getLocation());
+				Controller.getNavigationDrawer().selectItem(2);
+				// TODO: add status update
+			}
+		};
+		mapbutton.setOnClickListener(mapListener);
+		
+		// set the click listener for the favorite button
+		final OnCheckedChangeListener starListener = new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				Mensa mensa = mMensas.get(position);
@@ -101,9 +101,9 @@ public class AdapterCustomMensalist extends BaseAdapter {
 				// update the closest fav mensa / closest mensa
 				mDataHandler.loadLocation(true);
 			}
-        };
-        starCheckbox.setOnCheckedChangeListener(starListener);
-            
+		};
+		starCheckbox.setOnCheckedChangeListener(starListener);
+
 		return rowView;
 	}
 	@Override
@@ -121,6 +121,6 @@ public class AdapterCustomMensalist extends BaseAdapter {
 	@Override
 	public void notifyDataSetChanged() {
 		mMensaList.sortList();
-	    super.notifyDataSetChanged();
+		super.notifyDataSetChanged();
 	}
 }

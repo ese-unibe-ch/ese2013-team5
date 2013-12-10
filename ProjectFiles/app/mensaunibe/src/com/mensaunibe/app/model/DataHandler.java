@@ -18,7 +18,6 @@ import com.mensaunibe.util.tasks.TaskUpdateDB;
 
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
@@ -127,105 +126,105 @@ public class DataHandler extends Fragment implements TaskListener {
 		Log.i(TAG, "getClosestMensa()");
 		return mClosestFavMensa;
 	}
-    
-    public void setCurrentMensa(Mensa mensa) {
-    	Log.i(TAG, "setCurrentMensa(" + mensa + ")");
-    	mCurrentMensa = mensa;
-    }
-    
-    public Mensa getCurrentMensa() {
-    	Log.i(TAG, "getCurrentMensa()");
-    	return mCurrentMensa;
-    }
+	
+	public void setCurrentMensa(Mensa mensa) {
+		Log.i(TAG, "setCurrentMensa(" + mensa + ")");
+		mCurrentMensa = mensa;
+	}
+	
+	public Mensa getCurrentMensa() {
+		Log.i(TAG, "getCurrentMensa()");
+		return mCurrentMensa;
+	}
 
-    /**
-     * Gets the JSON from REST API and builds the data model from it
-     */
-    public void loadModel() {
-    	Log.i(TAG, "loadModel()");
-    	TaskCreateModel mTask = new TaskCreateModel(mController, this);
-        mTask.addListener(this);
-        mTask.addListener(mController);
-        mTask.execute();
-    }
-    
-    public boolean hasModel() {
-    	Log.i(TAG, "hasModel()");
-    	if (mMensaList != null) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    public MensaList getMensaList() {
-    	Log.i(TAG, "getMensaList()");
-    	return mMensaList;
-    }
-    
+	/**
+	 * Gets the JSON from REST API and builds the data model from it
+	 */
+	public void loadModel() {
+		Log.i(TAG, "loadModel()");
+		TaskCreateModel mTask = new TaskCreateModel(mController, this);
+		mTask.addListener(this);
+		mTask.addListener(mController);
+		mTask.execute();
+	}
+	
+	public boolean hasModel() {
+		Log.i(TAG, "hasModel()");
+		if (mMensaList != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public MensaList getMensaList() {
+		Log.i(TAG, "getMensaList()");
+		return mMensaList;
+	}
+	
 /**
  * starts a task to load the current location
  * @param silent
  */
-    public void loadLocation(boolean silent) {
-    	Log.i(TAG, "loadLocation()");
-    	TaskLocation mTask = new TaskLocation(mController);
-    	if (!silent) {
-	        mTask.addListener(this);
-	        mTask.addListener(mController);
-    	}
-        mTask.execute();
-    }
-    
-    public boolean hasLocation() {
-    	Log.i(TAG, "hasLocation()");
-    	if (mLocation != null) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    public Location getLocation() {
-    	Log.i(TAG, "getLocation()");
-    	return mLocation;
-    }
-    
-    public void setLocation(Location location) {
-    	Log.i(TAG, "setLocation(" + location + ")");
-    	mLocation = location;
-    }
-    
-    public LatLng getLocationTarget() {
-    	Log.i(TAG, "getLocationTarget()");
-    	return mLocationTarget;
-    }
-    
-    public void setLocationTarget(LatLng location) {
-    	Log.i(TAG, "setLocationTarget(" + location + ")");
-    	mLocationTarget = location;
-    }
-    
-    public ServiceRequestManager getRequestManager() {
-    	Log.i(TAG, "getRequestManager()");
-    	return mRequestManager;
-    }
-    
-    public ServiceSettingsManager getSettingsManager() {
-    	Log.i(TAG, "getPersistenceManager()");
-    	return mSettingsManager;
-    }
-    
-    public DatabaseManager getDatabaseManager() {
-    	Log.i(TAG, "getDatabaseManager()");
-    	return mDBManager;
-    }
+	public void loadLocation(boolean silent) {
+		Log.i(TAG, "loadLocation()");
+		TaskLocation mTask = new TaskLocation(mController);
+		if (!silent) {
+			mTask.addListener(this);
+			mTask.addListener(mController);
+		}
+		mTask.execute();
+	}
+	
+	public boolean hasLocation() {
+		Log.i(TAG, "hasLocation()");
+		if (mLocation != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Location getLocation() {
+		Log.i(TAG, "getLocation()");
+		return mLocation;
+	}
+	
+	public void setLocation(Location location) {
+		Log.i(TAG, "setLocation(" + location + ")");
+		mLocation = location;
+	}
+	
+	public LatLng getLocationTarget() {
+		Log.i(TAG, "getLocationTarget()");
+		return mLocationTarget;
+	}
+	
+	public void setLocationTarget(LatLng location) {
+		Log.i(TAG, "setLocationTarget(" + location + ")");
+		mLocationTarget = location;
+	}
+	
+	public ServiceRequestManager getRequestManager() {
+		Log.i(TAG, "getRequestManager()");
+		return mRequestManager;
+	}
+	
+	public ServiceSettingsManager getSettingsManager() {
+		Log.i(TAG, "getPersistenceManager()");
+		return mSettingsManager;
+	}
+	
+	public DatabaseManager getDatabaseManager() {
+		Log.i(TAG, "getDatabaseManager()");
+		return mDBManager;
+	}
 
 	public void DBUpdate() {
 		Log.i(TAG, "DBUpdate()");
-    	TaskUpdateDB mTask = new TaskUpdateDB(mController);
-        mTask.addListener(this);
-        mTask.execute();
+		TaskUpdateDB mTask = new TaskUpdateDB(mController);
+		mTask.addListener(this);
+		mTask.execute();
 	}
 
 	public void DBUpdateFavorite(Mensa mensa) {
@@ -236,7 +235,7 @@ public class DataHandler extends Fragment implements TaskListener {
 			mDBManager.removeFavorite(mensa);
 		}
 	}
-    
+	
 	/**
 	 * Returns a Pseudo Unique ID to identify the user, will be sent to 
 	 * the server and doesn't contain anything private
@@ -248,30 +247,30 @@ public class DataHandler extends Fragment implements TaskListener {
 		
 		if (deviceid == null) {
 			Log.i(TAG, "getDeviceId(): Creating and saving new device ID");
-		    // IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
-		    // returns 'null', then simply the ID returned will be solely based
-		    // on their Android device information.
-		    String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+			// IF all else fails or if the user has reset their phone or 'Secure.ANDROID_ID'
+			// returns 'null', then simply the ID returned will be solely based
+			// on their Android device information.
+			String devIdShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
 	
-		    // Only devices with API >= 9 have android.os.Build.SERIAL
-		    // If a user upgrades software or roots their phone, there will be a duplicate entry
-		    String serial = null; 
-		    try {
-		        serial = android.os.Build.class.getField("SERIAL").toString();
-		        // go ahead and return the serial for api >= 9
-		        return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
-		    } catch (Exception e) { 
-		        // String needs to be initialized
-		        serial = "serial"; // some value
-		    }
+			// Only devices with API >= 9 have android.os.Build.SERIAL
+			// If a user upgrades software or roots their phone, there will be a duplicate entry
+			String serial = null; 
+			try {
+				serial = android.os.Build.class.getField("SERIAL").toString();
+				// go ahead and return the serial for api >= 9
+				return new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+			} catch (Exception e) { 
+				// String needs to be initialized
+				serial = "serial"; // some value
+			}
 	
-		    // Finally, combine the values we have found by using the UUID class to create a unique identifier
-		    deviceid = new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
-		    // save the id to shared prefs for later usage
-		    mSettingsManager.setData("string", "deviceid", deviceid);
+			// Finally, combine the values we have found by using the UUID class to create a unique identifier
+			deviceid = new UUID(devIdShort.hashCode(), serial.hashCode()).toString();
+			// save the id to shared prefs for later usage
+			mSettingsManager.setData("string", "deviceid", deviceid);
 		}
 		
-	    return deviceid;
+		return deviceid;
 	}
 	
 	/**
@@ -313,16 +312,16 @@ public class DataHandler extends Fragment implements TaskListener {
 	public void APIRegisterUser() {
 		Log.i(TAG, "APIRegisterUser(" + mDeviceId + ")");
 
-    	TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId);
-        mTask.addListener(this);
-        mTask.execute();
+		TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId);
+		mTask.addListener(this);
+		mTask.execute();
 	}
 	
 	public void APIRegisterRating(int menuid, int rating) {
 		Log.i(TAG, "APIRegisterUser(" + menuid + ", " + rating + ")");
 
-    	TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId, menuid, rating);
-        mTask.addListener(this);
-        mTask.execute();
+		TaskUpdateAPI mTask = new TaskUpdateAPI(mController, mDeviceId, menuid, rating);
+		mTask.addListener(this);
+		mTask.execute();
 	}
 }

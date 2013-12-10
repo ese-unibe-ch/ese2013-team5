@@ -5,10 +5,8 @@ import java.io.Serializable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 
- * !!The User model is not completed and thus it is not used in this version of
- * the application!! 
- *
+ * The User functionality is not completed and thus it is not active
+ * in this version of the app 
  */
 public class UserFriend implements Serializable {
 

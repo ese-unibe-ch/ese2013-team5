@@ -46,7 +46,7 @@
     <string name="setting_homescreen_dialog_title">Choose configuration</string>
     <string name="setting_sharetext_title">Your Share-Text</string>
     <string name="setting_sharetext_dialog_title">Enter text</string>
-    <string name="setting_sharetext_default">Hey! I\'m going to eat later int he following canteen, are you coming too?</string>
+    <string name="setting_sharetext_default">Hey! I m going to eat later int he following canteen, are you coming too?</string>
     <string name="setting_language_title">App Language</string>
     <string name="setting_language_dialog_title">Select a language</string>
     

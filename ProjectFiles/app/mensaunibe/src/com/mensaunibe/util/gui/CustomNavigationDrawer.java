@@ -22,7 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class CustomNavigationDrawer extends DrawerLayout {
-		
+	
 	private ActionBarDrawerToggle mDrawerToggle;
 	private ListView mDrawerListView;
 	private ArrayAdapter<String> mDrawerAdapter;
@@ -40,7 +40,7 @@ public class CustomNavigationDrawer extends DrawerLayout {
 	public CustomNavigationDrawer(Context context) {
 		super(context);
 	}
-    
+
 	@SuppressLint("NewApi")
 	public void setupDrawer(ListView drawerListView, int drawerItemRes, int drawerContainerRes) {
 		// Setup navigation items array

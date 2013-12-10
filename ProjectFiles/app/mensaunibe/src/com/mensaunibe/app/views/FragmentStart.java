@@ -19,8 +19,7 @@ import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 
 /**
- * The "Home"-fragment. Shows one or multiple mensas, depending on the settings and 
- * favorite mensas.
+ * The "Home"-Fragment shows one or multiple mensas, depending on the homescreen settings
  */
 public class FragmentStart extends Fragment {
 	
@@ -31,7 +30,7 @@ public class FragmentStart extends Fragment {
 	private Controller mController;
 	private DataHandler mDataHandler;
 	private MensaList mMensaList;
-    private ProgressBar mProgressBar;
+	private ProgressBar mProgressBar;
 	private Mensa mMensa;
 
 	@Override
@@ -65,13 +64,13 @@ public class FragmentStart extends Fragment {
 		} else {
 			Log.e(TAG, "onCreateView(): mMensaList was null");
 		}
-	    
+
 		View rootView = inflater.inflate(R.layout.fragment_start, container, false);
 		
 		// set up the progress bar
-        mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 	
 		return rootView;
 	}

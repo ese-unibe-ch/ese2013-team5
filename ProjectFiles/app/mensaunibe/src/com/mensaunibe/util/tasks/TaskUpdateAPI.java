@@ -50,54 +50,54 @@ public class TaskUpdateAPI extends AsyncTask<Void, Integer, String> {
 		this.mUrl = "http://api.031.be/mensaunibe/getdata/?deviceid=" + deviceid + "&menuid=" + menuid + "&rating=" + rating;
 	}
 	
-    public void addListener(TaskListener listener) {
-    	Log.i(TAG, "addListener(" + listener + ")");
-    	if (listener != null) {
-    		mListeners.add(listener);
-    	} else {
-    		Log.e(TAG, "Listener was null!");
-    	}
+	public void addListener(TaskListener listener) {
+		Log.i(TAG, "addListener(" + listener + ")");
+		if (listener != null) {
+			mListeners.add(listener);
+		} else {
+			Log.e(TAG, "Listener was null!");
+		}
 	}
-    
-    public void removeListener(TaskListener listener) {
-    	Log.i(TAG, "removeListener(" + listener + ")");
-    	mListeners.remove(listener);
-    }
-    
-    public void removeListeners() {
-    	Log.i(TAG, "removeListeners()");
-    	mListeners.removeAll(mListeners);
-    }
-    
-    protected void notifyOnTaskComplete(Object result) {
-    	Log.i(TAG, "notifyOnTaskComplete(" + result + ")");
-        for (TaskListener mListener : mListeners) {
-            mListener.onTaskComplete(result);
-        }
-    }
+	
+	public void removeListener(TaskListener listener) {
+		Log.i(TAG, "removeListener(" + listener + ")");
+		mListeners.remove(listener);
+	}
+	
+	public void removeListeners() {
+		Log.i(TAG, "removeListeners()");
+		mListeners.removeAll(mListeners);
+	}
+	
+	protected void notifyOnTaskComplete(Object result) {
+		Log.i(TAG, "notifyOnTaskComplete(" + result + ")");
+		for (TaskListener mListener : mListeners) {
+			mListener.onTaskComplete(result);
+		}
+	}
 
-    protected void notifyOnProgressUpdate(int percent) {
-        for (TaskListener mListener : mListeners) {
-            mListener.onProgressUpdate(percent);
-        }
-    }
+	protected void notifyOnProgressUpdate(int percent) {
+		for (TaskListener mListener : mListeners) {
+			mListener.onProgressUpdate(percent);
+		}
+	}
 	
 	@Override
-    protected String doInBackground(Void... params) {
+	protected String doInBackground(Void... params) {
 		Log.i(TAG, "Starting background task to save data to the remote API");
 		ServiceRequestManager mWebService = new ServiceRequestManager(mController);
 		JsonObject jsonObj = mWebService.getJSON(mUrl, 5000);
 		return jsonObj.get("status").getAsString();
-    }
+	}
 
 	@Override
-    protected void onPostExecute(String status) {
-        this.notifyOnTaskComplete(status);
-        this.removeListeners();
-    }
+	protected void onPostExecute(String status) {
+		this.notifyOnTaskComplete(status);
+		this.removeListeners();
+	}
 
-    @Override
-    protected void onProgressUpdate(Integer... percent) {
-        this.notifyOnProgressUpdate(percent[0]);
-    }
+	@Override
+	protected void onProgressUpdate(Integer... percent) {
+		this.notifyOnProgressUpdate(percent[0]);
+	}
 }

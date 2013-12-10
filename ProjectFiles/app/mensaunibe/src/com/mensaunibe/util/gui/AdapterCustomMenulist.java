@@ -59,68 +59,68 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
 		LayoutInflater mInflater = (LayoutInflater) mController.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = mInflater.inflate(mResource, parent, false);
-        LinearLayout row = (LinearLayout) rowView.findViewById(R.id.list_grid);
-        
-        // the actual fields that contain text
-        final Menu menu = mMenus.get(position);
-        
-        // handle the full menu list displaying of the mensa
-        if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
-        	TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
+		View rowView = mInflater.inflate(mResource, parent, false);
+		LinearLayout row = (LinearLayout) rowView.findViewById(R.id.list_grid);
+		
+		// the actual fields that contain text
+		final Menu menu = mMenus.get(position);
+		
+		// handle the full menu list displaying of the mensa
+		if ( (TextView) rowView.findViewById(R.id.mensa) != null ) {
+			TextView mensa = (TextView) rowView.findViewById(R.id.mensa);
 			Mensa mMensa = mMensaList.getMensaById(menu.getMensaID());
 			if (mMensa != null) {
 				mensa.setText(mMensa.getName());
 			} else {
 				Log.e(TAG, "mMensa was null!");
 			}
-        }
-        
-        TextView title = (TextView) rowView.findViewById(R.id.title);
-        TextView desc = (TextView) rowView.findViewById(R.id.desc);
-        TextView price = (TextView) rowView.findViewById(R.id.price);
-        TextView date = (TextView) rowView.findViewById(R.id.date);
-        TextView rating = (TextView) rowView.findViewById(R.id.rating);
-        TextView count = (TextView) rowView.findViewById(R.id.count);
-        ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
-        
-        title.setText(menu.getTitle());
-        desc.setText(menu.getDesc());
-        price.setText(menu.getPrice());
-        date.setText(menu.getDate());
-        rating.setText(String.valueOf(menu.getRating()));
-        count.setText(String.valueOf(menu.getVotes()));
-        
-        // determine the type of menu and set the according icon
-        if (menu.getType().equals("meat")) {
-        	icon.setImageResource(R.drawable.ic_menu_meat);
-        } else if (menu.getType().equals("seafood")) {
-        	icon.setImageResource(R.drawable.ic_menu_seafood);
-        } else if (menu.getType().equals("vegetarian")) {
-        	icon.setImageResource(R.drawable.ic_menu_vegetarian);
-        }
+		}
+		
+		TextView title = (TextView) rowView.findViewById(R.id.title);
+		TextView desc = (TextView) rowView.findViewById(R.id.desc);
+		TextView price = (TextView) rowView.findViewById(R.id.price);
+		TextView date = (TextView) rowView.findViewById(R.id.date);
+		TextView rating = (TextView) rowView.findViewById(R.id.rating);
+		TextView count = (TextView) rowView.findViewById(R.id.count);
+		ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
+		
+		title.setText(menu.getTitle());
+		desc.setText(menu.getDesc());
+		price.setText(menu.getPrice());
+		date.setText(menu.getDate());
+		rating.setText(String.valueOf(menu.getRating()));
+		count.setText(String.valueOf(menu.getVotes()));
+		
+		// determine the type of menu and set the according icon
+		if (menu.getType().equals("meat")) {
+			icon.setImageResource(R.drawable.ic_menu_meat);
+		} else if (menu.getType().equals("seafood")) {
+			icon.setImageResource(R.drawable.ic_menu_seafood);
+		} else if (menu.getType().equals("vegetarian")) {
+			icon.setImageResource(R.drawable.ic_menu_vegetarian);
+		}
 
-        // set the click listener for the menu item
-        OnClickListener rowListener = new OnClickListener() {
-            @Override
-            public void onClick(View rowView) {
-            	if (mMensaList != null) {
-            		((FragmentMenuListPager) mFragment.getParentFragment()).selectItem( mMensaList.getMensaById(mMenus.get(position).getMensaID()));
-            	} else {
-            		showRating(menu.getMenuID());
-            	}
-            }
-        };
-        
-        // prevent menus that are not served today from getting rated
-        if (mMensaList != null) {
-        	row.setOnClickListener(rowListener);
-        } else {
-	        if (Controller.getDataHandler().getCurrentDayName().equals(menu.getDay())) {
-	        	row.setOnClickListener(rowListener);
-	        }
-        }
-            
+		// set the click listener for the menu item
+		OnClickListener rowListener = new OnClickListener() {
+			@Override
+			public void onClick(View rowView) {
+				if (mMensaList != null) {
+					((FragmentMenuListPager) mFragment.getParentFragment()).selectItem( mMensaList.getMensaById(mMenus.get(position).getMensaID()));
+				} else {
+					showRating(menu.getMenuID());
+				}
+			}
+		};
+		
+		// prevent menus that are not served today from getting rated
+		if (mMensaList != null) {
+			row.setOnClickListener(rowListener);
+		} else {
+			if (Controller.getDataHandler().getCurrentDayName().equals(menu.getDay())) {
+				row.setOnClickListener(rowListener);
+			}
+		}
+			
 		return rowView;
 	}
 	
@@ -148,9 +148,9 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		rating.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
 		LinearLayout parentLayout = new LinearLayout(mController);
-        parentLayout.setGravity(Gravity.CENTER);
-        parentLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        parentLayout.addView(rating);
+		parentLayout.setGravity(Gravity.CENTER);
+		parentLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		parentLayout.addView(rating);
 
 		dialogBuilder.setIcon(R.drawable.ic_star);
 		dialogBuilder.setTitle("Menu bewerten");

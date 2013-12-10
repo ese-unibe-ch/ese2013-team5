@@ -21,9 +21,12 @@ public class ServiceSettingsManager {
 		mController = controller;
 		
 		// set up the shared prefs, just use the default ones
-		PreferenceManager.setDefaultValues(mController, R.layout.fragment_settings, false);
+		//PreferenceManager.setDefaultValues(mController, R.layout.fragment_settings, false);
 		mSettings = PreferenceManager.getDefaultSharedPreferences(mController);
 		mSettingsEditor = mSettings.edit();
+		
+		
+		//mSettingsEditor.putString("setting_sharetext", mController.getString(R.string.setting_sharetext_default));
 	}
 	
 	public Object getData(String type, String key) {

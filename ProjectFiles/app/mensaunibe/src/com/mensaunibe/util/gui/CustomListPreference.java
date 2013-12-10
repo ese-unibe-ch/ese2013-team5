@@ -7,30 +7,30 @@ import android.util.AttributeSet;
 
 public class CustomListPreference extends ListPreference {
 
-    public CustomListPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
+	public CustomListPreference(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
 
-    public CustomListPreference(Context context) {
-        super(context);
-        init();
-    }
+	public CustomListPreference(Context context) {
+		super(context);
+		init();
+	}
 
-    private void init() {
+	private void init() {
 
-        setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-            @Override
-            public boolean onPreferenceChange(Preference arg0, Object arg1) {
-                arg0.setSummary(getEntry());
-                return true;
-            }
-        });
-    }
+			@Override
+			public boolean onPreferenceChange(Preference arg0, Object arg1) {
+				arg0.setSummary(getEntry());
+				return true;
+			}
+		});
+	}
 
-    @Override
-    public CharSequence getSummary() {
-        return super.getEntry();
-    }
+	@Override
+	public CharSequence getSummary() {
+		return super.getEntry();
+	}
 }

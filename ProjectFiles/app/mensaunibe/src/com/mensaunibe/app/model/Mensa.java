@@ -9,9 +9,9 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 import com.mensaunibe.app.controller.Controller;
- 
+
 public class Mensa implements Serializable {
- 
+
 	// for logging and debugging purposes
 	private static final String TAG = Mensa.class.getSimpleName();
 	private static final long serialVersionUID = 3220517130960952034L;
@@ -41,7 +41,7 @@ public class Mensa implements Serializable {
 	
 	private String locale;
 	private float distance;
- 
+
 	public Mensa(int id, String name, String name_en, String desc, String desc_en, String address, String city, float lat, float lon, MenuList menulistObj) {
 		this.id = id;
 		this.name = name;

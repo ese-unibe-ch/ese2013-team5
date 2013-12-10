@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-
+/**
+ * This fragment displays the view pager with the menus from monday till friday in a mensa detail view
+ */
 public class FragmentMenuListPager extends Fragment {
 	
 	// for logging and debugging purposes
@@ -29,31 +31,31 @@ public class FragmentMenuListPager extends Fragment {
 	private AdapterCustomFragmentPager mAdapter;
 	private ProgressBar mProgressBar;
 	
-    @Override
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		this.mController = Controller.getController();
-	    
+		
 		View rootView = inflater.inflate(R.layout.fragment_menulist_pager, container, false);
 		
 		// set up the progress bar
-        mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-        // add nice color to the progress bar
-        mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
+		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
+		// add nice color to the progress bar
+		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 		
 		mAdapter = new AdapterCustomFragmentPager(mController, getChildFragmentManager());
-	    
+		
 		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
 	
 		pager.setAdapter(mAdapter);
 		pager.setCurrentItem(mAdapter.getCurrentDay());
 		
 		TitlePageIndicator indicator = (TitlePageIndicator) rootView.findViewById(R.id.indicator);
-        indicator.setViewPager(pager);
+		indicator.setViewPager(pager);
 	
 		return rootView;
 	}
-    
+
 	public void selectItem(Mensa mensa) {
 		Log.e(TAG, "mensaname = " + mensa.getName());
 		Fragment fragment = FragmentMensaDetails.newInstance(mensa, true);
