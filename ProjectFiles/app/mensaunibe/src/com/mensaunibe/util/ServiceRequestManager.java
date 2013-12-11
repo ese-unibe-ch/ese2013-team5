@@ -49,7 +49,7 @@ public class ServiceRequestManager {
 	
 	public JsonObject getJSON(String url, int timeout) {
 		Log.i(TAG, "getJSON(" + url + ", " + timeout + ")");
-		Log.e(TAG, "getJSON(): mConnectionReady = " + mConnectionReady);
+		//Log.e(TAG, "getJSON(): mConnectionReady = " + mConnectionReady);
 		if (mConnectionReady || hasConnection(2000)) {	  
 			
 			HttpURLConnection c = getConnection(url, timeout);

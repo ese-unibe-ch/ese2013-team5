@@ -100,7 +100,6 @@
 	                android:layout_height="wrap_content"
 	                android:layout_marginTop="-6dp"
 	                android:gravity="center_horizontal"
-	                android:text="1000m"
 	                android:textColor="@color/unibe_black"
 	                android:textSize="12sp" />
 	        </LinearLayout>
@@ -158,7 +157,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_marginTop="-6dp"
 	                android:gravity="center_horizontal"
-	                android:text="Share"
+	                android:text="@string/button_share"
 	                android:textAlignment="center"
 	                android:textColor="@color/unibe_black"
 	                android:textSize="12sp" />

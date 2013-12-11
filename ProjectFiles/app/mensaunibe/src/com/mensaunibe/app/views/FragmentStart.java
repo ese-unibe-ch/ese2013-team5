@@ -2,7 +2,6 @@ package com.mensaunibe.app.views;
 
 import java.util.List;
 
-import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import com.mensaunibe.R;
 import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.DataHandler;
@@ -30,7 +28,6 @@ public class FragmentStart extends Fragment {
 	private Controller mController;
 	private DataHandler mDataHandler;
 	private MensaList mMensaList;
-	private ProgressBar mProgressBar;
 	private Mensa mMensa;
 
 	@Override
@@ -66,17 +63,8 @@ public class FragmentStart extends Fragment {
 		}
 
 		View rootView = inflater.inflate(R.layout.fragment_start, container, false);
-		
-		// set up the progress bar
-		mProgressBar = (ProgressBar) rootView.findViewById (R.id.progressbar);
-		// add nice color to the progress bar
-		mProgressBar.getProgressDrawable().setColorFilter(0xffE3003D, Mode.SRC_IN);
 	
 		return rootView;
-	}
-	
-	public ProgressBar getProgressBar() {
-		return mProgressBar;
 	}
 	
 	public void loadView(Fragment frag) {

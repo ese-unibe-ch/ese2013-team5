@@ -13,12 +13,14 @@ import com.mensaunibe.util.gui.AdapterCustomFragmentPager;
 import com.mensaunibe.util.gui.AdapterCustomMenulist;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
+import com.mensaunibe.util.tasks.TaskListener;
 
 import android.content.Intent;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,19 +39,21 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
  * if latter is the case, this fragments doesn't act as the pager holder but
  * as the pager page (for favmensadetails view)!
  */
-public class FragmentMensaDetails extends Fragment {
+public class FragmentMensaDetails extends Fragment implements TaskListener {
 	
 	// for logging and debugging purposes
-	@SuppressWarnings("unused")
 	private static final String TAG = FragmentMensaDetails.class.getSimpleName();
 	
 	private static Controller sController;
 	private static DataHandler sDataHandler;
+	private FragmentMensaDetails mFragment;
+	private Mensa mMensa;
+	
+	private AdapterCustomMenulist mAdapter;
+	private CustomListViewPullToRefresh mListView;
 	
 	private static ProgressBar sProgressBar;
 	private boolean mHasPager;
-	
-	private Mensa mMensa; 
 	
 	public static FragmentMensaDetails newInstance(Mensa mensa, boolean pager) {
 		FragmentMensaDetails fragment = new FragmentMensaDetails();
@@ -72,6 +76,7 @@ public class FragmentMensaDetails extends Fragment {
 		
 		sController = Controller.getController();
 		sDataHandler = Controller.getDataHandler();
+		mFragment = this;
 		
 		if (mMensa == null) {
 			mMensa = sDataHandler.getMensaList().getMensaById(savedInstanceState.getInt("mensaid"));
@@ -109,31 +114,17 @@ public class FragmentMensaDetails extends Fragment {
 			indicator.setViewPager(pager);
 		} else {
 			// get the normal no pager listview
-			final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
+			mListView = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
 			
 			// disable scrolling when list is refreshing
-			listview.setLockScrollWhileRefreshing(false);
-
-			// override the default strings
-			// TODO: put strings in xml
-			listview.setTextPullToRefresh("Ziehen für Update");
-			listview.setTextReleaseToRefresh("Loslassen für Update");
-			listview.setTextRefreshing("Lade Daten...");
+			mListView.setLockScrollWhileRefreshing(false);
 
 			// set the onRefreshListener for the pull down listview
-			listview.setOnRefreshListener(new OnRefreshListener() {
+			mListView.setOnRefreshListener(new OnRefreshListener() {
 
 				@Override
 				public void onRefresh() {
-					// For demo purposes, the code will pause here to
-					// force a delay when invoking the refresh
-					listview.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							// TODO: put string in xml
-							listview.onRefreshComplete("Daten neu geladen");
-						}
-					}, 2000);
+					sDataHandler.loadModel(mFragment);
 				}
 			});
 			
@@ -141,9 +132,9 @@ public class FragmentMensaDetails extends Fragment {
 			List<Menu> menus = new ArrayList<Menu>();
 			menus.addAll(mMensa.getDailyMenus(sDataHandler.getCurrentDayName()));
 			
-			AdapterCustomMenulist mAdapter = new AdapterCustomMenulist(sController, menus, R.layout.list_menulist_item);
+			mAdapter = new AdapterCustomMenulist(sController, this, menus, R.layout.list_menulist_item);
 		
-			listview.setAdapter(mAdapter);
+			mListView.setAdapter(mAdapter);
 		}
 	
 		return rootView;
@@ -222,5 +213,21 @@ public class FragmentMensaDetails extends Fragment {
 			}
 		};
 		mensaShareButton.setOnClickListener(shareListener);
+	}
+
+	@Override
+	public void onTaskComplete(Object result) {
+		Log.i(TAG, "onTaskComplete("+ result + ")");
+		mListView.onRefreshComplete(getString(R.string.ptr_updated));
+	}
+
+	@Override
+	public void onProgressUpdate(int percent) {
+		// unused
+	}
+
+	@Override
+	public void onRendered() {
+		// unused
 	}
 }

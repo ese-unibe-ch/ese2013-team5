@@ -10,12 +10,14 @@ import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.util.gui.AdapterCustomMensalist;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
+import com.mensaunibe.util.tasks.TaskListener;
 
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,18 +29,19 @@ import android.widget.ProgressBar;
  * a button to open the map and show the way to the mensa, has a checkbox to choose as favorite
  * and is clickable to get to the mensadetails.
  */
-public class FragmentMensaList extends Fragment {
+public class FragmentMensaList extends Fragment implements TaskListener {
 	
 	// for logging and debugging purposes
-	@SuppressWarnings("unused")
 	private static final String TAG = FragmentMensaList.class.getSimpleName();
 	
-	private Controller mController;
-	private DataHandler mDataHandler;
-	private MensaList mMensaList;
+	private static Controller sController;
+	private static DataHandler sDataHandler;
+	private static MensaList sMensaList;
+	private FragmentMensaList mFragment;
 	private List<Mensa> mMensas;
 	
 	private AdapterCustomMensalist mAdapter;
+	private CustomListViewPullToRefresh mListView;
 	private ProgressBar mProgressBar;
 	
 	public static FragmentMensaList newInstance(List<Mensa> mensalist) {
@@ -54,12 +57,13 @@ public class FragmentMensaList extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		this.mController = Controller.getController();
-		this.mDataHandler = Controller.getDataHandler();
-		this.mMensaList = mDataHandler.getMensaList();
+		sController = Controller.getController();
+		sDataHandler = Controller.getDataHandler();
+		sMensaList = sDataHandler.getMensaList();
+		mFragment = this;
 		
 		if (mMensas == null) {
-			this.mMensas = mMensaList.getMensas();
+			this.mMensas = sMensaList.getMensas();
 		}
 		
 		View rootView = inflater.inflate(R.layout.fragment_mensalist, container, false);
@@ -71,36 +75,23 @@ public class FragmentMensaList extends Fragment {
 		
 		// get the list view from the layout into a variable, 
 		// it's important to fetch it from the rootView
-		final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.mensalist);
+		mListView = (CustomListViewPullToRefresh) rootView.findViewById(R.id.mensalist);
 		
 		// disable scrolling when list is refreshing
-		listview.setLockScrollWhileRefreshing(false);
-
-		// override the default strings
-		listview.setTextPullToRefresh(getString(R.string.ptr_pull_to_refresh));
-		listview.setTextReleaseToRefresh(getString(R.string.ptr_release_to_refresh));
-		listview.setTextRefreshing(getString(R.string.ptr_refreshing));
+		mListView.setLockScrollWhileRefreshing(false);
 
 		// set the onRefreshListener for the pull down listview
-		listview.setOnRefreshListener(new OnRefreshListener() {
+		mListView.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
 			public void onRefresh() {
-				// For demo purposes, the code will pause here to
-				// force a delay when invoking the refresh
-				listview.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						
-						listview.onRefreshComplete("Mensas neu geladen");
-					}
-				}, 2000);
+				sDataHandler.loadModel(mFragment);
 			}
 		});
 
-		mAdapter = new AdapterCustomMensalist(mController, this, mMensas, R.layout.list_mensalist_item);
+		mAdapter = new AdapterCustomMensalist(sController, this, mMensas, R.layout.list_mensalist_item);
 
-		listview.setAdapter(mAdapter);
+		mListView.setAdapter(mAdapter);
 		
 		return rootView;
 	}
@@ -115,10 +106,24 @@ public class FragmentMensaList extends Fragment {
 	}
 
 	public void updateFavorite(Mensa mensa) {
-		mDataHandler.DBUpdateFavorite(mensa);
+		sDataHandler.DBUpdateFavorite(mensa);
 		mAdapter.notifyDataSetChanged();
 	}
 
+	@Override
+	public void onTaskComplete(Object result) {
+		Log.i(TAG, "onTaskComplete("+ result + ")");
+		mListView.onRefreshComplete(getString(R.string.ptr_updated));
+	}
 
+	@Override
+	public void onProgressUpdate(int percent) {
+		//unused
+	}
+
+	@Override
+	public void onRendered() {
+		// unused
+	}
 }
 

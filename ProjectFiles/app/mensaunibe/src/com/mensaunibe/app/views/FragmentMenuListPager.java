@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import android.widget.ProgressBar;
 public class FragmentMenuListPager extends Fragment {
 	
 	// for logging and debugging purposes
+	@SuppressWarnings("unused")
 	private static final String TAG = FragmentMenuListPager.class.getSimpleName();
 	
 	private Controller mController;
@@ -57,7 +57,6 @@ public class FragmentMenuListPager extends Fragment {
 	}
 
 	public void selectItem(Mensa mensa) {
-		Log.e(TAG, "mensaname = " + mensa.getName());
 		Fragment fragment = FragmentMensaDetails.newInstance(mensa, true);
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
