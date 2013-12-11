@@ -25,11 +25,16 @@
     <string name="thursday">Donnerstag</string>
     <string name="friday">Freitag</string>
     
+    <!-- Strings -->
+    <string name="rating_send">Danke für deine Bewertung!</string>
+    <string name="rating_dialog_title">Menu bewerten</string>
+    
     <!-- Pull to refresh strings -->
     <string name="ptr_pull_to_refresh">Ziehen für Update</string>
     <string name="ptr_release_to_refresh">Loslassen für Update</string>
     <string name="ptr_refreshing">Lade Daten…</string>
     <string name="ptr_last_updated">Updated: %1$s</string>
+    <string name="ptr_updated">Daten neu geladen</string>
     
     <!--  Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">Zurück</string>
@@ -52,7 +57,8 @@
     
     <!-- Button Description Strings (Accessibility) -->
     <string name="button_map_desc">Zu Mensa navigieren</string>
-        <string name="button_share_desc">Mit Freunden teilen</string>
+    <string name="button_share">Senden</string>
+    <string name="button_share_desc">Mit Freunden teilen</string>
     <string name="button_star_desc">Lieblingsmensa setzen</string>
     
     <!-- Icon Description Strings (Accessibility) -->

@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
@@ -149,6 +148,7 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 			mMap.setMyLocationEnabled(true);
 			mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // options: MAP_TYPE_HYBRID, MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN
 			
+			// add a marker for each mensa to the map
 			for (Mensa mensa : mMensas) {
 				mMap.addMarker(
 						new MarkerOptions()
@@ -250,8 +250,6 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 	// callback from the location listener
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO: remove dev toast
-		Toast.makeText(mController, "Location updated", Toast.LENGTH_SHORT).show();
 		
 		// set new current location
 		mLocation = location;

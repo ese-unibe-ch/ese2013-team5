@@ -106,18 +106,22 @@ public class AdapterCustomMensalist extends BaseAdapter {
 
 		return rowView;
 	}
+	
 	@Override
 	public int getCount() {
 		return mMensas.size();
 	}
+	
 	@Override
 	public Mensa getItem(int position) {
 		return mMensas.get(position);
 	}
+	
 	@Override
 	public long getItemId(int position) {
 		return position;
 	}
+	
 	@Override
 	public void notifyDataSetChanged() {
 		mMensaList.sortList();

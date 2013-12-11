@@ -140,11 +140,14 @@ public class DataHandler extends Fragment implements TaskListener {
 	/**
 	 * Gets the JSON from REST API and builds the data model from it
 	 */
-	public void loadModel() {
+	public void loadModel(TaskListener fragment) {
 		Log.i(TAG, "loadModel()");
 		TaskCreateModel mTask = new TaskCreateModel(mController, this);
 		mTask.addListener(this);
 		mTask.addListener(mController);
+		if (fragment != null) {
+			mTask.addListener(fragment);
+		}
 		mTask.execute();
 	}
 	

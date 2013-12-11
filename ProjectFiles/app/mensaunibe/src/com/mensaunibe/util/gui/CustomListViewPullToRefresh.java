@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.*;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.*;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.mensaunibe.R;
+import com.mensaunibe.app.views.FragmentMenuListDay;
 
 /**
  * A generic, customizable Android ListView implementation that has 'Pull to Refresh' functionality.
@@ -36,6 +38,9 @@ import com.mensaunibe.R;
  * @edit slightly modified by exside
  */
 public class CustomListViewPullToRefresh extends ListView {
+	
+	// for logging and debugging purposes
+	private static final String TAG = CustomListViewPullToRefresh.class.getSimpleName();
 
 	private static final float PULL_RESISTANCE				 = 2.5f;
 	private static final int   BOUNCE_ANIMATION_DURATION	   = 700;
@@ -189,6 +194,7 @@ public class CustomListViewPullToRefresh extends ListView {
 	 * the data is finished.
 	 */
 	public void onRefreshComplete(String msg) {
+		Log.i(TAG, "onRefreshComplete(String)");
 		state = State.PULL_TO_REFRESH;
 		resetHeader();
 		lastUpdated = System.currentTimeMillis();

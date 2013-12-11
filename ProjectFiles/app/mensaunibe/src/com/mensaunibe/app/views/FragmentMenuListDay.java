@@ -11,6 +11,7 @@ import com.mensaunibe.app.model.Menu;
 import com.mensaunibe.util.gui.AdapterCustomMenulist;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
+import com.mensaunibe.util.tasks.TaskListener;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,21 +23,23 @@ import android.view.ViewGroup;
 /**
  * fragment, shows a list of all menus for a given mensa for a given day
  */
-public class FragmentMenuListDay extends Fragment {
+public class FragmentMenuListDay extends Fragment implements TaskListener {
 	
 	// for logging and debugging purposes
 	private static final String TAG = FragmentMenuListDay.class.getSimpleName();
 	private static final String KEY_POSITION = "position";
 	
-	private Controller mController;
-	private DataHandler mDataHandler;
+	private static Controller sController;
+	private static DataHandler sDataHandler;
+	private FragmentMenuListDay mFragment;
 	
 	private AdapterCustomMenulist mAdapter;
 	private Mensa mMensa;
 	private String mDay;
+	private CustomListViewPullToRefresh mListView;
 
 	public static FragmentMenuListDay newInstance(int position, Mensa mensa) {
-		Log.i(TAG, "newInstance(" + position + ", " + mensa + ")");
+		Log.i(TAG, "newInstance(" + position + ", " + mensa.getName() + ")");
 		
 		Bundle args = new Bundle();
 		FragmentMenuListDay fragment = null;
@@ -90,53 +93,61 @@ public class FragmentMenuListDay extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		this.mController = Controller.getController();
-		this.mDataHandler = Controller.getDataHandler();
+		sController = Controller.getController();
+		sDataHandler = Controller.getDataHandler();
+		mFragment = this;
 	  
 		View rootView = inflater.inflate(R.layout.fragment_menulist_page, container, false);
 	
-		final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
+		mListView = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
 		
 		// disable scrolling when list is refreshing
-		listview.setLockScrollWhileRefreshing(false);
-
-		// override the default strings
-		listview.setTextPullToRefresh("Ziehen für Update");
-		listview.setTextReleaseToRefresh("Loslassen für Update");
-		listview.setTextRefreshing("Lade Daten...");
+		mListView.setLockScrollWhileRefreshing(false);
 
 		// set the onRefreshListener for the pull down listview
-		listview.setOnRefreshListener(new OnRefreshListener() {
+		mListView.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
 			public void onRefresh() {
-				// For demo purposes, the code will pause here to
-				// force a delay when invoking the refresh
-				listview.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						
-						listview.onRefreshComplete("Daten neu geladen");
-					}
-				}, 2000);
+				sDataHandler.loadModel(mFragment);
 			}
 		});
 		
 		if (mMensa != null) {
-			mDataHandler.setCurrentMensa(mMensa);
+			sDataHandler.setCurrentMensa(mMensa);
 		} else {
-			mMensa = mDataHandler.getCurrentMensa();
-			Log.e(TAG, "mMensa was null, get from model, mMensa now = " + mMensa);
+			mMensa = sDataHandler.getCurrentMensa();
+			Log.e(TAG, "onCreateView(): mMensa was null, got it from model");
 		}
 		
 		// build the menu list
 		List<Menu> menus = new ArrayList<Menu>();
 		menus.addAll(mMensa.getDailyMenus(mDay));
 		
-		mAdapter = new AdapterCustomMenulist(mController, menus, R.layout.list_menulist_item);
+		mAdapter = new AdapterCustomMenulist(sController, this, menus, R.layout.list_menulist_item);
 	
-		listview.setAdapter(mAdapter);
+		mListView.setAdapter(mAdapter);
 
 		return rootView;
+	}
+	
+	public void updateList() {
+		mAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onTaskComplete(Object result) {
+		Log.i(TAG, "onTaskComplete("+ result + ")");
+		mListView.onRefreshComplete(getString(R.string.ptr_updated));
+	}
+
+	@Override
+	public void onProgressUpdate(int percent) {
+		// unused
+	}
+
+	@Override
+	public void onRendered() {
+		// unused
 	}
 }

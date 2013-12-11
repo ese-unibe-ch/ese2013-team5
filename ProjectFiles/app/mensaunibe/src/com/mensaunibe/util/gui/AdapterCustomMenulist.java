@@ -7,12 +7,12 @@ import com.mensaunibe.app.controller.Controller;
 import com.mensaunibe.app.model.Mensa;
 import com.mensaunibe.app.model.MensaList;
 import com.mensaunibe.app.model.Menu;
-import com.mensaunibe.app.views.FragmentMenuListDayFull;
 import com.mensaunibe.app.views.FragmentMenuListPager;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,13 +33,13 @@ public class AdapterCustomMenulist extends BaseAdapter {
 	private static final String TAG = AdapterCustomMenulist.class.getSimpleName();
 	
 	private Controller mController;
-	private FragmentMenuListDayFull mFragment;
+	private Fragment mFragment;
 
 	private MensaList mMensaList;
 	private List<Menu> mMenus;
 	private int mResource;
 
-	public AdapterCustomMenulist(Controller controller, FragmentMenuListDayFull fragment, MensaList mensalist, List<Menu> menulist, int resource) {
+	public AdapterCustomMenulist(Controller controller, Fragment fragment, MensaList mensalist, List<Menu> menulist, int resource) {
 		super();
 		this.mController = controller;
 		this.mFragment = fragment;
@@ -48,9 +48,10 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
 	}
 	
-	public AdapterCustomMenulist(Controller controller, List<Menu> menulist, int resource) {
+	public AdapterCustomMenulist(Controller controller, Fragment fragment, List<Menu> menulist, int resource) {
 		super();
 		this.mController = controller;
+		this.mFragment = fragment;
 		this.mMenus = menulist;
 		this.mResource = resource; // the xml layout file, like this it gets dynamic
 	}
@@ -105,8 +106,10 @@ public class AdapterCustomMenulist extends BaseAdapter {
 			@Override
 			public void onClick(View rowView) {
 				if (mMensaList != null) {
-					((FragmentMenuListPager) mFragment.getParentFragment()).selectItem( mMensaList.getMensaById(mMenus.get(position).getMensaID()));
+					// this is the full menu list view, a click on a menu here leads to the mensa details
+					((FragmentMenuListPager) mFragment.getParentFragment()).selectItem(mMensaList.getMensaById(mMenus.get(position).getMensaID()));
 				} else {
+					// this is a normal menu list view, a click here gives the rating dialog
 					showRating(menu.getMenuID());
 				}
 			}
@@ -153,7 +156,7 @@ public class AdapterCustomMenulist extends BaseAdapter {
 		parentLayout.addView(rating);
 
 		dialogBuilder.setIcon(R.drawable.ic_star);
-		dialogBuilder.setTitle("Menu bewerten");
+		dialogBuilder.setTitle(R.string.rating_dialog_title);
 		dialogBuilder.setView(parentLayout);
 
 		// Buttons OK
@@ -161,8 +164,12 @@ public class AdapterCustomMenulist extends BaseAdapter {
 			public void onClick(DialogInterface dialog, int which) {
 				// send rating to server
 				Controller.getDataHandler().APIRegisterRating(menuid, rating.getProgress());
-				Toast.makeText(mController, "Send Vote for menu with ID = " + menuid + " to server..." + String.valueOf(rating.getProgress()), Toast.LENGTH_SHORT).show();
+				Toast.makeText(mController, mController.getString(R.string.rating_send), Toast.LENGTH_LONG).show();
 				dialog.dismiss();
+				// reload the model to get the most recent average
+				Controller.getDataHandler().loadModel(null);
+				// TODO: automatically update the menulist with the new loaded rating, problem are different fragments...
+				//((FragmentMenuListDay) mFragment).updateList();
 			}
 		});
 		

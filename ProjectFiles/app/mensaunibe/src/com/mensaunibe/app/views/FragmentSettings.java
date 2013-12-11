@@ -57,12 +57,14 @@ public class FragmentSettings extends PreferenceFragment implements OnSharedPref
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		if ( key.equals("setting_username") ) {
-			// TODO: update status
+			// TODO: update status and send username to server for user features
 		}
 		
 		if (key.equals("setting_language")) {
 			// save the language and update the app configuration
 			mController.setDefaultLocale();
+			// delete all fragments, to wipe out data of the other lang (doesn't work 100%...)
+			mController.cleanUpFragments(true);
 			// unfortunately it's necessary to restart the controller
 			// couldn't find a better way to re-instantiate the already inflated fragments
 			// as it would need much more code and complexity in all the different fragments

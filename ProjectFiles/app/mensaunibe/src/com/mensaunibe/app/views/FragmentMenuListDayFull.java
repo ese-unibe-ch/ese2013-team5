@@ -14,6 +14,7 @@ import com.mensaunibe.app.model.Menu;
 import com.mensaunibe.util.gui.AdapterCustomMenulist;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh;
 import com.mensaunibe.util.gui.CustomListViewPullToRefresh.OnRefreshListener;
+import com.mensaunibe.util.tasks.TaskListener;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,7 +26,7 @@ import android.view.ViewGroup;
 /**
  * fragment which shows a list of all menus of all mensas for a given day
  */
-public class FragmentMenuListDayFull extends Fragment {
+public class FragmentMenuListDayFull extends Fragment implements TaskListener {
 	
 	// for logging and debugging purposes
 	private static final String TAG = FragmentMenuListDayFull.class.getSimpleName();
@@ -34,16 +35,14 @@ public class FragmentMenuListDayFull extends Fragment {
 	private static Controller sController;
 	private static DataHandler sDataHandler;
 	private static MensaList sMensaList;
+	private FragmentMenuListDayFull mFragment;
 	
 	private AdapterCustomMenulist mAdapter;
+	private CustomListViewPullToRefresh mListView;
 	private String mDay;
 
 	public static FragmentMenuListDayFull newInstance(int position) {
 		Log.i(TAG, "newInstance(" + position + ")");
-		
-		sController = Controller.getController();
-		sDataHandler = Controller.getDataHandler();
-		sMensaList = sDataHandler.getMensaList();
 		
 		Bundle args = new Bundle();
 		FragmentMenuListDayFull fragment = null;
@@ -87,34 +86,25 @@ public class FragmentMenuListDayFull extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		
+		sController = Controller.getController();
+		sDataHandler = Controller.getDataHandler();
+		sMensaList = sDataHandler.getMensaList();
+		mFragment = this;
 	  
 		View rootView = inflater.inflate(R.layout.fragment_menulist_page, container, false);
 	
-		final CustomListViewPullToRefresh listview = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
+		mListView = (CustomListViewPullToRefresh) rootView.findViewById(R.id.menulist);
 		
 		// disable scrolling when list is refreshing
-		listview.setLockScrollWhileRefreshing(false);
-
-		// override the default strings
-		// TODO: move strings to xml
-		listview.setTextPullToRefresh("Ziehen für Update");
-		listview.setTextReleaseToRefresh("Loslassen für Update");
-		listview.setTextRefreshing("Lade Daten...");
+		mListView.setLockScrollWhileRefreshing(false);
 
 		// set the onRefreshListener for the pull down listview
-		listview.setOnRefreshListener(new OnRefreshListener() {
+		mListView.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
 			public void onRefresh() {
-				// For demo purposes, the code will pause here to
-				// force a delay when invoking the refresh
-				listview.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						
-						listview.onRefreshComplete("Daten neu geladen");
-					}
-				}, 2000);
+				sDataHandler.loadModel(mFragment);
 			}
 		});
 		
@@ -130,13 +120,13 @@ public class FragmentMenuListDayFull extends Fragment {
 	
 		mAdapter = new AdapterCustomMenulist(sController, this, sMensaList, menus, R.layout.list_menulist_all_item);
 	
-		listview.setAdapter(mAdapter);
+		mListView.setAdapter(mAdapter);
 
 		return(rootView);
 	}
 	
 	// sorts all menus from all mensas according to their rating, the model can only give back
-	// a sorted list (by rating) of one mensas menus
+	// a sorted list (by rating) of ALL mensas menus (the model can only do this for one mensa)
 	public void sortList(List<Menu> menus) {
 		Collections.sort(menus, new Comparator<Menu>(){
 			public int compare(Menu m1, Menu m2) {
@@ -145,5 +135,21 @@ public class FragmentMenuListDayFull extends Fragment {
 				return result;
 			}
 		});
+	}
+
+	@Override
+	public void onTaskComplete(Object result) {
+		Log.i(TAG, "onTaskComplete("+ result + ")");
+		mListView.onRefreshComplete(getString(R.string.ptr_updated));
+	}
+
+	@Override
+	public void onProgressUpdate(int percent) {
+		// unused
+	}
+
+	@Override
+	public void onRendered() {
+		// unused
 	}
 }

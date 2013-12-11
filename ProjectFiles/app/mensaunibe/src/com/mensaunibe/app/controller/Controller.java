@@ -172,7 +172,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 
 	@Override
 	public void onBackPressed() {
-		cleanUpFragments();
+		cleanUpFragments(false);
 		super.onBackPressed();
 	}
 
@@ -211,7 +211,9 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		if (result != null) {
 			if (result instanceof MensaList) {
 				// load the current location + closest mensa as fast as possible as soon as the model is available
-				sDataHandler.loadLocation(false);
+				if (!sDataHandler.hasLocation()) {
+					sDataHandler.loadLocation(false);
+				}
 				getLoadStatus();
 				// write the model to the db, but only if it was changed
 				if (sModelUpdated) {
@@ -231,7 +233,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		} else {
 			if (!sWait && !sDataHandler.hasModel()) {
 				Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the model again...");
-				sDataHandler.loadModel();
+				sDataHandler.loadModel(null);
 			} else if (!sWait && !sDataHandler.hasLocation()) {
 				Log.e(TAG, "onTaskComplete(Object): result was null! Trying to get the location again...");
 				sDataHandler.loadLocation(false);
@@ -247,7 +249,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		if (sSplashScreen != null) {
 			sSplashScreen.setProgress(percent);
 		} else if (mFragment != null && mFragment instanceof FragmentStart) {
-			((FragmentStart) mFragment).getProgressBar().setProgress(percent);
+//			((FragmentStart) mFragment).getProgressBar().setProgress(percent);
 		}
 	}
 
@@ -262,7 +264,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 
 		if (sDataHandler == null) {
 			sDataHandler = DataHandler.newInstance(sController);
-			sDataHandler.loadModel();
+			sDataHandler.loadModel(null);
 			fm.beginTransaction().add(sDataHandler, "data").commit();
 		} else {
 			if (getLoadStatus()) {
@@ -458,7 +460,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 	// Related to overlapping fragments bug
 	// this is a very hacky method to remove all "non"-desirable fragments
 	// necessary because the support library has bugs with nested fragments
-	public void cleanUpFragments() {
+	public void cleanUpFragments(boolean deleteall) {
 		Log.i(TAG, "cleanUpFragments()");
 		
 		List<Fragment> allFragments = fm.getFragments();
@@ -469,7 +471,10 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 				if (fragment != null) {
 					if (fragment.isVisible()) {
 						fm.beginTransaction().remove(fragment).commit();
-						Log.e(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
+						Log.i(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
+					} else if (deleteall) {
+						fm.beginTransaction().remove(fragment).commit();
+						Log.i(TAG, "cleanUpFragments(): Removed fragment: " +fragment.getClass());
 					}
 				}
 			}
@@ -544,7 +549,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 				sHasDialog = false;
 				sWait = false;
 				if (!sDataHandler.hasModel()) {
-					sDataHandler.loadModel();
+					sDataHandler.loadModel(null);
 				}
 			} catch (InterruptedException ex) {
 
@@ -558,7 +563,7 @@ public class Controller extends FragmentActivity implements TaskListener, Simple
 		sHasDialog = false;
 		sWait = false;
 		if (!sDataHandler.hasModel()) {
-			sDataHandler.loadModel();
+			sDataHandler.loadModel(null);
 		}
 	}
 
