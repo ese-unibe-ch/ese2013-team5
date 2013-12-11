@@ -101,7 +101,8 @@
 	                android:layout_marginTop="-6dp"
 	                android:gravity="center_horizontal"
 	                android:textColor="@color/unibe_black"
-	                android:textSize="12sp" />
+	                android:textSize="12sp"
+	                android:singleLine="true" />
 	        </LinearLayout>
 
 	    </RelativeLayout>
@@ -160,7 +161,8 @@
 	                android:text="@string/button_share"
 	                android:textAlignment="center"
 	                android:textColor="@color/unibe_black"
-	                android:textSize="12sp" />
+	                android:textSize="12sp"
+	                android:singleLine="true" />
 
 	        </LinearLayout>
 	    </RelativeLayout>

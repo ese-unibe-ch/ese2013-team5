@@ -57,7 +57,7 @@
     
     <!-- Button Description Strings (Accessibility) -->
     <string name="button_map_desc">Zu Mensa navigieren</string>
-    <string name="button_share">Senden</string>
+    <string name="button_share">Teilen</string>
     <string name="button_share_desc">Mit Freunden teilen</string>
     <string name="button_star_desc">Lieblingsmensa setzen</string>
     
