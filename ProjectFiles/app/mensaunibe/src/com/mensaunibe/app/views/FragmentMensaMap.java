@@ -277,8 +277,10 @@ public class FragmentMensaMap extends Fragment implements OnMapLoadedCallback, O
 			// remove any existing routes to other markers
 			mRoute.remove();
 		}
-		  
-		mRoute = mMap.addPolyline(polyoptions);
+		
+		if (mMap != null) {
+			mRoute = mMap.addPolyline(polyoptions);
+		}
 	}
 	
 	@Override
